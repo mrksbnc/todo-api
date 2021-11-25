@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "author": "Bence Markus <markus.bence@icloud.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "nodemon",
+    "lint": "eslint src/**/*.ts",
+    "format": "eslint src/**/*.ts --fix",
     "build": "tsc --build --verbose",
     "start": "tsc --build --verbose && node dist"
   },
@@ -12,13 +16,20 @@
     "type": "git",
     "url": "git+https://github.com/mrksbnc/todo-api.git"
   },
+  "homepage": "https://github.com/mrksbnc/todo-api#readme",
   "prisma": {
     "schema": "src/database/prisma/todo_db.prisma"
   },
-  "author": "Bence Markus <markus.bence@icloud.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mrksbnc/todo-api/issues"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
-  "homepage": "https://github.com/mrksbnc/todo-api#readme"
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.3.0",
+    "husky": "^7.0.4",
+    "prettier": "^2.5.0"
+  }
 }
