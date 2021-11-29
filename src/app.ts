@@ -3,6 +3,7 @@
 import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
+import logger from './utils/logger';
 import config from './config/appConfig';
 import appConfig from './config/appConfig';
 import express, { Application } from 'express';
@@ -50,7 +51,7 @@ class App {
 
   public initialize() {
     this.app.listen(this.port, () => {
-      console.log(`server running on http://localhost:${this.port} in ${this.env} mode...`);
+      logger.info(`server running on http://localhost:${this.port} in ${this.env} mode...`);
     });
   }
 }
