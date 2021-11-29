@@ -1,7 +1,7 @@
 'use strict';
 
 import dotenv from 'dotenv';
-import { IAppConfig } from '../types/configInterfaces';
+import { IAppConfig } from '../interfaces/configInterfaces';
 
 dotenv.config({ path: './.env' });
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import UserRepository from '../repositories/userRepository';
-import { IService, IServiceConstructor } from '../types/serviceInterfaces';
+import { IService, IServiceConstructor } from '../interfaces/serviceInterfaces';
 
 class UserService implements IService<UserRepository> {
   readonly repository;

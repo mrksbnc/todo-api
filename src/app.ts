@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import config from './config/appConfig';
 import appConfig from './config/appConfig';
 import express, { Application } from 'express';
-import { IRoute } from './types/routeInterfaces';
+import { IRoute } from './interfaces/routeInterfaces';
 
 class App {
   public readonly env: string;
