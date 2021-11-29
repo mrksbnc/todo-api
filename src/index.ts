@@ -3,6 +3,6 @@
 import App from './app';
 
 (() => {
-  const server = new App([]);
+  const server = new App({ routes: [] });
   server.initialize();
 })();
