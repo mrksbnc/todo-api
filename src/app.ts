@@ -7,6 +7,8 @@ import config from './config/appConfig';
 import appConfig from './config/appConfig';
 import express, { Application } from 'express';
 import { IRoute } from './interfaces/routeInterfaces';
+import notFoundMiddleware from './api/middlewares/notFoundMiddleware';
+import errorHandlingMiddleware from './api/middlewares/errorMiddleware';
 
 class App {
   public readonly env: string;
@@ -20,6 +22,7 @@ class App {
 
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
+    this.initializeErrorHandling();
   }
 
   public getServer() {
@@ -35,14 +38,19 @@ class App {
   }
 
   private initializeRoutes(routes: Readonly<IRoute[]>) {
-    routes.forEach((route) => {
+    routes.forEach((route: IRoute) => {
       this.app.use('/', route.router);
     });
+    this.app.use(notFoundMiddleware);
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorHandlingMiddleware);
   }
 
   public initialize() {
     this.app.listen(this.port, () => {
-      console.log('server running..');
+      console.log(`server running on http://localhost:${this.port} in ${this.env} mode...`);
     });
   }
 }
