@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/mrksbnc/todo-api#readme",
   "prisma": {
-    "schema": "src/database/prisma/todo-db.prisma"
+    "schema": "src/prisma/todo-db.prisma"
   },
   "husky": {
     "hooks": {

@@ -3,19 +3,20 @@
 import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
-import Config from './config';
+import config from './config/appConfig';
+import appConfig from './config/appConfig';
 import express, { Application } from 'express';
-import { IRoute } from './interfaces/routeInterface';
+import { IRoute } from './types/routeInterfaces';
 
 class App {
   public readonly env: string;
   private readonly port: number;
   public readonly app: Application;
 
-  constructor(routes: Readonly<IRoute[]>) {
+  constructor({ routes }: { routes: Readonly<IRoute[]> }) {
     this.app = express();
-    this.port = Config.get().port;
-    this.env = Config.get().nodeEnv;
+    this.env = config.app.env;
+    this.port = appConfig.server.port;
 
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
