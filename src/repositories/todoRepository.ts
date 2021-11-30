@@ -2,8 +2,8 @@
 
 import {
   IRepository,
-  UpdateTodoArgs,
-  CreateTodoArgs,
+  IUpdateTodoArgs,
+  ICreateTodoArgs,
   IRepositoryConstructor,
 } from '../interfaces/repositoryInterfaces';
 import { Prisma, PrismaClient, Todo } from '.prisma/client';
@@ -17,7 +17,7 @@ class TodoRepository implements IRepository {
     this.table = context.todo;
   }
 
-  public async create(args: CreateTodoArgs): Promise<void> {
+  public async create(args: ICreateTodoArgs): Promise<void> {
     await this.table.create({ data: args });
   }
 
@@ -36,7 +36,7 @@ class TodoRepository implements IRepository {
     return queryResult;
   }
 
-  public async update({ id, data }: UpdateTodoArgs): Promise<void> {
+  public async update({ id, data }: IUpdateTodoArgs): Promise<void> {
     await this.table.update({ where: { id }, data });
   }
 

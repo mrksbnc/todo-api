@@ -19,7 +19,7 @@ export interface IRepositoryCollection {
   collection: CollectionRepository;
 }
 
-export interface CreateUserArgs {
+export interface ICreateUserArgs {
   email: string;
   firstName: string;
   lastName: string;
@@ -28,7 +28,7 @@ export interface CreateUserArgs {
   disabledAt?: Date;
 }
 
-export interface UpdateUserArgs {
+export interface IUpdateUserArgs {
   id: number;
   data: {
     email?: string;
@@ -40,7 +40,7 @@ export interface UpdateUserArgs {
   };
 }
 
-export interface CreateTodoArgs {
+export interface ICreateTodoArgs {
   todoName: string;
   todoDescription: string;
   createdBy: number;
@@ -48,7 +48,7 @@ export interface CreateTodoArgs {
   collectionId: number | null;
 }
 
-export interface UpdateTodoArgs {
+export interface IUpdateTodoArgs {
   id: number;
   data: {
     todoName?: string;
@@ -59,13 +59,13 @@ export interface UpdateTodoArgs {
   };
 }
 
-export interface CreateCollectionArgs {
+export interface ICreateCollectionArgs {
   collectionName: string;
   description: string;
   createdBy: number;
 }
 
-export interface UpdateCollectionArgs {
+export interface IUpdateCollectionArgs {
   id: number;
   data: {
     collectionName?: string;

@@ -6,8 +6,9 @@ import helmet from 'helmet';
 import logger from './utils/logger';
 import config from './config/config';
 import appConfig from './config/config';
-import express, { Application, Request, Response, response } from 'express';
-import { IRoute } from './interfaces/routeInterfaces';
+import express, { Application } from 'express';
+import { IApiRoute } from './interfaces/routeInterfaces';
+import { IAppConstructor } from './interfaces/appInterfaces';
 import notFoundMiddleware from './api/middlewares/notFoundMiddleware';
 import errorHandlingMiddleware from './api/middlewares/errorMiddleware';
 import httpTrafficLogMiddleware from './api/middlewares/httpTrafficLogMiddleware';
@@ -17,7 +18,7 @@ class App {
   private readonly port: number;
   public readonly app: Application;
 
-  constructor({ routes }: { routes: Readonly<IRoute[]> }) {
+  constructor({ routes }: IAppConstructor) {
     this.app = express();
     this.env = config.app.env;
     this.port = appConfig.server.port;
@@ -40,8 +41,8 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
-  private initializeRoutes(routes: Readonly<IRoute[]>) {
-    routes.forEach((route: IRoute) => {
+  private initializeRoutes(routes: Readonly<IApiRoute[]>) {
+    routes.forEach((route: IApiRoute) => {
       this.app.use('/', route.router);
     });
     this.app.use(notFoundMiddleware);

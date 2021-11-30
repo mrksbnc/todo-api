@@ -2,8 +2,8 @@
 
 import {
   IRepository,
-  CreateCollectionArgs,
-  UpdateCollectionArgs,
+  ICreateCollectionArgs,
+  IUpdateCollectionArgs,
   IRepositoryConstructor,
 } from '../interfaces/repositoryInterfaces';
 import { PrismaClient, Prisma, Collection } from '.prisma/client';
@@ -17,7 +17,7 @@ class CollectionRepository implements IRepository {
     this.table = context.collection;
   }
 
-  public async create(args: CreateCollectionArgs): Promise<void> {
+  public async create(args: ICreateCollectionArgs): Promise<void> {
     await this.table.create({ data: args });
   }
 
@@ -31,7 +31,7 @@ class CollectionRepository implements IRepository {
     return queryResult;
   }
 
-  public async update({ id, data }: UpdateCollectionArgs): Promise<void> {
+  public async update({ id, data }: IUpdateCollectionArgs): Promise<void> {
     await this.table.update({ where: { id }, data });
   }
 

@@ -15,6 +15,7 @@ export interface ILogConfig {
   infoLogPath: string;
   errorLogPath: string;
 }
+
 export interface IConfig {
   readonly app: IApplicationConfig;
   readonly server: IServerConfig;

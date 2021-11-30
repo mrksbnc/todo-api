@@ -1,12 +1,12 @@
 'use strict';
 
-import { HttpExceptionConstructor } from '../../interfaces/exceptionInterfaces';
+import { IHttpExceptionConstructor } from '../../interfaces/exceptionInterfaces';
 
 class HttpException extends Error {
   public message: string;
   public statusCode: number;
 
-  constructor({ message, statusCode }: HttpExceptionConstructor) {
+  constructor({ message, statusCode }: IHttpExceptionConstructor) {
     super(message);
     this.message = message;
     this.statusCode = statusCode;

@@ -2,8 +2,8 @@
 
 import { Request } from 'express';
 
-interface ExtendedRequest extends Request {
+interface IExtendedRequest extends Request {
   userId: number;
 }
 
-export default ExtendedRequest;
+export default IExtendedRequest;

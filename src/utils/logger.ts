@@ -5,6 +5,7 @@ import path from 'path';
 import bunyan from 'bunyan';
 import config from '../config/config';
 
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const pretty = require('@mechanicalhuman/bunyan-pretty');
 
 const logDirPath = path.resolve(__dirname, '..', 'logs');

@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 
-export interface IRoute {
+export interface IApiRoute {
   path: string;
   router: Router;
 }

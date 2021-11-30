@@ -1,6 +1,6 @@
 'use strict';
 
-export interface HttpExceptionConstructor {
+export interface IHttpExceptionConstructor {
   message: string;
   statusCode: number;
 }
