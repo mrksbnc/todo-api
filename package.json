@@ -41,7 +41,8 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
     "npm": "^8.1.4",
-    "prisma": "^3.5.0"
+    "prisma": "^3.5.0",
+    "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",
