@@ -27,6 +27,7 @@
     }
   },
   "dependencies": {
+    "@mechanicalhuman/bunyan-pretty": "^3.0.1",
     "@prisma/client": "^3.5.0",
     "app-root-path": "^3.0.0",
     "bcrypt": "^5.0.1",
@@ -36,6 +37,10 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
+    "i": "^0.3.7",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "npm": "^8.1.4",
     "prisma": "^3.5.0"
   },
   "devDependencies": {
@@ -45,6 +50,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/hpp": "^0.2.2",
+    "@types/morgan": "^1.9.3",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.3.0",

@@ -4,12 +4,13 @@ import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
 import logger from './utils/logger';
-import config from './config/appConfig';
-import appConfig from './config/appConfig';
-import express, { Application } from 'express';
+import config from './config/config';
+import appConfig from './config/config';
+import express, { Application, Request, Response, response } from 'express';
 import { IRoute } from './interfaces/routeInterfaces';
 import notFoundMiddleware from './api/middlewares/notFoundMiddleware';
 import errorHandlingMiddleware from './api/middlewares/errorMiddleware';
+import httpTrafficLogMiddleware from './api/middlewares/httpTrafficLogMiddleware';
 
 class App {
   public readonly env: string;
@@ -35,6 +36,7 @@ class App {
     this.app.use(hpp());
     this.app.use(helmet({ hidePoweredBy: true }));
     this.app.use(express.json());
+    this.app.use(httpTrafficLogMiddleware);
     this.app.use(express.urlencoded({ extended: true }));
   }
 

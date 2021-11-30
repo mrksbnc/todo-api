@@ -3,7 +3,7 @@
 import { Request, Response } from 'express';
 import HttpStatusCodes from '../../data/enums/httpStatusCodeEnum';
 
-const notFoundMiddleware = (request: Request, response: Response) => {
+const notFoundMiddleware = (request: Request, response: Response): void => {
   response.status(HttpStatusCodes.NOT_FOUND).json({ message: 'The requested resource could not be found' });
 };
 
