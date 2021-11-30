@@ -1,6 +1,5 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
 import UserRepository from '../repositories/userRepository';
 import { IService, IServiceConstructor } from '../interfaces/serviceInterfaces';
 
