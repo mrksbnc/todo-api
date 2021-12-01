@@ -7,11 +7,11 @@ import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
 import CollectionRepository from '../repositories/collectionReposiory';
-import { ICreateCollectionArgs } from '../data/interfaces/repositoryInterfaces';
 import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
+import { ICreateCollectionArgs, IUpdateCollectionArgs } from '../data/interfaces/repositoryInterfaces';
 
 class CollectionService extends ServiceHelper implements IService<CollectionRepository> {
-  readonly repository;
+  public readonly repository;
 
   constructor({ repository }: IServiceConstructor<CollectionRepository>) {
     super();
@@ -52,6 +52,40 @@ class CollectionService extends ServiceHelper implements IService<CollectionRepo
     }
 
     return collection;
+  }
+
+  public async findManyByCreatedById(createdBy: number): Promise<Collection[]> {
+    if (!this.isValidNumericId(createdBy)) {
+      throw new HttpException({
+        message: ApiErrorMessageEnum.BAD_REQUEST,
+        statusCode: HttpStatusCodeEnum.BAD_REQUEST,
+      });
+    }
+
+    const collectionList = await this.repository.findManyByCreatedById(createdBy);
+    return collectionList;
+  }
+
+  public async update({ id, data }: { id: number; data: IUpdateCollectionArgs }): Promise<void> {
+    if (!this.isValidNumericId(id) || this.isObjectEmpty<IUpdateCollectionArgs>(data)) {
+      throw new HttpException({
+        message: ApiErrorMessageEnum.BAD_REQUEST,
+        statusCode: HttpStatusCodeEnum.BAD_REQUEST,
+      });
+    }
+
+    await this.repository.update({ id, data });
+  }
+
+  public async delete(id: number): Promise<void> {
+    if (!this.isValidNumericId(id)) {
+      throw new HttpException({
+        message: ApiErrorMessageEnum.BAD_REQUEST,
+        statusCode: HttpStatusCodeEnum.BAD_REQUEST,
+      });
+    }
+
+    await this.repository.delete(id);
   }
 }
 

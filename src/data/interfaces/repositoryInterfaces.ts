@@ -32,7 +32,6 @@ export interface ICreateUserArgs {
 }
 
 export interface IUpdateUserArgs {
-  id: number;
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -50,14 +49,11 @@ export interface ICreateTodoArgs {
 }
 
 export interface IUpdateTodoArgs {
-  id: number;
-  data: {
-    todoName?: string;
-    todoDescription?: string;
-    createdBy?: number;
-    dueDate?: Date;
-    collectionId?: number;
-  };
+  todoName?: string;
+  todoDescription?: string;
+  createdBy?: number;
+  dueDate?: Date;
+  collectionId?: number;
 }
 
 export interface ICreateCollectionArgs {
@@ -67,6 +63,7 @@ export interface ICreateCollectionArgs {
 }
 
 export interface IUpdateCollectionArgs {
-  id: number;
-  data: Partial<ICreateCollectionArgs>;
+  collectionName?: string;
+  description?: string;
+  createdBy?: number;
 }

@@ -14,7 +14,7 @@ import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfa
 import { ICreateUserArgs, IUpdateUserArgs } from '../data/interfaces/repositoryInterfaces';
 
 class UserService extends ServiceHelper implements IService<UserRepository> {
-  readonly repository;
+  public readonly repository;
 
   constructor({ repository }: IServiceConstructor<UserRepository>) {
     super();
@@ -117,7 +117,7 @@ class UserService extends ServiceHelper implements IService<UserRepository> {
   }
 
   public async update({ id, data }: { id: number; data: IUpdateUserArgs }): Promise<void> {
-    if (!this.isValidNumericId(id) || this.isObjectEmpty(data)) {
+    if (!this.isValidNumericId(id) || this.isObjectEmpty<IUpdateUserArgs>(data)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,

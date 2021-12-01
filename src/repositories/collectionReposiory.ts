@@ -26,7 +26,7 @@ class CollectionRepository implements IRepository<ICreateCollectionArgs, Collect
     return queryResult;
   }
 
-  public async findCollectionByCreatedBy(createdBy: number): Promise<Collection[]> {
+  public async findManyByCreatedById(createdBy: number): Promise<Collection[]> {
     const queryResult = await this.table.findMany({ where: { createdBy } });
     return queryResult;
   }
