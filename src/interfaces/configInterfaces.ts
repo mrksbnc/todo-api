@@ -11,13 +11,18 @@ export interface IServerConfig {
 
 export interface ILogConfig {
   period: string;
+  logDirPath: string;
   maxLogcount: number;
   infoLogPath: string;
   errorLogPath: string;
 }
 
+export interface IAuthConfig {
+  saltRounds: number;
+}
 export interface IConfig {
   readonly app: IApplicationConfig;
   readonly server: IServerConfig;
   readonly log: ILogConfig;
+  readonly auth: IAuthConfig;
 }
