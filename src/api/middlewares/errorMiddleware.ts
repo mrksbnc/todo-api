@@ -1,9 +1,9 @@
 'use strict';
 
+import logger from '../../utils/logger';
 import { Request, Response, NextFunction } from 'express';
 import HttpException from '../../data/exceptions/HttpException';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCode';
-import logger from '../../utils/logger';
 
 const errorHandlingMiddleware = (
   error: HttpException,
