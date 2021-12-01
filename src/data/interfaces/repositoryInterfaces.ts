@@ -1,12 +1,15 @@
 'use strict';
 
 import { PrismaClient } from '.prisma/client';
-import TodoRepository from '../repositories/todoRepository';
-import UserRepository from '../repositories/userRepository';
-import CollectionRepository from '../repositories/collectionReposiory';
+import TodoRepository from '../../repositories/todoRepository';
+import UserRepository from '../../repositories/userRepository';
+import CollectionRepository from '../../repositories/collectionReposiory';
 
-export interface IRepository {
-  readonly context: PrismaClient;
+export interface IRepository<C, R, U> {
+  create: (args: C) => Promise<void>;
+  findById: (id: number) => Promise<R | null>;
+  update: ({ id, data }: { id: number; data: U }) => Promise<void>;
+  delete: (id: number) => Promise<void>;
 }
 
 export interface IRepositoryConstructor {
@@ -30,14 +33,12 @@ export interface ICreateUserArgs {
 
 export interface IUpdateUserArgs {
   id: number;
-  data: {
-    email?: string;
-    firstName?: string;
-    lastName?: string;
-    password?: string;
-    disabledBy?: number;
-    disabledAt?: Date;
-  };
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  password?: string;
+  disabledBy?: number;
+  disabledAt?: Date;
 }
 
 export interface ICreateTodoArgs {
@@ -67,9 +68,5 @@ export interface ICreateCollectionArgs {
 
 export interface IUpdateCollectionArgs {
   id: number;
-  data: {
-    collectionName?: string;
-    description?: string;
-    createdBy?: number;
-  };
+  data: Partial<ICreateCollectionArgs>;
 }

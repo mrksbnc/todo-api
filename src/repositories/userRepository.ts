@@ -5,16 +5,16 @@ import {
   ICreateUserArgs,
   IUpdateUserArgs,
   IRepositoryConstructor,
-} from '../interfaces/repositoryInterfaces';
+} from '../data/interfaces/repositoryInterfaces';
 import { Prisma, PrismaClient, User } from '.prisma/client';
 
-class UserRepository implements IRepository {
-  readonly context: PrismaClient;
+class UserRepository implements IRepository<ICreateUserArgs, User, IUpdateUserArgs> {
+  private readonly context: PrismaClient;
   private readonly table: Prisma.UserDelegate<false>;
 
   constructor({ context }: IRepositoryConstructor) {
     this.context = context;
-    this.table = context.user;
+    this.table = this.context.user;
   }
 
   public async create(args: ICreateUserArgs): Promise<void> {
@@ -31,7 +31,7 @@ class UserRepository implements IRepository {
     return queryResult;
   }
 
-  public async update({ id, data }: IUpdateUserArgs): Promise<void> {
+  public async update({ id, data }: { id: number; data: IUpdateUserArgs }): Promise<void> {
     await this.table.update({ where: { id }, data });
   }
 

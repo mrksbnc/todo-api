@@ -5,16 +5,16 @@ import {
   IUpdateTodoArgs,
   ICreateTodoArgs,
   IRepositoryConstructor,
-} from '../interfaces/repositoryInterfaces';
+} from '../data/interfaces/repositoryInterfaces';
 import { Prisma, PrismaClient, Todo } from '.prisma/client';
 
-class TodoRepository implements IRepository {
-  readonly context: PrismaClient;
+class TodoRepository implements IRepository<ICreateTodoArgs, Todo, IUpdateTodoArgs> {
+  private readonly context: PrismaClient;
   private readonly table: Prisma.TodoDelegate<false>;
 
   constructor({ context }: IRepositoryConstructor) {
     this.context = context;
-    this.table = context.todo;
+    this.table = this.context.todo;
   }
 
   public async create(args: ICreateTodoArgs): Promise<void> {
@@ -36,7 +36,7 @@ class TodoRepository implements IRepository {
     return queryResult;
   }
 
-  public async update({ id, data }: IUpdateTodoArgs): Promise<void> {
+  public async update({ id, data }: { id: number; data: IUpdateTodoArgs }): Promise<void> {
     await this.table.update({ where: { id }, data });
   }
 

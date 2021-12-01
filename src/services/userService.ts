@@ -10,8 +10,8 @@ import UserRepository from '../repositories/userRepository';
 import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
-import { IService, IServiceConstructor } from '../interfaces/serviceInterfaces';
-import { ICreateUserArgs, IUpdateUserArgs } from '../interfaces/repositoryInterfaces';
+import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
+import { ICreateUserArgs, IUpdateUserArgs } from '../data/interfaces/repositoryInterfaces';
 
 class UserService extends ServiceHelper implements IService<UserRepository> {
   readonly repository;
@@ -116,7 +116,7 @@ class UserService extends ServiceHelper implements IService<UserRepository> {
     return this.createPartialUser(user);
   }
 
-  public async update({ id, data }: IUpdateUserArgs): Promise<void> {
+  public async update({ id, data }: { id: number; data: IUpdateUserArgs }): Promise<void> {
     if (!this.isValidNumericId(id) || this.isObjectEmpty(data)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,

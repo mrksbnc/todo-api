@@ -1,6 +1,6 @@
 'use strict';
 
-import { IHttpExceptionConstructor } from '../../interfaces/exceptionInterfaces';
+import { IHttpExceptionConstructor } from '../interfaces/exceptionInterfaces';
 
 class HttpException extends Error {
   public message: string;
