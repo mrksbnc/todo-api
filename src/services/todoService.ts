@@ -1,20 +1,19 @@
 'use strict';
 
-import { Todo } from '.prisma/client';
 import Validator from 'validatorjs';
+import { Todo } from '.prisma/client';
+import TodoRepository from '../repositories/todoRepository';
+import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
-import HttpException from '../data/exceptions/HttpException';
-import { ICreateTodoArgs, IUpdateTodoArgs } from '../data/interfaces/repositoryInterfaces';
+import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
 import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
-import TodoRepository from '../repositories/todoRepository';
-import ServiceHelper from './serviceHelper';
+import { ICreateTodoArgs, IUpdateTodoArgs } from '../data/interfaces/repositoryInterfaces';
 
-class TodoService extends ServiceHelper implements IService<TodoRepository> {
+class TodoService implements IService<TodoRepository> {
   public readonly repository;
 
   constructor({ repository }: IServiceConstructor<TodoRepository>) {
-    super();
     this.repository = repository;
   }
 
@@ -36,7 +35,7 @@ class TodoService extends ServiceHelper implements IService<TodoRepository> {
   }
 
   public async findById(id: number): Promise<Todo | null> {
-    if (!this.isValidNumericId(id)) {
+    if (!isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -55,7 +54,7 @@ class TodoService extends ServiceHelper implements IService<TodoRepository> {
   }
 
   public async findManyByCollectionId(collectionId: number): Promise<Todo[]> {
-    if (!this.isValidNumericId(collectionId)) {
+    if (!isValidNumericId(collectionId)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -67,7 +66,7 @@ class TodoService extends ServiceHelper implements IService<TodoRepository> {
   }
 
   public async findManyByCreatedById(createdBy: number): Promise<Todo[]> {
-    if (!this.isValidNumericId(createdBy)) {
+    if (!isValidNumericId(createdBy)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -79,7 +78,7 @@ class TodoService extends ServiceHelper implements IService<TodoRepository> {
   }
 
   public async update({ id, data }: { id: number; data: IUpdateTodoArgs }): Promise<void> {
-    if (!this.isValidNumericId(id) || this.isObjectEmpty<IUpdateTodoArgs>(data)) {
+    if (!isValidNumericId(id) || isObjectEmpty<IUpdateTodoArgs>(data)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -90,7 +89,7 @@ class TodoService extends ServiceHelper implements IService<TodoRepository> {
   }
 
   public async delete(id: number): Promise<void> {
-    if (!this.isValidNumericId(id)) {
+    if (!isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,

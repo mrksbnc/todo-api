@@ -2,18 +2,17 @@
 
 import bcrypt from 'bcrypt';
 import Validator from 'validatorjs';
-import { User } from '.prisma/client';
 import config from '../config/config';
-import ServiceHelper from './serviceHelper';
 import { PartialUser } from '../data/types/partialUser';
 import UserRepository from '../repositories/userRepository';
 import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
+import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
 import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
 import { ICreateUserArgs, IUpdateUserArgs } from '../data/interfaces/repositoryInterfaces';
 
-class UserService extends ServiceHelper implements IService<UserRepository> {
+class UserService implements IService<UserRepository> {
   public readonly repository;
 
   constructor({ repository }: IServiceConstructor<UserRepository>) {
@@ -25,18 +24,6 @@ class UserService extends ServiceHelper implements IService<UserRepository> {
     const salt = await bcrypt.genSalt(config.auth.saltRounds);
     const hash = await bcrypt.hash(plainTextPassword, salt);
     return hash;
-  }
-
-  public createPartialUser(user: User): PartialUser {
-    const partialUser: PartialUser = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      disabledAt: user.disabledAt,
-      disabledBy: user.disabledBy,
-    };
-    return partialUser;
   }
 
   public async create(args: ICreateUserArgs): Promise<void> {
@@ -77,7 +64,7 @@ class UserService extends ServiceHelper implements IService<UserRepository> {
   }
 
   public async findById(id: number): Promise<PartialUser> {
-    if (!this.isValidNumericId(id)) {
+    if (!isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -117,7 +104,7 @@ class UserService extends ServiceHelper implements IService<UserRepository> {
   }
 
   public async update({ id, data }: { id: number; data: IUpdateUserArgs }): Promise<void> {
-    if (!this.isValidNumericId(id) || this.isObjectEmpty<IUpdateUserArgs>(data)) {
+    if (!isValidNumericId(id) || isObjectEmpty<IUpdateUserArgs>(data)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -135,7 +122,7 @@ class UserService extends ServiceHelper implements IService<UserRepository> {
   }
 
   public async delete(id: number): Promise<void> {
-    if (!this.isValidNumericId(id)) {
+    if (!isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,

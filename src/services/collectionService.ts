@@ -1,20 +1,18 @@
 'use strict';
 
 import Validator from 'validatorjs';
-import ServiceHelper from './serviceHelper';
 import { Collection } from '.prisma/client';
 import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
 import CollectionRepository from '../repositories/collectionReposiory';
+import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
 import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
 import { ICreateCollectionArgs, IUpdateCollectionArgs } from '../data/interfaces/repositoryInterfaces';
-
-class CollectionService extends ServiceHelper implements IService<CollectionRepository> {
+class CollectionService implements IService<CollectionRepository> {
   public readonly repository;
 
   constructor({ repository }: IServiceConstructor<CollectionRepository>) {
-    super();
     this.repository = repository;
   }
 
@@ -36,7 +34,7 @@ class CollectionService extends ServiceHelper implements IService<CollectionRepo
   }
 
   public async findById(id: number): Promise<Collection | null> {
-    if (!this.isValidNumericId(id)) {
+    if (!isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -55,7 +53,7 @@ class CollectionService extends ServiceHelper implements IService<CollectionRepo
   }
 
   public async findManyByCreatedById(createdBy: number): Promise<Collection[]> {
-    if (!this.isValidNumericId(createdBy)) {
+    if (!isValidNumericId(createdBy)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -67,7 +65,7 @@ class CollectionService extends ServiceHelper implements IService<CollectionRepo
   }
 
   public async update({ id, data }: { id: number; data: IUpdateCollectionArgs }): Promise<void> {
-    if (!this.isValidNumericId(id) || this.isObjectEmpty<IUpdateCollectionArgs>(data)) {
+    if (!isValidNumericId(id) || isObjectEmpty<IUpdateCollectionArgs>(data)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -78,7 +76,7 @@ class CollectionService extends ServiceHelper implements IService<CollectionRepo
   }
 
   public async delete(id: number): Promise<void> {
-    if (!this.isValidNumericId(id)) {
+    if (!isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,

@@ -24,6 +24,7 @@ const config: IConfig = Object.freeze({
   },
   auth: {
     saltRounds: 15,
+    secretKey: 's(U51L^/5X(LeWC+B/!=_LcSAOW0~_:O?o2/`(-c(EdI=_lH|I@[5>;=kACz,"S',
   },
 });
 

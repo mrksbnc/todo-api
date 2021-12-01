@@ -19,6 +19,7 @@ export interface ILogConfig {
 
 export interface IAuthConfig {
   saltRounds: number;
+  secretKey: string;
 }
 export interface IConfig {
   readonly app: IApplicationConfig;

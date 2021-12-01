@@ -6,6 +6,7 @@ import {
   IUpdateUserArgs,
   IRepositoryConstructor,
 } from '../data/interfaces/repositoryInterfaces';
+import { PartialUser } from '../data/types/partialUser';
 import { Prisma, PrismaClient, User } from '.prisma/client';
 
 class UserRepository implements IRepository<ICreateUserArgs, User, IUpdateUserArgs> {
@@ -15,6 +16,18 @@ class UserRepository implements IRepository<ICreateUserArgs, User, IUpdateUserAr
   constructor({ context }: IRepositoryConstructor) {
     this.context = context;
     this.table = this.context.user;
+  }
+
+  public createPartialUser(user: User): PartialUser {
+    const partialUser: PartialUser = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      disabledAt: user.disabledAt,
+      disabledBy: user.disabledBy,
+    };
+    return partialUser;
   }
 
   public async create(args: ICreateUserArgs): Promise<void> {
