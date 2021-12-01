@@ -5,7 +5,7 @@ import Validator from 'validatorjs';
 import { User } from '.prisma/client';
 import config from '../config/config';
 import ServiceHelper from './serviceHelper';
-import { PartialUser } from '../types/userTypes';
+import { PartialUser } from '../data/types/partialUser';
 import UserRepository from '../repositories/userRepository';
 import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
