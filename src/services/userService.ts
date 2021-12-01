@@ -63,7 +63,6 @@ class UserService implements IService<UserRepository> {
     }
 
     const plainTextPassword = args.password;
-    const salt = await bcrypt.genSalt(15);
     const hash = await this.generatePasswordHash(plainTextPassword);
 
     const insertData: ICreateUserArgs = {
