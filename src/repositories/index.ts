@@ -4,7 +4,7 @@ import context from '../prisma/context';
 import UserRepository from './userRepository';
 import TodoRepository from './todoRepository';
 import CollectionRepository from './collectionReposiory';
-import { IRepositoryCollection } from '../data/interfaces/repositoryInterfaces';
+import { IRepositoryCollection } from '../data/interfaces/repository';
 
 const repositories: IRepositoryCollection = Object.freeze({
   user: new UserRepository({ context }),

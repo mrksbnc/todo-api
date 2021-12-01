@@ -1,11 +1,6 @@
 'use strict';
 
-import {
-  IRepository,
-  ICreateUserArgs,
-  IUpdateUserArgs,
-  IRepositoryConstructor,
-} from '../data/interfaces/repositoryInterfaces';
+import { IRepository, ICreateUserArgs, IUpdateUserArgs, IRepositoryConstructor } from '../data/interfaces/repository';
 import { PartialUser } from '../data/types/partialUser';
 import { Prisma, PrismaClient, User } from '.prisma/client';
 

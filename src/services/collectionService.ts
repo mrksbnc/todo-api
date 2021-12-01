@@ -7,8 +7,8 @@ import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
 import CollectionRepository from '../repositories/collectionReposiory';
 import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
-import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
-import { ICreateCollectionArgs, IUpdateCollectionArgs } from '../data/interfaces/repositoryInterfaces';
+import { IService, IServiceConstructor } from '../data/interfaces/service';
+import { ICreateCollectionArgs, IUpdateCollectionArgs } from '../data/interfaces/repository';
 class CollectionService implements IService<CollectionRepository> {
   public readonly repository;
 

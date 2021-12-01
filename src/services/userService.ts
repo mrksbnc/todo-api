@@ -9,8 +9,8 @@ import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
 import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
-import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
-import { ICreateUserArgs, IUpdateUserArgs } from '../data/interfaces/repositoryInterfaces';
+import { IService, IServiceConstructor } from '../data/interfaces/service';
+import { ICreateUserArgs, IUpdateUserArgs } from '../data/interfaces/repository';
 
 class UserService implements IService<UserRepository> {
   public readonly repository;

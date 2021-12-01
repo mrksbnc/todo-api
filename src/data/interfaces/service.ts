@@ -1,6 +1,6 @@
 'use strict';
 
-import { IRepository } from './repositoryInterfaces';
+import { IRepository } from './repository';
 
 export interface IService<T = IRepository<unknown, unknown, unknown>> {
   readonly repository: T;

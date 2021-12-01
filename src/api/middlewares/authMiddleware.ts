@@ -10,7 +10,7 @@ import HttpException from '../../data/exceptions/HttpException';
 import { DataStoredInToken } from '../../data/interfaces/token';
 import ApiErrorMessageEnum from '../../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
-import IExtendedRequest from '../../data/interfaces/requestInterfaces';
+import IExtendedRequest from '../../data/interfaces/request';
 
 const authMiddleware = async (request: IExtendedRequest, response: Response, next: NextFunction) => {
   try {

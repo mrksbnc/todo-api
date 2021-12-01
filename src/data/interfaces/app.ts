@@ -1,6 +1,6 @@
 'use strict';
 
-import { IApiRoute } from './routeInterfaces';
+import { IApiRoute } from './route';
 
 export interface IAppConstructor {
   routes: Readonly<IApiRoute[]>;

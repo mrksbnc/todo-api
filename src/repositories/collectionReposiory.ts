@@ -5,7 +5,7 @@ import {
   ICreateCollectionArgs,
   IUpdateCollectionArgs,
   IRepositoryConstructor,
-} from '../data/interfaces/repositoryInterfaces';
+} from '../data/interfaces/repository';
 import { PrismaClient, Prisma, Collection } from '.prisma/client';
 
 class CollectionRepository implements IRepository<ICreateCollectionArgs, Collection, IUpdateCollectionArgs> {

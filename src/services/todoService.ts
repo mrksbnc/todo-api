@@ -7,8 +7,8 @@ import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
 import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
 import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
-import { IService, IServiceConstructor } from '../data/interfaces/serviceInterfaces';
-import { ICreateTodoArgs, IUpdateTodoArgs } from '../data/interfaces/repositoryInterfaces';
+import { IService, IServiceConstructor } from '../data/interfaces/service';
+import { ICreateTodoArgs, IUpdateTodoArgs } from '../data/interfaces/repository';
 
 class TodoService implements IService<TodoRepository> {
   public readonly repository;

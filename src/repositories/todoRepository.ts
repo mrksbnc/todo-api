@@ -1,11 +1,6 @@
 'use strict';
 
-import {
-  IRepository,
-  IUpdateTodoArgs,
-  ICreateTodoArgs,
-  IRepositoryConstructor,
-} from '../data/interfaces/repositoryInterfaces';
+import { IRepository, IUpdateTodoArgs, ICreateTodoArgs, IRepositoryConstructor } from '../data/interfaces/repository';
 import { Prisma, PrismaClient, Todo } from '.prisma/client';
 
 class TodoRepository implements IRepository<ICreateTodoArgs, Todo, IUpdateTodoArgs> {
