@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import Validator from 'validatorjs';
 import { User } from '.prisma/client';
 import config from '../config/config';
-import ServiceHelpers from './serviceHelpers';
+import ServiceHelper from './serviceHelper';
 import { PartialUser } from '../types/userTypes';
 import UserRepository from '../repositories/userRepository';
 import HttpException from '../data/exceptions/HttpException';
@@ -13,10 +13,11 @@ import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
 import { IService, IServiceConstructor } from '../interfaces/serviceInterfaces';
 import { ICreateUserArgs, IUpdateUserArgs } from '../interfaces/repositoryInterfaces';
 
-class UserService implements IService<UserRepository> {
+class UserService extends ServiceHelper implements IService<UserRepository> {
   readonly repository;
 
   constructor({ repository }: IServiceConstructor<UserRepository>) {
+    super();
     this.repository = repository;
   }
 
@@ -76,7 +77,7 @@ class UserService implements IService<UserRepository> {
   }
 
   public async findById(id: number): Promise<PartialUser> {
-    if (!ServiceHelpers.isValidNumericId(id)) {
+    if (!this.isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -116,7 +117,7 @@ class UserService implements IService<UserRepository> {
   }
 
   public async update({ id, data }: IUpdateUserArgs): Promise<void> {
-    if (!ServiceHelpers.isValidNumericId(id) || ServiceHelpers.isObjectEmpty(data)) {
+    if (!this.isValidNumericId(id) || this.isObjectEmpty(data)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
@@ -134,7 +135,7 @@ class UserService implements IService<UserRepository> {
   }
 
   public async delete(id: number): Promise<void> {
-    if (!ServiceHelpers.isValidNumericId(id)) {
+    if (!this.isValidNumericId(id)) {
       throw new HttpException({
         message: ApiErrorMessageEnum.BAD_REQUEST,
         statusCode: HttpStatusCodeEnum.BAD_REQUEST,
