@@ -7,6 +7,7 @@ enum ApiErrorMessageEnum {
   MISSING_AUTH_TOKEN = 'Authentication token missing',
   INVALID_AUTH_TOKEN = 'Invalid authentication token sent',
   UNAUTHORIZED = 'Authentication is required to access the requested resource',
+  INTERNAL_SERVVER_ERROR = 'Internal server error',
 }
 
 export default ApiErrorMessageEnum;

@@ -7,7 +7,7 @@ import { PartialUser } from '../data/types/partialUser';
 import UserRepository from '../repositories/userRepository';
 import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
-import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
+import HttpStatusCodeEnum from '../data/enums/httpStatusCode';
 import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
 import { IService, IServiceConstructor } from '../data/interfaces/service';
 import { ICreateUserArgs, IUpdateUserArgs } from '../data/interfaces/repository';

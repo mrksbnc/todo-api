@@ -2,7 +2,8 @@
 
 import { Request, Response, NextFunction } from 'express';
 import HttpException from '../../data/exceptions/HttpException';
-import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCode';
+import logger from '../../utils/logger';
 
 const errorHandlingMiddleware = (
   error: HttpException,
@@ -13,9 +14,9 @@ const errorHandlingMiddleware = (
   try {
     const message = error.message || 'Something went wrong';
     const statusCode = error.statusCode || HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
-    const stack = error.stack ? '\r\n' + error.stack : '';
 
-    console.error(`[${request.method}] ${request.path} | statusCode: ${statusCode} ${stack}`);
+    logger.error(error);
+
     response.status(statusCode).json({ message });
   } catch (error) {
     next(error);

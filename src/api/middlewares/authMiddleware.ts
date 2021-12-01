@@ -9,7 +9,7 @@ import { isValidNumericId } from '../../helpers/validators';
 import HttpException from '../../data/exceptions/HttpException';
 import { DataStoredInToken } from '../../data/interfaces/token';
 import ApiErrorMessageEnum from '../../data/enums/apiErrorMessages';
-import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCode';
 import IExtendedRequest from '../../data/interfaces/request';
 
 const authMiddleware = async (request: IExtendedRequest, response: Response, next: NextFunction) => {

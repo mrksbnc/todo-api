@@ -4,7 +4,7 @@ import Validator from 'validatorjs';
 import { Collection } from '.prisma/client';
 import HttpException from '../data/exceptions/HttpException';
 import ApiErrorMessageEnum from '../data/enums/apiErrorMessages';
-import HttpStatusCodeEnum from '../data/enums/httpStatusCodeEnum';
+import HttpStatusCodeEnum from '../data/enums/httpStatusCode';
 import CollectionRepository from '../repositories/collectionReposiory';
 import { isObjectEmpty, isValidNumericId } from '../helpers/validators';
 import { IService, IServiceConstructor } from '../data/interfaces/service';
