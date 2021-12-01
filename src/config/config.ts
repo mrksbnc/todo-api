@@ -16,15 +16,15 @@ const config: IConfig = Object.freeze({
     port: Number(process.env.PORT) || 3010,
   },
   log: {
-    period: '1d',
-    maxLogcount: 3,
+    period: process.env.LOG_PERIOD || '1d',
     logDirPath: path.resolve(__dirname, '..', 'logs'),
+    maxLogcount: Number(process.env.MAX_LOG_FILE_COUNT) || 3,
     infoLogPath: path.resolve(__dirname, '..', 'logs', 'info.log'),
     errorLogPath: path.resolve(__dirname, '..', 'logs', 'error.log'),
   },
   auth: {
-    saltRounds: 15,
-    secretKey: 's(U51L^/5X(LeWC+B/!=_LcSAOW0~_:O?o2/`(-c(EdI=_lH|I@[5>;=kACz,"S',
+    saltRounds: Number(process.env.SALT_ROUNDS) || 15,
+    secretKey: process.env.SECRET_KEY || 'EdI=_lH|I@[5>;=kACz,S@$#@#_?><M<SDSAF_**/_DS',
   },
 });
 

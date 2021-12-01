@@ -16,7 +16,6 @@ class UserService implements IService<UserRepository> {
   public readonly repository;
 
   constructor({ repository }: IServiceConstructor<UserRepository>) {
-    super();
     this.repository = repository;
   }
 
@@ -79,7 +78,7 @@ class UserService implements IService<UserRepository> {
       });
     }
 
-    return this.createPartialUser(user);
+    return this.repository.createPartialUser(user);
   }
 
   public async findByEmail(email: string): Promise<PartialUser> {
@@ -100,7 +99,7 @@ class UserService implements IService<UserRepository> {
       });
     }
 
-    return this.createPartialUser(user);
+    return this.repository.createPartialUser(user);
   }
 
   public async update({ id, data }: { id: number; data: IUpdateUserArgs }): Promise<void> {
