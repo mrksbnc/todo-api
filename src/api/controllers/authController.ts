@@ -1,9 +1,6 @@
 'use strict';
 
 import { NextFunction, Request, Response } from 'express';
-import ApiErrorMessageEnum from '../../data/enums/apiErrorMessages';
-import HttpStatusCodeEnum from '../../data/enums/httpStatusCode';
-import HttpException from '../../data/exceptions/HttpException';
 import { IController, IControllerConstructor } from '../../data/interfaces/controller';
 class AuthController implements IController {
   readonly service;
@@ -27,3 +24,5 @@ class AuthController implements IController {
     }
   };
 }
+
+export default AuthController;

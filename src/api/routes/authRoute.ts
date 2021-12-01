@@ -11,7 +11,9 @@ class AuthRoute implements IApiRoute {
     this.initializeRoutes();
   }
 
-  private initializeRoutes() {}
+  private initializeRoutes() {
+    //
+  }
 }
 
 export default AuthRoute;
