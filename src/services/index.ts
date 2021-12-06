@@ -10,3 +10,5 @@ const services = Object.freeze({
   todo: new TodoRepositroy(todoContext),
   list: new ListRepositroy(listContext),
 });
+
+export default services;
