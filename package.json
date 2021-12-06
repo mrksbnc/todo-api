@@ -1,7 +1,7 @@
 {
   "name": "todo-api",
   "version": "1.0.0-alpha",
-  "description": "",
+  "description": "simple restful api for my todo app priject written in typescript with express",
   "main": "index.js",
   "author": "Bence Markus <markus.bence@icloud.com>",
   "license": "MIT",
