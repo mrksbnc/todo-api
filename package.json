@@ -1,17 +1,17 @@
 {
   "name": "todo-api",
-  "version": "1.0.0-alpha",
+  "version": "1.0.1-alpha",
   "description": "simple restful api for my todo app priject written in typescript with express",
   "main": "index.js",
   "author": "Bence Markus <markus.bence@icloud.com>",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon",
+    "prepare": "husky install",
     "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix",
     "build": "tsc --build --verbose",
-    "start": "tsc --build --verbose && node dist",
-    "prepare": "husky install"
+    "format": "eslint src/**/*.ts --fix",
+    "start": "tsc --build --verbose && node dist"
   },
   "repository": {
     "type": "git",
