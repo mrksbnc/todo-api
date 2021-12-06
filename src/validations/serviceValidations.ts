@@ -1,6 +1,5 @@
 'use strict';
 
-import assert from 'assert';
 import { ICreateUserData } from '../data/types/repository';
 
 export const validateCreateUserArgs = function (args: ICreateUserData): boolean {
