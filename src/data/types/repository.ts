@@ -1,13 +1,13 @@
 'use strict';
 
-interface ICreateUserData {
+export interface ICreateUserData {
   email: string;
   firstName: string;
   lastName: string;
   password: string;
 }
 
-interface IUpdateUserData {
+export interface IUpdateUserData {
   id: number;
   email?: string;
   firstName?: string;
@@ -15,14 +15,14 @@ interface IUpdateUserData {
   password?: string;
 }
 
-interface ICreateListData {
+export interface ICreateListData {
   name: string;
   description: string;
   userId: number;
   color: string;
 }
 
-interface IUpdateListData {
+export interface IUpdateListData {
   id: number;
   name?: string;
   description?: string;
@@ -30,7 +30,7 @@ interface IUpdateListData {
   color?: string;
 }
 
-interface ICreateTodoData {
+export interface ICreateTodoData {
   name: string;
   description: string;
   userId: number;
@@ -38,7 +38,7 @@ interface ICreateTodoData {
   dueDate?: Date;
 }
 
-interface IUpdateTodoData {
+export interface IUpdateTodoData {
   id: number;
   name?: string;
   description?: string;

@@ -1,6 +1,7 @@
 'use strict';
 
 import { List, Prisma } from '.prisma/client';
+import { ICreateListData, IUpdateListData } from '../data/types/repository';
 
 class ListRepositroy {
   private readonly context: Prisma.ListDelegate<false>;

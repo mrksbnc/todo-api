@@ -1,6 +1,7 @@
 'use strict';
 
 import { Prisma, User } from '.prisma/client';
+import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
 
 class UserRepositroy {
   private readonly context: Prisma.UserDelegate<false>;

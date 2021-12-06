@@ -1,6 +1,7 @@
 'use strict';
 
 import { Prisma, Todo } from '.prisma/client';
+import { ICreateTodoData, IUpdateTodoData } from '../data/types/repository';
 
 class TodoRepositroy {
   private readonly context: Prisma.TodoDelegate<false>;
