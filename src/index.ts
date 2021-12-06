@@ -1,9 +1,12 @@
 'use strict';
 
 import Server from './server';
+import Database from './database/database';
 import validateEnv from './utils/validateEnv';
+import baseDbContext from './database/context/baseDbContext';
 
-const todoApiServer = new Server();
-
-validateEnv();
-todoApiServer.listen();
+(async () => {
+  validateEnv();
+  await new Database().initializeDatabase(baseDbContext);
+  new Server().listen();
+})();
