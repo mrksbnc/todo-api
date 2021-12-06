@@ -1,17 +1,17 @@
 {
   "name": "todo-api",
-  "version": "1.0.0-alpha",
-  "description": "",
+  "version": "1.0.1-alpha",
+  "description": "simple restful api for my todo app priject written in typescript with express",
   "main": "index.js",
   "author": "Bence Markus <markus.bence@icloud.com>",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon",
+    "prepare": "husky install",
     "lint": "eslint src/**/*.ts",
-    "format": "eslint src/**/*.ts --fix",
     "build": "tsc --build --verbose",
-    "start": "tsc --build --verbose && node dist",
-    "prepare": "husky install"
+    "format": "eslint src/**/*.ts --fix",
+    "start": "tsc --build --verbose && node dist"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/mrksbnc/todo-api#readme",
   "prisma": {
-    "schema": "src/prisma/todo-db.prisma"
+    "schema": "prisma/todo_db.schema.prisma"
   },
   "husky": {
     "hooks": {
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@mechanicalhuman/bunyan-pretty": "^3.0.1",
-    "@prisma/client": "^3.5.0",
+    "@prisma/client": "^3.6.0",
     "bcrypt": "^5.0.1",
     "bunyan": "^1.8.15",
     "cors": "^2.8.5",
@@ -38,8 +38,7 @@
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0",
-    "prisma": "^3.5.0"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -55,6 +54,7 @@
     "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.0",
+    "prisma": "^3.6.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   }
