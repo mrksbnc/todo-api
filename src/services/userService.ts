@@ -10,7 +10,9 @@ class UserService {
     this.repository = repository;
   }
 
-  public async create(args: ICreateUserData): Promise<void> {}
+  public async create(args: ICreateUserData): Promise<void> {
+    await this.repository.create(args);
+  }
 }
 
 export default UserService;
