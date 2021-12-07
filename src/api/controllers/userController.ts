@@ -14,7 +14,9 @@ class UserController {
     this.initializeRoutes();
   }
 
-  private initializeRoutes() {}
+  private initializeRoutes() {
+    //
+  }
 }
 
 export default UserController;

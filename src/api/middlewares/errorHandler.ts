@@ -1,12 +1,12 @@
 'use strict';
 
 import logger from '../../utils/logger';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import HttpException from '../../data/errors/httpException';
 import GeneralException from '../../data/errors/generalException';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 
-const errorHandler = (exception: GeneralException, request: Request, response: Response, next: NextFunction): void => {
+const errorHandler = (exception: GeneralException, request: Request, response: Response): void => {
   let httpException = exception?.httpException;
   if (!httpException) {
     httpException = new HttpException({

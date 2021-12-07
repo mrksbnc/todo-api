@@ -5,12 +5,14 @@ import { IBaseJsonResponse, IBaseJsonResponseConstructor } from '../types/respon
 class BaseJsonResponse<T> implements IBaseJsonResponse<T> {
   public message: string;
   public success: boolean;
-  public data?: T | null;
+  public data: T | null;
+  public error: Error | null;
 
-  constructor({ success, message, data }: IBaseJsonResponseConstructor<T>) {
-    this.success = success;
+  constructor({ success, message, data, error }: IBaseJsonResponseConstructor<T>) {
     this.message = message;
     this.data = data || null;
+    this.error = error || null;
+    this.success = success || true;
   }
 }
 
