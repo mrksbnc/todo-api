@@ -10,9 +10,7 @@ const errorHandler = (exception: GeneralException, request: Request, response: R
   const message = exception.message;
   const httpException = exception.httpException;
 
-  if (error) {
-    logger.error(message, error);
-  }
+  logger.error(message, error);
 
   response
     .status(httpException.status)

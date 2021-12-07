@@ -2,7 +2,7 @@
 
 import { ICreateUserData } from '../data/types/repository';
 
-export const validateCreateUserArgs = function (args: ICreateUserData): boolean {
+export const validateUserArgs = function (args: ICreateUserData) {
   let isValid = true;
   const validationErrors: string[] = [];
 
@@ -17,12 +17,12 @@ export const validateCreateUserArgs = function (args: ICreateUserData): boolean 
       isValid = false;
     }
 
-    const regexTestResult = new RegExp(
-      /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-    ).test(args.email);
-
-    if (!regexTestResult) {
-      validationErrors.push('E-mail is not in valid format');
+    if (
+      !new RegExp(
+        /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      ).test(args.email)
+    ) {
+      validationErrors.push('Invalid e-mail format');
       isValid = false;
     }
 
@@ -78,10 +78,12 @@ export const validateCreateUserArgs = function (args: ICreateUserData): boolean 
     }
 
     if (new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/).test(args.password)) {
-      validationErrors.push('Password must contains mimimum 8 character one uppercase a lowercase letter and a number');
+      validationErrors.push(
+        'Password must contains mimimum 8 character one upper and a lowercase letter, and at least a number',
+      );
       isValid = false;
     }
   }
 
-  return isValid;
+  return { isValid, validationErrors };
 };
