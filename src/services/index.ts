@@ -1,14 +1,14 @@
 'use strict';
 
-import ListRepositroy from '../repositories/listRepository';
-import TodoRepositroy from '../repositories/todoRepository';
-import UserRepositroy from '../repositories/userRepository';
-import { listContext, todoContext, userContext } from '../database/context/contexts';
+import UserService from './userService';
+import ListService from './listService';
+import TodoService from './todoService';
+import repositories from '../repositories';
 
 const services = Object.freeze({
-  user: new UserRepositroy(userContext),
-  todo: new TodoRepositroy(todoContext),
-  list: new ListRepositroy(listContext),
+  user: new UserService(repositories.user),
+  todo: new TodoService(repositories.todo),
+  list: new ListService(repositories.list),
 });
 
 export default services;

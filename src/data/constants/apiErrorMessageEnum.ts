@@ -8,6 +8,7 @@ enum ApiErrorMessageEnum {
   MISSING_AUTH_TOKEN = 'Authentication token missing',
   ROUTE_NOT_FOUND = 'The requested route does not exists',
   INVALID_AUTH_TOKEN = 'Invalid authentication token sent',
+  INVALID_NUMERIC_ID = 'Invalid numeric id recived from client',
   UNAUTHORIZED = 'Authentication is required to access the requested resource',
 }
 

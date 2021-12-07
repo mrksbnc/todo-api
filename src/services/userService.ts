@@ -1,13 +1,16 @@
 'use strict';
 
-import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
-import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
-import GeneralException from '../data/errors/generalException';
+import bcrypt from 'bcrypt';
+import config from '../config';
+import { User } from '.prisma/client';
+import IPartialUser from '../data/types/partialUser';
+import { isValidNumericId } from '../utils/validators';
 import HttpException from '../data/errors/httpException';
-import { ICreateUserData } from '../data/types/repository';
 import UserRepositroy from '../repositories/userRepository';
-import { isEmptyObject } from '../utils/validators';
-import { validateUserArgs } from '../validations/serviceValidations';
+import GeneralException from '../data/errors/generalException';
+import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
+import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
+import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
 
 class UserService {
   private readonly repository: UserRepositroy;
@@ -16,29 +19,106 @@ class UserService {
     this.repository = repository;
   }
 
+  public createPartialUser(args: User): IPartialUser {
+    const partialUser = Object.freeze({
+      id: args.id,
+      email: args.email,
+      firstName: args.firstName,
+      lastName: args.lastName,
+    }) as IPartialUser;
+
+    return partialUser;
+  }
+
   public async create(args: ICreateUserData): Promise<void> {
-    if (isEmptyObject(args)) {
+    const user = await this.repository.findByEmail(args.email);
+    if (user) {
       throw new GeneralException({
-        message: 'Empty object sent from the client',
+        message: 'user already exists whit the following email ' + args.email,
         httpException: new HttpException({
-          message: ApiErrorMessageEnum.BAD_REQUEST,
+          message: ApiErrorMessageEnum.BAD_REQUEST + `! user already exists in database with email: ${args.email} `,
           status: HttpStatusCodeEnum.BAD_REQUEST,
         }),
       });
     }
 
-    const { isValid, validationErrors } = validateUserArgs(args);
-    if (!isValid) {
+    const salt = await bcrypt.genSalt(config.auth.salt_rounds);
+    const hash = await bcrypt.hash(args.password, salt);
+
+    const newUser = Object.freeze({
+      email: args.email,
+      firstName: args.firstName,
+      lastName: args.lastName,
+      password: hash,
+    }) as User;
+
+    await this.repository.create(newUser);
+  }
+
+  public async getPartialUserById(id: number): Promise<IPartialUser> {
+    if (!isValidNumericId(id))
       throw new GeneralException({
-        message: 'Create user args validation failed! errors: ' + validationErrors.join('\n'),
+        message: `invalid numeric id '${id}' recived from client`,
         httpException: new HttpException({
-          message: ApiErrorMessageEnum.BAD_REQUEST,
+          message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
           status: HttpStatusCodeEnum.BAD_REQUEST,
+        }),
+      });
+
+    const user = await this.repository.findById(id);
+    if (!user)
+      throw new GeneralException({
+        message: `user with id '${id}' could not be found in database`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.NOT_FOUND,
+          status: HttpStatusCodeEnum.NOT_FOUND,
+        }),
+      });
+
+    const partialUser = this.createPartialUser(user);
+    return partialUser;
+  }
+
+  public async getPartialUserByEmail(email: string): Promise<IPartialUser> {
+    const user = await this.repository.findByEmail(email);
+    if (!user) {
+      throw new GeneralException({
+        message: `user with email '${email}' could not be found in database`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.NOT_FOUND,
+          status: HttpStatusCodeEnum.NOT_FOUND,
         }),
       });
     }
 
-    await this.repository.create(args);
+    const partialUser = this.createPartialUser(user);
+    return partialUser;
+  }
+
+  public async update(id: number, args: IUpdateUserData) {
+    if (!isValidNumericId(id))
+      throw new GeneralException({
+        message: `invalid numeric id '${id}' recived from client`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
+          status: HttpStatusCodeEnum.BAD_REQUEST,
+        }),
+      });
+
+    await this.repository.update(id, args);
+  }
+
+  public async delete(id: number) {
+    if (!isValidNumericId(id))
+      throw new GeneralException({
+        message: `invalid numeric id '${id}' recived from client`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
+          status: HttpStatusCodeEnum.BAD_REQUEST,
+        }),
+      });
+
+    await this.repository.delete(id);
   }
 }
 
