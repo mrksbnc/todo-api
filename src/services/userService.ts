@@ -1,6 +1,7 @@
 'use strict';
 
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import config from '../config';
 import { User } from '.prisma/client';
 import IPartialUser from '../data/types/partialUser';
@@ -34,9 +35,9 @@ class UserService {
     const user = await this.repository.findByEmail(args.email);
     if (user) {
       throw new GeneralException({
-        message: 'user already exists whit the following email ' + args.email,
+        message: 'user already exists whit the following email ' + args.email + ' in the database',
         httpException: new HttpException({
-          message: ApiErrorMessageEnum.BAD_REQUEST + `! user already exists in database with email: ${args.email} `,
+          message: ApiErrorMessageEnum.EMAIL_FOUND,
           status: HttpStatusCodeEnum.BAD_REQUEST,
         }),
       });
@@ -55,8 +56,23 @@ class UserService {
     await this.repository.create(newUser);
   }
 
+  public async getUserByEmail(email: string): Promise<User> {
+    const user = await this.repository.findByEmail(email);
+    if (!user) {
+      throw new GeneralException({
+        message: `user with email '${email}' could not be found in database`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
+          status: HttpStatusCodeEnum.NOT_FOUND,
+        }),
+      });
+    }
+
+    return user;
+  }
+
   public async getPartialUserById(id: number): Promise<IPartialUser> {
-    if (!isValidNumericId(id))
+    if (!isValidNumericId(id)) {
       throw new GeneralException({
         message: `invalid numeric id '${id}' recived from client`,
         httpException: new HttpException({
@@ -64,26 +80,12 @@ class UserService {
           status: HttpStatusCodeEnum.BAD_REQUEST,
         }),
       });
+    }
 
     const user = await this.repository.findById(id);
-    if (!user)
-      throw new GeneralException({
-        message: `user with id '${id}' could not be found in database`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.NOT_FOUND,
-          status: HttpStatusCodeEnum.NOT_FOUND,
-        }),
-      });
-
-    const partialUser = this.createPartialUser(user);
-    return partialUser;
-  }
-
-  public async getPartialUserByEmail(email: string): Promise<IPartialUser> {
-    const user = await this.repository.findByEmail(email);
     if (!user) {
       throw new GeneralException({
-        message: `user with email '${email}' could not be found in database`,
+        message: `user with id '${id}' could not be found in database`,
         httpException: new HttpException({
           message: ApiErrorMessageEnum.NOT_FOUND,
           status: HttpStatusCodeEnum.NOT_FOUND,
@@ -95,8 +97,24 @@ class UserService {
     return partialUser;
   }
 
+  public async getPartialUserByEmail(email: string): Promise<IPartialUser> {
+    const user = await this.repository.findByEmail(email);
+    if (!user) {
+      throw new GeneralException({
+        message: `user with email '${email}' could not be found in database`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
+          status: HttpStatusCodeEnum.NOT_FOUND,
+        }),
+      });
+    }
+
+    const partialUser = this.createPartialUser(user);
+    return partialUser;
+  }
+
   public async update(id: number, args: IUpdateUserData) {
-    if (!isValidNumericId(id))
+    if (!isValidNumericId(id)) {
       throw new GeneralException({
         message: `invalid numeric id '${id}' recived from client`,
         httpException: new HttpException({
@@ -104,12 +122,13 @@ class UserService {
           status: HttpStatusCodeEnum.BAD_REQUEST,
         }),
       });
+    }
 
     await this.repository.update(id, args);
   }
 
   public async delete(id: number) {
-    if (!isValidNumericId(id))
+    if (!isValidNumericId(id)) {
       throw new GeneralException({
         message: `invalid numeric id '${id}' recived from client`,
         httpException: new HttpException({
@@ -117,8 +136,42 @@ class UserService {
           status: HttpStatusCodeEnum.BAD_REQUEST,
         }),
       });
+    }
 
     await this.repository.delete(id);
+  }
+
+  public async login(email: string, password: string) {
+    const user = await this.getUserByEmail(email);
+    if (!user) {
+      throw new GeneralException({
+        message: `user with email '${email}' could not be found in database`,
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
+          status: HttpStatusCodeEnum.NOT_FOUND,
+        }),
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      throw new GeneralException({
+        message: 'password received from client does not match with stored hash',
+        httpException: new HttpException({
+          message: ApiErrorMessageEnum.INVALID_PASSWORD,
+          status: HttpStatusCodeEnum.BAD_REQUEST,
+        }),
+      });
+    }
+
+    const jwtPayload = { userId: user.id, name: `${user.firstName} ${user.lastName}` };
+    const token = jwt.sign(jwtPayload, config.auth.secret, { expiresIn: '24h' });
+    const partialUser = this.createPartialUser(user);
+
+    return {
+      token,
+      user: partialUser,
+    };
   }
 }
 

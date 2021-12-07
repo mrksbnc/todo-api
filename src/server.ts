@@ -5,10 +5,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 import config from './config';
 import logger from './utils/logger';
+import cookieParser from 'cookie-parser';
 import controllers from './api/controllers';
-import express, { Application, NextFunction, Request, Response } from 'express';
 import notFoundHandler from './api/middlewares/notFound';
 import errorHandler from './api/middlewares/errorHandler';
+import express, { Application, NextFunction, Request, Response } from 'express';
 
 class Server {
   private readonly port: number;
@@ -32,9 +33,20 @@ class Server {
   private initializeMiddlewares(): void {
     this.app.use(hpp());
     this.app.use(cors());
+    this.app.use(cookieParser());
     this.app.use(helmet({ hidePoweredBy: true }));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ type: 'application/json' }));
+    this.setHeaders();
+  }
+
+  private setHeaders(): void {
+    this.app.all('*', function (request: Request, response: Response, next: NextFunction) {
+      response.header('Access-Control-Allow-Origin', '*');
+      response.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      response.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+      next();
+    });
   }
 
   public getServer() {
