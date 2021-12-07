@@ -2,21 +2,20 @@
 
 import logger from '../../utils/logger';
 import { Request, Response } from 'express';
-import BaseJsonResponse from '../../data/models/baseJsonResponse';
+import HttpException from '../../data/errors/httpException';
 import GeneralException from '../../data/errors/generalException';
+import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 
 const errorHandler = (exception: GeneralException, request: Request, response: Response): void => {
-  const error = exception.error;
-  const message = exception.message;
-  const httpException = exception.httpException;
-
-  if (error) {
-    logger.error(message, error);
+  let httpException = exception?.httpException;
+  if (!httpException) {
+    httpException = new HttpException({
+      message: 'Something went wrong',
+      status: HttpStatusCodeEnum.INTERNAL_SERVER_ERROR,
+    });
   }
-
-  response
-    .status(httpException.status)
-    .json(new BaseJsonResponse<null>({ success: false, message: httpException.message }));
+  logger.error(exception);
+  response.status(httpException.status).json({ message: httpException.message });
 };
 
 export default errorHandler;

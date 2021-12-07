@@ -10,4 +10,5 @@ export interface IBaseJsonResponseConstructor<T> {
   success: boolean;
   message: string;
   data?: T | null;
+  error?: Error | null;
 }

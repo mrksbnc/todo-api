@@ -1,8 +1,15 @@
 'use strict';
 
-import express, { Application } from 'express';
+import hpp from 'hpp';
+import cors from 'cors';
+import helmet from 'helmet';
 import config from './config';
 import logger from './utils/logger';
+import cookieParser from 'cookie-parser';
+import controllers from './api/controllers';
+import notFoundHandler from './api/middlewares/notFound';
+import errorHandler from './api/middlewares/errorHandler';
+import express, { Application, NextFunction, Request, Response } from 'express';
 
 class Server {
   private readonly port: number;
@@ -11,6 +18,35 @@ class Server {
   constructor() {
     this.app = express();
     this.port = config.server.port;
+    this.initializeMiddlewares();
+    this.initializeRoutes();
+  }
+
+  private initializeRoutes() {
+    controllers.forEach((controller) => {
+      this.app.use('/', controller.router);
+    });
+    this.app.use(notFoundHandler);
+    this.app.use(errorHandler);
+  }
+
+  private initializeMiddlewares(): void {
+    this.app.use(hpp());
+    this.app.use(cors());
+    this.app.use(cookieParser());
+    this.app.use(helmet({ hidePoweredBy: true }));
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.json({ type: 'application/json' }));
+    this.setHeaders();
+  }
+
+  private setHeaders(): void {
+    this.app.all('*', function (request: Request, response: Response, next: NextFunction) {
+      response.header('Access-Control-Allow-Origin', '*');
+      response.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      response.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+      next();
+    });
   }
 
   public getServer() {
@@ -19,7 +55,7 @@ class Server {
 
   public listen() {
     this.app.listen(this.port, () => {
-      logger.info(`${config.app_name} started on localhost:${this.port} in ${config.node_env} mode`);
+      logger.info(`${config.app_name} started on http://localhost:${this.port} in ${config.node_env} mode`);
     });
   }
 }

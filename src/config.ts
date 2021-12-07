@@ -15,6 +15,7 @@ const config = Object.freeze({
   auth: {
     salt_rounds: Number(process.env.SALT_ROUNDS),
     secret: String(process.env.SECRET),
+    jwt_exp: String(process.env.JWT_EXP),
   },
   log: {
     log_period: String(process.env.LOG_PERIOD),
