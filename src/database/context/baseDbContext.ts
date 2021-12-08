@@ -17,8 +17,13 @@ const baseDbContext = new PrismaClient({
   ],
 });
 
-baseDbContext.$on('query', (e) => {
-  logger.info(e.query + ' [duration]' + e.duration + 'ms');
+baseDbContext.$use(async (params, next) => {
+  const before = Date.now();
+  const result = await next(params);
+  const after = Date.now();
+
+  logger.info(`[QUERY] ${params.model}.${params.action} - ${after - before} ms`);
+  return result;
 });
 
 export default baseDbContext;

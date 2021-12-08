@@ -3,13 +3,15 @@
 import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import config from './config';
 import logger from './utils/logger';
 import cookieParser from 'cookie-parser';
 import controllers from './api/controllers';
-import notFoundHandler from './api/middlewares/notFound';
-import errorHandler from './api/middlewares/errorHandler';
+import errorHandlerMiddleware from './api/middlewares/errorHandlerMiddleware';
 import express, { Application, NextFunction, Request, Response } from 'express';
+import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
+import httpLogHandlerMiddleware from './api/middlewares/httpLogHandlerMiddleware';
 
 class Server {
   private readonly port: number;
@@ -26,8 +28,8 @@ class Server {
     controllers.forEach((controller) => {
       this.app.use('/', controller.router);
     });
-    this.app.use(notFoundHandler);
-    this.app.use(errorHandler);
+    this.app.use(notFoundHandlerMiddleware);
+    this.app.use(errorHandlerMiddleware);
   }
 
   private initializeMiddlewares(): void {
@@ -37,6 +39,7 @@ class Server {
     this.app.use(helmet({ hidePoweredBy: true }));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ type: 'application/json' }));
+    this.app.use(httpLogHandlerMiddleware);
     this.setHeaders();
   }
 

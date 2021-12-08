@@ -1,10 +1,6 @@
 'use strict';
 
-interface IPartialUser {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
+import { User } from '.prisma/client';
 
-export default IPartialUser;
+type PartialUser = Omit<User, 'password' | 'createdAt' | 'updatedAt'>;
+export default PartialUser;
