@@ -24,7 +24,7 @@ class AuthController {
     this.initializeRoutes();
   }
 
-  public register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
@@ -38,7 +38,7 @@ class AuthController {
     }
   };
 
-  public login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);

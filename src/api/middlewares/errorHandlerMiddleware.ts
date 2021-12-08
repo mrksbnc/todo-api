@@ -8,40 +8,32 @@ import BaseException from '../../data/exceptions/BaseException';
 import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 
-function getErrorDetails(error: any) {
-  if (error instanceof BaseException) return { message: error.message, stack: error.stack };
-  if (error instanceof HttpException) return { message: error.message, stack: null };
-  return { message: ErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null };
+function getErrorDetails(error: unknown) {
+  if (error instanceof BaseException) return { message: error.message, stack: error.stack, error };
+  if (error instanceof HttpException) return { message: error.message, stack: null, error };
+  return { message: ErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null, error };
 }
 
-function logErrorMessage({ message, stack }: { message: string; stack?: string | null }) {
-  logger.error(message, stack);
+function logErrorMessage({ message, stack, error }: { message: string; stack?: string | null; error: unknown }) {
+  logger.error(message, stack ? '\r\n' + stack : '', JSON.stringify(error));
 }
 
-function isErrorStatusCode(statusCode: number): boolean {
-  return statusCode >= 400 && statusCode < 600;
-}
-
-function getHttpStatusCode({ error, response }: { error: any; response: Response }): number {
-  const statusCodeFromError = error.status || error.statusCode;
-  if (error instanceof BaseException) {
-    if (isErrorStatusCode(error.httpException.status)) return error.httpException.status;
-  }
+function getHttpStatusCode(error: unknown): number {
   if (error instanceof HttpException) {
-    if (isErrorStatusCode(error.status)) return error.status;
+    return error.status;
   }
-  if (isErrorStatusCode(statusCodeFromError)) return statusCodeFromError;
+  if (error instanceof BaseException) {
+    return error.httpException.status;
+  }
 
-  const statusCodeFromResponse = response.statusCode;
-  if (isErrorStatusCode(statusCodeFromResponse)) return statusCodeFromResponse;
   return HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
 }
 
 function errorHandlerMiddleware(error: unknown, request: Request, response: Response, next: NextFunction) {
   const { message, stack } = getErrorDetails(error);
-  const statusCode = getHttpStatusCode({ error, response });
+  const statusCode = getHttpStatusCode(error);
 
-  logErrorMessage({ message, stack });
+  logErrorMessage({ message, stack, error });
 
   if (response.headersSent) {
     return next(error);

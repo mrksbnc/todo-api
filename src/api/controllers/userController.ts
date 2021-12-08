@@ -21,7 +21,7 @@ class UserController {
     this.initializeRoutes();
   }
 
-  getById = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly getById = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
@@ -35,7 +35,7 @@ class UserController {
     }
   };
 
-  getByEmail = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly getByEmail = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
@@ -49,7 +49,7 @@ class UserController {
     }
   };
 
-  update = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly update = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
@@ -63,7 +63,7 @@ class UserController {
     }
   };
 
-  delete = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly delete = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
