@@ -33,9 +33,7 @@ class UserService {
 
   public async create(args: ICreateUserData): Promise<void> {
     const user = await this.repository.findByEmail(args.email);
-    if (user) {
-      throw ResourceAlreadyExistsError;
-    }
+    if (user) throw ResourceAlreadyExistsError;
 
     const hash = await services.auth.generatePasswordHash(args.password);
     const newUser = Object.freeze({
@@ -50,24 +48,16 @@ class UserService {
 
   public async getUserByEmail(email: string): Promise<User> {
     const user = await this.repository.findByEmail(email);
-    if (!user) {
-      throw ResourceNotFoundError;
-    }
+    if (!user) throw ResourceNotFoundError;
+
     return user;
   }
 
   public async getPartialUserById(id: number): Promise<PartialUser> {
-    if (!isValidNumericId(id)) {
-      throw InvalidNumericIdError;
-    }
+    if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
     const user = await this.repository.findById(id);
-    if (!user) {
-      throw new HttpException({
-        message: ErrorMessageEnum.RESOURCE_NOT_FOUND,
-        status: HttpStatusCodeEnum.NOT_FOUND,
-      });
-    }
+    if (!user) throw ResourceNotFoundError;
 
     const partialUser = this.createPartialUser(user);
     return partialUser;
@@ -75,19 +65,14 @@ class UserService {
 
   public async getPartialUserByEmail(email: string): Promise<PartialUser> {
     const user = await this.repository.findByEmail(email);
-    if (!user) {
-      throw ResourceNotFoundError;
-    }
+    if (!user) throw ResourceNotFoundError;
 
     const partialUser = this.createPartialUser(user);
     return partialUser;
   }
 
   public async update(id: number, args: IUpdateUserData): Promise<void> {
-    if (!isValidNumericId(id)) {
-      throw InvalidNumericIdError;
-    }
-
+    if (!isValidNumericId(id)) throw InvalidNumericIdError;
     if (args.password) {
       const hash = await services.auth.generatePasswordHash(args.password);
       args.password = hash;
@@ -96,9 +81,7 @@ class UserService {
   }
 
   public async delete(id: number): Promise<void> {
-    if (!isValidNumericId(id)) {
-      throw InvalidNumericIdError;
-    }
+    if (!isValidNumericId(id)) throw InvalidNumericIdError;
     await this.repository.delete(id);
   }
 }

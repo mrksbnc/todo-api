@@ -29,14 +29,10 @@ class AuthService {
 
   public async login(email: string, password: string): Promise<{ token: string; user: PartialUser }> {
     const user = await services.user.getUserByEmail(email);
-    if (!user) {
-      throw NotFoundError;
-    }
+    if (!user) throw NotFoundError;
 
     const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      throw InvalidArgumentError;
-    }
+    if (!isValidPassword) throw InvalidArgumentError;
 
     const jwtPayload = { userId: user.id, name: `${user.firstName} ${user.lastName}` };
     const token = createToken(jwtPayload);

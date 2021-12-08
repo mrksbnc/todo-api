@@ -5,18 +5,12 @@ import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/BaseException';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
+import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 
 function getErrorDetails(error: any) {
-  if (error instanceof BaseException) {
-    return { message: error.message, stack: error.stack };
-  }
-
-  if (error instanceof HttpException) {
-    return { message: error.message, stack: null };
-  }
-
+  if (error instanceof BaseException) return { message: error.message, stack: error.stack };
+  if (error instanceof HttpException) return { message: error.message, stack: null };
   return { message: ErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null };
 }
 
@@ -31,22 +25,15 @@ function isErrorStatusCode(statusCode: number): boolean {
 function getHttpStatusCode({ error, response }: { error: any; response: Response }): number {
   const statusCodeFromError = error.status || error.statusCode;
   if (error instanceof BaseException) {
-    if (isErrorStatusCode(error.httpException.status)) {
-      return error.httpException.status;
-    }
+    if (isErrorStatusCode(error.httpException.status)) return error.httpException.status;
   }
   if (error instanceof HttpException) {
-    if (isErrorStatusCode(error.status)) {
-      return error.status;
-    }
+    if (isErrorStatusCode(error.status)) return error.status;
   }
-  if (isErrorStatusCode(statusCodeFromError)) {
-    return statusCodeFromError;
-  }
+  if (isErrorStatusCode(statusCodeFromError)) return statusCodeFromError;
+
   const statusCodeFromResponse = response.statusCode;
-  if (isErrorStatusCode(statusCodeFromResponse)) {
-    return statusCodeFromResponse;
-  }
+  if (isErrorStatusCode(statusCodeFromResponse)) return statusCodeFromResponse;
   return HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
 }
 

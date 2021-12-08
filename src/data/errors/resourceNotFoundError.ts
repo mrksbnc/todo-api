@@ -2,8 +2,8 @@
 
 import BaseException from '../exceptions/BaseException';
 import HttpException from '../exceptions/httpException';
-import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 import ErrorMessageEnum from '../constants/errorMessageEnum';
+import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
 const ResourceNotFoundError = new BaseException({
   message: ErrorMessageEnum.RESOURCE_NOT_FOUND,

@@ -1,13 +1,13 @@
 'use strict';
 
-import { body, param, validationResult } from 'express-validator';
 import UserService from '../../services/userService';
 import PartialUser from '../../data/types/partialUser';
 import BaseResponse from '../../data/models/baseResponse';
+import { IUpdateUserData } from '../../data/types/repository';
+import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
-import { IUpdateUserData } from '../../data/types/repository';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
 
 class UserController {
@@ -24,9 +24,7 @@ class UserController {
   getById = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
       const user = await this.service.getPartialUserById(id);
@@ -40,9 +38,7 @@ class UserController {
   getByEmail = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const email = String(request.params.email);
       const user = await this.service.getPartialUserByEmail(email);
@@ -56,9 +52,7 @@ class UserController {
   update = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { id, data }: { id: number; data: IUpdateUserData } = request.body;
       await this.service.update(id, data);
@@ -72,9 +66,7 @@ class UserController {
   delete = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
       await this.service.delete(id);

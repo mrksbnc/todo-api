@@ -27,9 +27,7 @@ class AuthController {
   public register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const createUserArgs: ICreateUserData = request.body;
       await this.userService.create(createUserArgs);
@@ -43,9 +41,7 @@ class AuthController {
   public login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
