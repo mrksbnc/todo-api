@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/BaseException';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
+import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
 
 function getErrorDetails(error: any) {
   if (error instanceof BaseException) {
@@ -17,7 +17,7 @@ function getErrorDetails(error: any) {
     return { message: error.message, stack: null };
   }
 
-  return { message: ApiErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null };
+  return { message: ErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null };
 }
 
 function logErrorMessage({ message, stack }: { message: string; stack?: string | null }) {

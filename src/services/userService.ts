@@ -6,8 +6,8 @@ import PartialUser from '../data/types/partialUser';
 import { isValidNumericId } from '../utils/validators';
 import UserRepositroy from '../repositories/userRepository';
 import HttpException from '../data/exceptions/httpException';
+import ErrorMessageEnum from '../data/constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
-import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
 import ResourceNotFoundError from '../data/errors/resourceNotFoundError';
 import InvalidNumericIdError from '../data/errors/invalidNumericIdError';
 import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
@@ -64,7 +64,7 @@ class UserService {
     const user = await this.repository.findById(id);
     if (!user) {
       throw new HttpException({
-        message: ApiErrorMessageEnum.RESOURCE_NOT_FOUND,
+        message: ErrorMessageEnum.RESOURCE_NOT_FOUND,
         status: HttpStatusCodeEnum.NOT_FOUND,
       });
     }
