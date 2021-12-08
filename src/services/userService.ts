@@ -1,8 +1,7 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
+import services from '.';
 import { User } from '.prisma/client';
-import { createToken } from '../utils/token';
 import PartialUser from '../data/types/partialUser';
 import { isValidNumericId } from '../utils/validators';
 import HttpException from '../data/errors/httpException';
@@ -11,7 +10,6 @@ import GeneralException from '../data/errors/generalException';
 import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
 import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
-import services from '.';
 
 class UserService {
   private readonly repository: UserRepositroy;
