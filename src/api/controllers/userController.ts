@@ -1,7 +1,11 @@
 'use strict';
 
-import { Router } from 'express';
 import UserService from '../../services/userService';
+import { generateInternalError } from '../../utils/error';
+import { NextFunction, Request, Response, Router } from 'express';
+import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
+import BaseJsonResponse from '../../data/models/baseJsonResponse';
+import IPartialUser from '../../data/types/partialUser';
 
 class UserController {
   public readonly router: Router;
@@ -13,6 +17,19 @@ class UserController {
     this.router = Router();
     this.initializeRoutes();
   }
+
+  getById = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+    try {
+      const id = Number(request.params.id);
+      const user = await this.service.getPartialUserById(id);
+
+      response
+        .status(HttpStatusCodeEnum.OK)
+        .json(new BaseJsonResponse<IPartialUser>({ success: true, message: '', data: user }));
+    } catch (error) {
+      next(generateInternalError(error));
+    }
+  };
 
   private initializeRoutes() {
     //
