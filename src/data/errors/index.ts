@@ -1,9 +1,9 @@
 'use strict';
 
-import HttpException from '../data/errors/httpException';
-import GeneralException from '../data/errors/generalException';
-import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
-import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
+import HttpException from './httpException';
+import GeneralException from './generalException';
+import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
+import ApiErrorMessageEnum from '../constants/apiErrorMessageEnum';
 
 export function generateInternalError(error: GeneralException | Error | unknown) {
   if (error instanceof GeneralException) {

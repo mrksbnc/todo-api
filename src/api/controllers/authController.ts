@@ -1,13 +1,11 @@
 'use strict';
 
 import UserService from '../../services/userService';
-import IPartialUser from '../../data/types/partialUser';
-import { generateInternalError } from '../../utils/error';
+import { generateInternalError } from '../../data/errors';
 import { body, validationResult } from 'express-validator';
 import HttpException from '../../data/errors/httpException';
 import { ICreateUserData } from '../../data/types/repository';
 import GeneralException from '../../data/errors/generalException';
-import BaseJsonResponse from '../../data/models/baseJsonResponse';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
@@ -43,7 +41,7 @@ class AuthController {
       const createUserArgs: ICreateUserData = request.body;
       await this.service.create(createUserArgs);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseJsonResponse({ message: 'CREATED', success: true }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: 'CREATED', success: true });
     } catch (error) {
       next(generateInternalError(error));
     }
@@ -61,7 +59,7 @@ class AuthController {
           httpOnly: false,
           secure: false,
         })
-        .json(new BaseJsonResponse<IPartialUser>({ message: 'successfull login', success: true, data: user }));
+        .json({ success: true, data: user });
     } catch (error) {
       next(generateInternalError(error));
     }

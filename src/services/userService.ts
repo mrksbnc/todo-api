@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import { User } from '.prisma/client';
-import IPartialUser from '../data/types/partialUser';
+import PartialUser from '../data/types/partialUser';
 import { isValidNumericId } from '../utils/validators';
 import HttpException from '../data/errors/httpException';
 import UserRepositroy from '../repositories/userRepository';
@@ -12,6 +12,7 @@ import GeneralException from '../data/errors/generalException';
 import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
 import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
+import { createToken } from '../utils/token';
 
 class UserService {
   private readonly repository: UserRepositroy;
@@ -20,13 +21,13 @@ class UserService {
     this.repository = repository;
   }
 
-  public createPartialUser(args: User): IPartialUser {
+  public createPartialUser(args: User): PartialUser {
     const partialUser = Object.freeze({
       id: args.id,
       email: args.email,
       firstName: args.firstName,
       lastName: args.lastName,
-    }) as IPartialUser;
+    }) as PartialUser;
 
     return partialUser;
   }
@@ -71,7 +72,7 @@ class UserService {
     return user;
   }
 
-  public async getPartialUserById(id: number): Promise<IPartialUser> {
+  public async getPartialUserById(id: number): Promise<PartialUser> {
     if (!isValidNumericId(id)) {
       throw new GeneralException({
         message: `invalid numeric id '${id}' recived from client`,
@@ -97,7 +98,7 @@ class UserService {
     return partialUser;
   }
 
-  public async getPartialUserByEmail(email: string): Promise<IPartialUser> {
+  public async getPartialUserByEmail(email: string): Promise<PartialUser> {
     const user = await this.repository.findByEmail(email);
     if (!user) {
       throw new GeneralException({
@@ -165,7 +166,7 @@ class UserService {
     }
 
     const jwtPayload = { userId: user.id, name: `${user.firstName} ${user.lastName}` };
-    const token = jwt.sign(jwtPayload, config.auth.secret, { expiresIn: '24h' });
+    const token = createToken(jwtPayload);
     const partialUser = this.createPartialUser(user);
 
     return {
