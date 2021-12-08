@@ -3,15 +3,14 @@
 import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
 import config from './config';
 import logger from './utils/logger';
 import cookieParser from 'cookie-parser';
 import controllers from './api/controllers';
 import errorHandlerMiddleware from './api/middlewares/errorHandlerMiddleware';
 import express, { Application, NextFunction, Request, Response } from 'express';
-import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
 import httpLogHandlerMiddleware from './api/middlewares/httpLogHandlerMiddleware';
+import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
 
 class Server {
   private readonly port: number;

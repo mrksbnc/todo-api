@@ -3,8 +3,8 @@
 import UserService from './userService';
 import ListService from './listService';
 import TodoService from './todoService';
-import repositories from '../repositories';
 import AuthService from './authService';
+import repositories from '../repositories';
 
 const services = Object.freeze({
   auth: new AuthService(repositories.user),
