@@ -7,7 +7,7 @@ import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/BaseException';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 
-function getErrorMessage(error: any): string {
+function getErrorMessage(error: unknown): string {
   if (error instanceof BaseException) {
     return error.message;
   }
@@ -23,7 +23,7 @@ function getErrorMessage(error: any): string {
   return '';
 }
 
-function logErrorMessage(error: any) {
+function logErrorMessage(error: unknown) {
   logger.error(error);
 }
 
@@ -32,7 +32,7 @@ function isErrorStatusCode(statusCode: number): boolean {
 }
 
 function getHttpStatusCode({ error, response }: { error: any; response: Response }): number {
-  let statusCodeFromError = error.status || error.statusCode;
+  const statusCodeFromError = error.status || error.statusCode;
   if (error instanceof BaseException) {
     if (isErrorStatusCode(error.httpException.status)) {
       return error.httpException.status;
@@ -53,7 +53,7 @@ function getHttpStatusCode({ error, response }: { error: any; response: Response
   return HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
 }
 
-function errorHandlerMiddleware(error: any, request: Request, response: Response, next: NextFunction) {
+function errorHandlerMiddleware(error: unknown, request: Request, response: Response, next: NextFunction) {
   const errorMessage = getErrorMessage(error);
 
   logErrorMessage(errorMessage);
