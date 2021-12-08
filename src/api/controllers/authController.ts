@@ -29,8 +29,8 @@ class AuthController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const createUserArgs: ICreateUserData = request.body;
-      await this.userService.create(createUserArgs);
+      const createUserData: ICreateUserData = request.body;
+      await this.userService.create(createUserData);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
     } catch (error) {

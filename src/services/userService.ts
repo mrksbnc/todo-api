@@ -17,26 +17,26 @@ class UserService {
     this.repository = repository;
   }
 
-  public createPartialUser(args: User): PartialUser {
+  public createPartialUser(data: User): PartialUser {
     const partialUser = Object.freeze({
-      id: args.id,
-      email: args.email,
-      firstName: args.firstName,
-      lastName: args.lastName,
+      id: data.id,
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
     }) as PartialUser;
 
     return partialUser;
   }
 
-  public async create(args: ICreateUserData): Promise<void> {
-    const user = await this.repository.findByEmail(args.email);
+  public async create(data: ICreateUserData): Promise<void> {
+    const user = await this.repository.findByEmail(data.email);
     if (user) throw ResourceAlreadyExistsError;
 
-    const hash = await services.auth.generatePasswordHash(args.password);
+    const hash = await services.auth.generatePasswordHash(data.password);
     const newUser = Object.freeze({
-      email: args.email,
-      firstName: args.firstName,
-      lastName: args.lastName,
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
       password: hash,
     }) as User;
 
@@ -68,13 +68,13 @@ class UserService {
     return partialUser;
   }
 
-  public async update(id: number, args: IUpdateUserData): Promise<void> {
+  public async update(id: number, data: IUpdateUserData): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
-    if (args.password) {
-      const hash = await services.auth.generatePasswordHash(args.password);
-      args.password = hash;
+    if (data.password) {
+      const hash = await services.auth.generatePasswordHash(data.password);
+      data.password = hash;
     }
-    await this.repository.update(id, args);
+    await this.repository.update(id, data);
   }
 
   public async delete(id: number): Promise<void> {
