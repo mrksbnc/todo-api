@@ -6,14 +6,8 @@ import { PrismaClient } from '.prisma/client';
 const baseDbContext = new PrismaClient({
   errorFormat: 'minimal',
   log: [
-    {
-      emit: 'event',
-      level: 'query',
-    },
-    {
-      emit: 'event',
-      level: 'error',
-    },
+    { emit: 'event', level: 'query' },
+    { emit: 'event', level: 'error' },
   ],
 });
 
