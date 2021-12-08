@@ -5,13 +5,11 @@ import AuthService from '../../services/authService';
 import PartialUser from '../../data/types/partialUser';
 import BaseResponse from '../../data/models/baseResponse';
 import { body, validationResult } from 'express-validator';
-import HttpException from '../../data/exceptions/httpException';
 import { ICreateUserData } from '../../data/types/repository';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
-import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
+import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
 
 class AuthController {
   public readonly router: Router;
