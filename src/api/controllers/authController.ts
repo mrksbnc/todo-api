@@ -9,6 +9,8 @@ import GeneralException from '../../data/errors/generalException';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
+import BaseResponse from '../../data/models/baseResponse';
+import PartialUser from '../../data/types/partialUser';
 
 class AuthController {
   public readonly router: Router;
@@ -41,7 +43,7 @@ class AuthController {
       const createUserArgs: ICreateUserData = request.body;
       await this.service.create(createUserArgs);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: 'CREATED', success: true });
+      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: 'CREATED', success: true }));
     } catch (error) {
       next(generateInternalError(error));
     }
@@ -59,7 +61,7 @@ class AuthController {
           httpOnly: false,
           secure: false,
         })
-        .json({ success: true, data: user });
+        .json(new BaseResponse<PartialUser>({ data: user }));
     } catch (error) {
       next(generateInternalError(error));
     }
