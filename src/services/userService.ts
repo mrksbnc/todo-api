@@ -1,7 +1,6 @@
 'use strict';
 
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import config from '../config';
 import { User } from '.prisma/client';
 import PartialUser from '../data/types/partialUser';
