@@ -1,15 +1,14 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
 import services from '.';
+import bcrypt from 'bcrypt';
 import config from '../config';
-import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
-import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
-import GeneralException from '../data/errors/generalException';
-import HttpException from '../data/errors/httpException';
-import PartialUser from '../data/types/partialUser';
-import UserRepositroy from '../repositories/userRepository';
 import { createToken } from '../utils/token';
+import PartialUser from '../data/types/partialUser';
+import HttpException from '../data/errors/httpException';
+import UserRepositroy from '../repositories/userRepository';
+import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
+import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
 
 class AuthService {
   private readonly repository: UserRepositroy;
@@ -32,23 +31,17 @@ class AuthService {
   public async login(email: string, password: string): Promise<{ token: string; user: PartialUser }> {
     const user = await services.user.getUserByEmail(email);
     if (!user) {
-      throw new GeneralException({
-        message: `user with email '${email}' could not be found in database`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
-          status: HttpStatusCodeEnum.NOT_FOUND,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.RESOURCE_NOT_FOUND,
+        status: HttpStatusCodeEnum.NOT_FOUND,
       });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      throw new GeneralException({
-        message: 'password received from client does not match with stored hash',
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.INVALID_PASSWORD,
-          status: HttpStatusCodeEnum.BAD_REQUEST,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.BAD_REQUEST,
+        status: HttpStatusCodeEnum.BAD_REQUEST,
       });
     }
 

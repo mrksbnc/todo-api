@@ -6,7 +6,6 @@ import PartialUser from '../data/types/partialUser';
 import { isValidNumericId } from '../utils/validators';
 import HttpException from '../data/errors/httpException';
 import UserRepositroy from '../repositories/userRepository';
-import GeneralException from '../data/errors/generalException';
 import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
 import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
@@ -32,12 +31,9 @@ class UserService {
   public async create(args: ICreateUserData): Promise<void> {
     const user = await this.repository.findByEmail(args.email);
     if (user) {
-      throw new GeneralException({
-        message: 'user already exists whit the following email ' + args.email + ' in the database',
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.EMAIL_FOUND,
-          status: HttpStatusCodeEnum.BAD_REQUEST,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.RESOURCE_ALREADY_EXISTS,
+        status: HttpStatusCodeEnum.SEE_OTHER,
       });
     }
 
@@ -56,12 +52,9 @@ class UserService {
   public async getUserByEmail(email: string): Promise<User> {
     const user = await this.repository.findByEmail(email);
     if (!user) {
-      throw new GeneralException({
-        message: `user with email '${email}' could not be found in database`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
-          status: HttpStatusCodeEnum.NOT_FOUND,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.RESOURCE_NOT_FOUND,
+        status: HttpStatusCodeEnum.NOT_FOUND,
       });
     }
 
@@ -70,23 +63,17 @@ class UserService {
 
   public async getPartialUserById(id: number): Promise<PartialUser> {
     if (!isValidNumericId(id)) {
-      throw new GeneralException({
-        message: `invalid numeric id '${id}' recived from client`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
-          status: HttpStatusCodeEnum.BAD_REQUEST,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
+        status: HttpStatusCodeEnum.BAD_REQUEST,
       });
     }
 
     const user = await this.repository.findById(id);
     if (!user) {
-      throw new GeneralException({
-        message: `user with id '${id}' could not be found in database`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.NOT_FOUND,
-          status: HttpStatusCodeEnum.NOT_FOUND,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.RESOURCE_NOT_FOUND,
+        status: HttpStatusCodeEnum.NOT_FOUND,
       });
     }
 
@@ -97,12 +84,9 @@ class UserService {
   public async getPartialUserByEmail(email: string): Promise<PartialUser> {
     const user = await this.repository.findByEmail(email);
     if (!user) {
-      throw new GeneralException({
-        message: `user with email '${email}' could not be found in database`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
-          status: HttpStatusCodeEnum.NOT_FOUND,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.RESOURCE_NOT_FOUND,
+        status: HttpStatusCodeEnum.NOT_FOUND,
       });
     }
 
@@ -112,12 +96,9 @@ class UserService {
 
   public async update(id: number, args: IUpdateUserData): Promise<void> {
     if (!isValidNumericId(id)) {
-      throw new GeneralException({
-        message: `invalid numeric id '${id}' recived from client`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
-          status: HttpStatusCodeEnum.BAD_REQUEST,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
+        status: HttpStatusCodeEnum.BAD_REQUEST,
       });
     }
 
@@ -125,21 +106,16 @@ class UserService {
       const hash = await services.auth.generatePasswordHash(args.password);
       args.password = hash;
     }
-
     await this.repository.update(id, args);
   }
 
   public async delete(id: number): Promise<void> {
     if (!isValidNumericId(id)) {
-      throw new GeneralException({
-        message: `invalid numeric id '${id}' recived from client`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
-          status: HttpStatusCodeEnum.BAD_REQUEST,
-        }),
+      throw new HttpException({
+        message: ApiErrorMessageEnum.INVALID_NUMERIC_ID,
+        status: HttpStatusCodeEnum.BAD_REQUEST,
       });
     }
-
     await this.repository.delete(id);
   }
 }

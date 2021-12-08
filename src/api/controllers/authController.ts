@@ -4,14 +4,13 @@ import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import PartialUser from '../../data/types/partialUser';
 import BaseResponse from '../../data/models/baseResponse';
-import { generateInternalError } from '../../data/errors';
 import { body, validationResult } from 'express-validator';
 import HttpException from '../../data/errors/httpException';
 import { ICreateUserData } from '../../data/types/repository';
-import GeneralException from '../../data/errors/generalException';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
+import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
 
 class AuthController {
   public readonly router: Router;
@@ -29,34 +28,27 @@ class AuthController {
   public register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
+      if (!errors.isEmpty())
         next(
-          new GeneralException({
-            message: 'invalid create user args recived from client',
-            error: errors.array(),
-            httpException: new HttpException({
-              message: ApiErrorMessageEnum.BAD_REQUEST + ' invalid object recived',
-              status: HttpStatusCodeEnum.BAD_REQUEST,
-            }),
-          }),
+          new HttpException({ status: HttpStatusCodeEnum.BAD_REQUEST, message: ApiErrorMessageEnum.INVALID_ARGUMENT }),
         );
-        return;
-      }
 
       const createUserArgs: ICreateUserData = request.body;
       await this.userService.create(createUserArgs);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: 'CREATED', success: true }));
+      response
+        .status(HttpStatusCodeEnum.OK)
+        .json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
     } catch (error) {
-      next(generateInternalError(error));
+      next(error);
     }
   };
 
   public login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const { email, password }: { email: string; password: string } = request.body;
-      const { token, user } = await this.authService.login(email, password);
 
+      const { token, user } = await this.authService.login(email, password);
       response
         .status(HttpStatusCodeEnum.OK)
         .cookie('todo-api-token', token, {
@@ -66,13 +58,13 @@ class AuthController {
         })
         .json(new BaseResponse<PartialUser>({ data: user }));
     } catch (error) {
-      next(generateInternalError(error));
+      next(error);
     }
   };
 
   private initializeRoutes() {
     this.router.post(
-      this.path + '/' + 'create',
+      this.path + '/' + 'register',
       body('email').isEmail().isLength({ max: 32 }),
       body('firstName').isLength({ max: 32 }),
       body('lastName').isLength({ max: 32 }),
