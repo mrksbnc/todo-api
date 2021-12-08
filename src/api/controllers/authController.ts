@@ -68,7 +68,6 @@ class AuthController {
   };
 
   private initializeRoutes() {
-    /** register */
     this.router.post(
       this.path + '/' + 'create',
       body('email').isEmail().isLength({ max: 32 }),
@@ -77,7 +76,6 @@ class AuthController {
       body('password').isLength({ min: 8 }),
       this.register,
     );
-    /** login */
     this.router.post(
       this.path + '/' + 'login',
       body('email').isEmail().isLength({ max: 32 }),

@@ -124,6 +124,13 @@ class UserService {
       });
     }
 
+    if (args.password) {
+      const salt = await bcrypt.genSalt(config.auth.salt_rounds);
+      const hash = await bcrypt.hash(args.password, salt);
+
+      args.password = hash;
+    }
+
     await this.repository.update(id, args);
   }
 
