@@ -1,8 +1,8 @@
 'use strict';
 
 import bcrypt from 'bcrypt';
-import config from '../config';
 import { User } from '.prisma/client';
+import { createToken } from '../utils/token';
 import PartialUser from '../data/types/partialUser';
 import { isValidNumericId } from '../utils/validators';
 import HttpException from '../data/errors/httpException';
@@ -11,7 +11,7 @@ import GeneralException from '../data/errors/generalException';
 import HttpStatusCodeEnum from '../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../data/constants/apiErrorMessageEnum';
 import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
-import { createToken } from '../utils/token';
+import services from '.';
 
 class UserService {
   private readonly repository: UserRepositroy;
@@ -43,8 +43,7 @@ class UserService {
       });
     }
 
-    const salt = await bcrypt.genSalt(config.auth.salt_rounds);
-    const hash = await bcrypt.hash(args.password, salt);
+    const hash = await services.auth.generatePasswordHash(args.password);
 
     const newUser = Object.freeze({
       email: args.email,
@@ -113,7 +112,7 @@ class UserService {
     return partialUser;
   }
 
-  public async update(id: number, args: IUpdateUserData) {
+  public async update(id: number, args: IUpdateUserData): Promise<void> {
     if (!isValidNumericId(id)) {
       throw new GeneralException({
         message: `invalid numeric id '${id}' recived from client`,
@@ -125,16 +124,14 @@ class UserService {
     }
 
     if (args.password) {
-      const salt = await bcrypt.genSalt(config.auth.salt_rounds);
-      const hash = await bcrypt.hash(args.password, salt);
-
+      const hash = await services.auth.generatePasswordHash(args.password);
       args.password = hash;
     }
 
     await this.repository.update(id, args);
   }
 
-  public async delete(id: number) {
+  public async delete(id: number): Promise<void> {
     if (!isValidNumericId(id)) {
       throw new GeneralException({
         message: `invalid numeric id '${id}' recived from client`,
@@ -146,39 +143,6 @@ class UserService {
     }
 
     await this.repository.delete(id);
-  }
-
-  public async login(email: string, password: string) {
-    const user = await this.getUserByEmail(email);
-    if (!user) {
-      throw new GeneralException({
-        message: `user with email '${email}' could not be found in database`,
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.EMAIL_NOT_FOUND,
-          status: HttpStatusCodeEnum.NOT_FOUND,
-        }),
-      });
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      throw new GeneralException({
-        message: 'password received from client does not match with stored hash',
-        httpException: new HttpException({
-          message: ApiErrorMessageEnum.INVALID_PASSWORD,
-          status: HttpStatusCodeEnum.BAD_REQUEST,
-        }),
-      });
-    }
-
-    const jwtPayload = { userId: user.id, name: `${user.firstName} ${user.lastName}` };
-    const token = createToken(jwtPayload);
-    const partialUser = this.createPartialUser(user);
-
-    return {
-      token,
-      user: partialUser,
-    };
   }
 }
 

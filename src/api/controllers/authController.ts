@@ -1,6 +1,9 @@
 'use strict';
 
 import UserService from '../../services/userService';
+import AuthService from '../../services/authService';
+import PartialUser from '../../data/types/partialUser';
+import BaseResponse from '../../data/models/baseResponse';
 import { generateInternalError } from '../../data/errors';
 import { body, validationResult } from 'express-validator';
 import HttpException from '../../data/errors/httpException';
@@ -9,16 +12,16 @@ import GeneralException from '../../data/errors/generalException';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
-import BaseResponse from '../../data/models/baseResponse';
-import PartialUser from '../../data/types/partialUser';
 
 class AuthController {
   public readonly router: Router;
   private readonly path = '/auth';
-  protected readonly service: UserService;
+  protected readonly userService: UserService;
+  protected readonly authService: AuthService;
 
-  constructor(service: UserService) {
-    this.service = service;
+  constructor(userService: UserService, authservice: AuthService) {
+    this.userService = userService;
+    this.authService = authservice;
     this.router = Router();
     this.initializeRoutes();
   }
@@ -41,7 +44,7 @@ class AuthController {
       }
 
       const createUserArgs: ICreateUserData = request.body;
-      await this.service.create(createUserArgs);
+      await this.userService.create(createUserArgs);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: 'CREATED', success: true }));
     } catch (error) {
@@ -52,7 +55,7 @@ class AuthController {
   public login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const { email, password }: { email: string; password: string } = request.body;
-      const { token, user } = await this.service.login(email, password);
+      const { token, user } = await this.authService.login(email, password);
 
       response
         .status(HttpStatusCodeEnum.OK)
