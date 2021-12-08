@@ -5,12 +5,13 @@ import AuthService from '../../services/authService';
 import PartialUser from '../../data/types/partialUser';
 import BaseResponse from '../../data/models/baseResponse';
 import { body, validationResult } from 'express-validator';
-import HttpException from '../../data/errors/httpException';
+import HttpException from '../../data/exceptions/httpException';
 import { ICreateUserData } from '../../data/types/repository';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
+import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 
 class AuthController {
   public readonly router: Router;
@@ -28,17 +29,14 @@ class AuthController {
   public register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty())
-        next(
-          new HttpException({ status: HttpStatusCodeEnum.BAD_REQUEST, message: ApiErrorMessageEnum.INVALID_ARGUMENT }),
-        );
+      if (!errors.isEmpty()) {
+        next(InvalidArgumentError);
+      }
 
       const createUserArgs: ICreateUserData = request.body;
       await this.userService.create(createUserArgs);
 
-      response
-        .status(HttpStatusCodeEnum.OK)
-        .json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
+      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
     } catch (error) {
       next(error);
     }
@@ -46,9 +44,14 @@ class AuthController {
 
   public login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
-      const { email, password }: { email: string; password: string } = request.body;
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) {
+        next(InvalidArgumentError);
+      }
 
+      const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
+
       response
         .status(HttpStatusCodeEnum.OK)
         .cookie('todo-api-token', token, {

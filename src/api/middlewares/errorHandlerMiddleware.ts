@@ -1,30 +1,27 @@
 'use strict';
 
-import config from '../../config';
 import logger from '../../utils/logger';
+import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/BaseException';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
+import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
 
-function getErrorMessage(error: unknown): string {
+function getErrorDetails(error: any) {
   if (error instanceof BaseException) {
-    return error.message;
+    return { message: error.message, stack: error.stack };
   }
+
   if (error instanceof HttpException) {
-    return error.message;
+    return { message: error.message, stack: null };
   }
-  if (error.stack) {
-    return error.stack;
-  }
-  if (typeof error.toString === 'function') {
-    return error.toString();
-  }
-  return '';
+
+  return { message: ApiErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null };
 }
 
-function logErrorMessage(error: unknown) {
-  logger.error(error);
+function logErrorMessage({ message, stack }: { message: string; stack?: string | null }) {
+  logger.error(message, stack);
 }
 
 function isErrorStatusCode(statusCode: number): boolean {
@@ -54,29 +51,22 @@ function getHttpStatusCode({ error, response }: { error: any; response: Response
 }
 
 function errorHandlerMiddleware(error: unknown, request: Request, response: Response, next: NextFunction) {
-  const errorMessage = getErrorMessage(error);
+  const { message, stack } = getErrorDetails(error);
+  const statusCode = getHttpStatusCode({ error, response });
 
-  logErrorMessage(errorMessage);
+  logErrorMessage({ message, stack });
 
   if (response.headersSent) {
     return next(error);
   }
 
-  const errorResponse = {
-    statusCode: getHttpStatusCode({ error, response }),
-    body: '',
-  };
-
-  if (!config.isProd) {
-    errorResponse.body = errorMessage;
-  }
-  response.status(errorResponse.statusCode);
+  response.status(statusCode);
   response.format({
     'application/json': () => {
-      response.json({ message: errorResponse.body });
+      response.json(new BaseResponse({ success: false, message: getErrorDetails(error).message }));
     },
     default: () => {
-      response.type('text/plain').send(errorResponse.body);
+      response.type('text/plain').send(getErrorDetails(error).message);
     },
   });
   next();
