@@ -50,6 +50,20 @@ class ListController {
     }
   };
 
+  private readonly getMany = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const { ids }: { ids: number[] } = request.body;
+      const collection = await this.service.getMany(ids);
+
+      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<List[]>({ data: collection }));
+    } catch (error) {
+      next(error);
+    }
+  };
+
   private readonly getManyByUserId = async (
     request: Request,
     response: Response,
@@ -133,6 +147,12 @@ class ListController {
       this.create,
     );
     this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.post(
+      this.path + '/getMany',
+      contentTypeValidatorMiddleware,
+      body('ids').exists().isArray(),
+      this.getMany,
+    );
     this.router.get(
       this.path + '/get/user/:userId',
       param('userId').exists().toInt().isNumeric(),
