@@ -19,6 +19,17 @@ class ListRepositroy {
     return queryResult;
   }
 
+  public async findMany(ids: number[]): Promise<List[]> {
+    const actionResult = [];
+
+    for (const id of ids) {
+      const queryResult = await this.context.findUnique({ where: { id } });
+      if (queryResult) actionResult.push(queryResult);
+    }
+
+    return actionResult;
+  }
+
   public async findManyByUserId(userId: number): Promise<List[]> {
     const queryResult = await this.context.findMany({ where: { userId } });
     return queryResult;

@@ -31,8 +31,9 @@ const authenticationMiddleware = function (request: Request, response: Response,
       const tokenExpirationStatus = checkExpirationStatus(decodedPayload);
       if (tokenExpirationStatus === 'grace') {
         const newToken = createToken({ userId: decodedPayload.userId, name: decodedPayload.name });
-        response.set('authorization', newToken);
+        response.set('authorization', 'Bearer ' + newToken);
         next();
+        return;
       }
     }
     response
@@ -43,7 +44,7 @@ const authenticationMiddleware = function (request: Request, response: Response,
 
   response.locals.userId = decodedPayload.userId;
   const newToken = createToken({ userId: decodedPayload.userId, name: decodedPayload.name });
-  response.set('authorization', newToken);
+  response.set('authorization', 'Bearer ' + newToken);
   next();
 };
 

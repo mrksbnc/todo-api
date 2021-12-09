@@ -1,6 +1,7 @@
 USE `todo_db`;
 
-CREATE TABLE IF NOT EXISTS `users` (
+-- CreateTable
+CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(64) NOT NULL,
     `first_name` VARCHAR(32) NOT NULL,
@@ -13,10 +14,11 @@ CREATE TABLE IF NOT EXISTS `users` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `lists` (
+-- CreateTable
+CREATE TABLE `lists` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
-    `description` VARCHAR(256) NOT NULL,
+    `description` VARCHAR(256) NULL,
     `user_id` INTEGER NOT NULL,
     `color` VARCHAR(6) NOT NULL DEFAULT 'ffffff',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -25,10 +27,11 @@ CREATE TABLE IF NOT EXISTS `lists` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `todos` (
+-- CreateTable
+CREATE TABLE `todos` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
-    `description` VARCHAR(256) NOT NULL,
+    `description` VARCHAR(256) NULL,
     `user_id` INTEGER NOT NULL,
     `list_id` INTEGER NULL,
     `completed_fl` BOOLEAN NOT NULL DEFAULT false,
