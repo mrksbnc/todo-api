@@ -28,9 +28,9 @@ class ListRepositroy {
     await this.context.update({ where: { id }, data });
   }
 
-  public async updateMany(ids: number[], args: IUpdateListData[]) {
+  public async updateMany(ids: number[], collection: IUpdateListData[]) {
     ids.forEach(async (id, index) => {
-      await this.context.update({ where: { id }, data: args[index] });
+      await this.context.update({ where: { id }, data: collection[index] });
     });
   }
 
