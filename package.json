@@ -1,21 +1,27 @@
 {
   "name": "todo-api",
-  "version": "1.0.1-alpha",
+  "version": "0.0.0-development",
   "description": "simple restful api for my todo app priject written in typescript with express",
   "main": "index.js",
-  "author": "Bence Markus <markus.bence@icloud.com>",
-  "license": "MIT",
+  "private": true,
+  "author": {
+    "name": "Bence Markus",
+    "email": "markus.bence@icloud.com",
+    "url": "https://github.com/mrksbnc/"
+  },
+  "license": "(MIT OR Apache-2.0)",
   "scripts": {
     "dev": "nodemon",
     "prepare": "husky install",
     "lint": "eslint src/**/*.ts",
     "build": "tsc --build --verbose",
     "format": "eslint src/**/*.ts --fix",
-    "start": "tsc --build --verbose && node dist"
+    "start": "tsc --build --verbose && node dist",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mrksbnc/todo-api.git"
+    "url": "https://github.com/mrksbnc/todo-api.git"
   },
   "homepage": "https://github.com/mrksbnc/todo-api#readme",
   "prisma": {
@@ -40,7 +46,8 @@
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "semantic-release": "^18.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -59,6 +66,10 @@
     "prettier": "^2.5.1",
     "prisma": "^3.6.0",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "semantic-release": "^18.0.1"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

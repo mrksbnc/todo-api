@@ -1,11 +1,12 @@
 'use strict';
 
-import BaseException from '../exceptions/BaseException';
+import BaseException from '../exceptions/baseException';
 import HttpException from '../exceptions/httpException';
 import ErrorMessageEnum from '../constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
 const InvalidArgumentError = new BaseException({
+  name: 'InvalidArgumentError',
   message: ErrorMessageEnum.INVALID_ARGUMENT,
   httpException: new HttpException({
     status: HttpStatusCodeEnum.BAD_REQUEST,

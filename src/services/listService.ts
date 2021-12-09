@@ -1,11 +1,12 @@
 'use strict';
 
-import { List } from '.prisma/client';
+import { List } from '@prisma/client';
+import { isValidNumericId } from '../utils/validators';
+import ListRepositroy from '../repositories/listRepository';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
+import InvalidNumericIdError from '../data/errors/invalidNumericIdError';
 import ResourceNotFoundError from '../data/errors/resourceNotFoundError';
 import { ICreateListData, IUpdateListData } from '../data/types/repository';
-import ListRepositroy from '../repositories/listRepository';
-import { isValidNumericId } from '../utils/validators';
 
 class ListService {
   private readonly repository: ListRepositroy;
@@ -19,7 +20,7 @@ class ListService {
   }
 
   public async getById(id: number): Promise<List> {
-    if (!isValidNumericId(id)) throw InvalidArgumentError;
+    if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
     const list = await this.repository.findById(id);
     if (!list) throw ResourceNotFoundError;
@@ -27,55 +28,61 @@ class ListService {
     return list;
   }
 
-  public async getByUserId(userId: number): Promise<List[]> {
-    if (!isValidNumericId(userId)) throw InvalidArgumentError;
+  public async getManyByUserId(userId: number): Promise<List[]> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
 
     const listCollection = await this.repository.findManyByUserId(userId);
     return listCollection;
   }
 
   public async update(id: number, data: IUpdateListData): Promise<void> {
-    if (!isValidNumericId(id)) throw InvalidArgumentError;
+    if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
     await this.repository.update(id, data);
   }
 
-  public async updateMany(ids: number[], data: IUpdateListData[]) {
+  public async updateMany(ids: number[], collection: IUpdateListData[]): Promise<void> {
     let index = 0;
-    let foundMinimumOneValidId = false;
-    while (!foundMinimumOneValidId) {
-      if (isValidNumericId(ids[index])) foundMinimumOneValidId = true;
+    let isMinimumOneValidNumericIdFound = false;
+    while (!isMinimumOneValidNumericIdFound) {
+      if (isValidNumericId(ids[index])) isMinimumOneValidNumericIdFound = true;
       ++index;
     }
-    if (!foundMinimumOneValidId) throw InvalidArgumentError;
+    if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
-    const validatedIds: number[] = [];
-    const validatedData: IUpdateListData[] = [];
+    const validatedIdCollection: number[] = [];
+    const validatedPayloadCollection: IUpdateListData[] = [];
 
-    for (let index = 0; index < ids.length; ++index) {
-      if (isValidNumericId(ids[index])) {
-        validatedIds.push(ids[index]);
-        validatedData.push(data[index]);
+    for (let iterator = 0; iterator < ids.length; ++iterator) {
+      if (isValidNumericId(ids[iterator])) {
+        validatedIdCollection.push(ids[iterator]);
+        validatedPayloadCollection.push(collection[iterator]);
       }
     }
-    await this.repository.updateMany(validatedIds, validatedData);
+    await this.repository.updateMany(ids, collection);
   }
 
   public async delete(id: number): Promise<void> {
-    if (!isValidNumericId(id)) throw InvalidArgumentError;
+    if (!isValidNumericId(id)) throw InvalidNumericIdError;
+
     await this.repository.delete(id);
   }
 
   public async deleteMany(ids: number[]): Promise<void> {
     let index = 0;
-    let foundMinimumOneValidId = false;
-    while (!foundMinimumOneValidId) {
-      if (isValidNumericId(ids[index])) foundMinimumOneValidId = true;
+    let isMinimumOneValidNumericIdFound = false;
+    while (!isMinimumOneValidNumericIdFound) {
+      if (isValidNumericId(ids[index])) isMinimumOneValidNumericIdFound = true;
       ++index;
     }
-    if (!foundMinimumOneValidId) throw InvalidArgumentError;
+    if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
-    await this.repository.deleteMany(ids);
+    const validatedIds: number[] = [];
+    for (const id of ids) {
+      if (isValidNumericId(id)) validatedIds.push(id);
+    }
+
+    await this.repository.deleteMany(validatedIds);
   }
 }
 

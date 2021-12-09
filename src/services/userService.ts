@@ -21,8 +21,8 @@ class UserService {
     const partialUser = Object.freeze({
       id: data.id,
       email: data.email,
-      firstName: data.firstName,
       lastName: data.lastName,
+      firstName: data.firstName,
     }) as PartialUser;
 
     return partialUser;
@@ -34,10 +34,10 @@ class UserService {
 
     const hash = await services.auth.generatePasswordHash(data.password);
     const newUser = Object.freeze({
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
       password: hash,
+      email: data.email,
+      lastName: data.lastName,
+      firstName: data.firstName,
     }) as User;
 
     await this.repository.create(newUser);

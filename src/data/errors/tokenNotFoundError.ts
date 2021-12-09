@@ -5,13 +5,13 @@ import HttpException from '../exceptions/httpException';
 import ErrorMessageEnum from '../constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
-const InvalidNumericIdError = new BaseException({
-  name: 'InvalidNumericIdError',
-  message: ErrorMessageEnum.INVALID_NUMERIC_ID,
+const TokenNotFoundError = new BaseException({
+  name: 'TokenNotFoundError',
+  message: ErrorMessageEnum.MISSING_AUTH_TOKEN,
   httpException: new HttpException({
-    status: HttpStatusCodeEnum.BAD_REQUEST,
-    message: ErrorMessageEnum.INVALID_NUMERIC_ID,
+    status: HttpStatusCodeEnum.UNAUTHORIZED,
+    message: ErrorMessageEnum.MISSING_AUTH_TOKEN,
   }),
 });
 
-export default InvalidNumericIdError;
+export default TokenNotFoundError;

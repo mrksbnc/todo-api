@@ -3,12 +3,24 @@
 import HttpException from './httpException';
 
 class BaseException extends Error {
+  public name: string;
   public stack?: string;
   public message: string;
   public httpException: HttpException;
 
-  constructor({ message, httpException, stack }: { message: string; httpException: HttpException; stack?: string }) {
-    super(message);
+  constructor({
+    message,
+    name,
+    stack,
+    httpException,
+  }: {
+    message: string;
+    name: string;
+    stack?: string;
+    httpException: HttpException;
+  }) {
+    super();
+    this.name = name;
     this.stack = stack;
     this.message = message;
     this.httpException = httpException;

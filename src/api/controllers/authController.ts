@@ -1,5 +1,6 @@
 'use strict';
 
+import config from '../../config';
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import PartialUser from '../../data/types/partialUser';
@@ -48,10 +49,10 @@ class AuthController {
 
       response
         .status(HttpStatusCodeEnum.OK)
-        .cookie('todo-api-token', token, {
+        .cookie('todo_api_authorization', token, {
+          secure: config.isProd,
           maxAge: 86400 * 1000,
           httpOnly: false,
-          secure: false,
         })
         .json(new BaseResponse<PartialUser>({ data: user }));
     } catch (error) {
