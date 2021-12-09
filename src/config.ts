@@ -11,6 +11,7 @@ const config = Object.freeze({
   isProd: process.env.NODE_ENV === 'production',
   server: {
     port: Number(process.env.PORT),
+    base_url: process.env.NODE_ENV === 'production' ? String(process.env.BASE_URL) : 'http://localhost',
     enabled_request_methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
   auth: {
