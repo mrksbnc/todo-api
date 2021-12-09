@@ -11,6 +11,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
+import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
 
 class AuthController {
   public readonly router: Router;
@@ -62,17 +63,19 @@ class AuthController {
 
   private initializeRoutes() {
     this.router.post(
-      this.path + '/' + 'register',
-      body('email').isEmail().isLength({ max: 32 }),
-      body('firstName').isLength({ max: 32 }),
-      body('lastName').isLength({ max: 32 }),
-      body('password').isLength({ min: 8 }),
+      this.path + '/register',
+      contentTypeValidatorMiddleware,
+      body('email').exists().isEmail().isLength({ max: 32 }),
+      body('firstName').exists().isLength({ max: 32 }),
+      body('lastName').exists().isLength({ max: 32 }),
+      body('password').exists().isLength({ min: 8 }),
       this.register,
     );
     this.router.post(
-      this.path + '/' + 'login',
-      body('email').isEmail().isLength({ max: 32 }),
-      body('password').isLength({ min: 8 }),
+      this.path + '/login',
+      contentTypeValidatorMiddleware,
+      body('email').exists().isEmail().isLength({ max: 32 }),
+      body('password').exists().isLength({ min: 8 }),
       this.login,
     );
   }
