@@ -10,6 +10,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
+import config from '../../config';
+import logger from '../../utils/logger';
 
 class AuthController {
   public readonly router: Router;
@@ -48,10 +50,10 @@ class AuthController {
 
       response
         .status(HttpStatusCodeEnum.OK)
-        .cookie('todo-api-token', token, {
+        .cookie('todo_api_authorization', token, {
+          secure: config.isProd,
           maxAge: 86400 * 1000,
           httpOnly: false,
-          secure: false,
         })
         .json(new BaseResponse<PartialUser>({ data: user }));
     } catch (error) {
