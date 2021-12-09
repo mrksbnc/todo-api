@@ -1,5 +1,6 @@
 'use strict';
 
+import config from '../../config';
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import PartialUser from '../../data/types/partialUser';
@@ -10,8 +11,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
-import config from '../../config';
-import logger from '../../utils/logger';
 
 class AuthController {
   public readonly router: Router;

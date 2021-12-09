@@ -4,7 +4,7 @@ import logger from '../../utils/logger';
 import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
-import BaseException from '../../data/exceptions/BaseException';
+import BaseException from '../../data/exceptions/baseException';
 import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 
