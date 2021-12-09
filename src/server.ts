@@ -10,8 +10,8 @@ import controllers from './api/controllers';
 import errorHandlerMiddleware from './api/middlewares/errorHandlerMiddleware';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import httpLogHandlerMiddleware from './api/middlewares/httpLogHandlerMiddleware';
-import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
 import authenticationMiddleware from './api/middlewares/authenticationMiddleware';
+import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
 
 class Server {
   private readonly port: number;
@@ -33,6 +33,7 @@ class Server {
   }
 
   private initializeMiddlewares(): void {
+    this.app.use(httpLogHandlerMiddleware);
     this.app.use(hpp());
     this.app.use(cors());
     this.app.use(cookieParser());
@@ -40,7 +41,6 @@ class Server {
     this.app.use(authenticationMiddleware);
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ type: 'application/json' }));
-    this.app.use(httpLogHandlerMiddleware);
     this.setHeaders();
   }
 
