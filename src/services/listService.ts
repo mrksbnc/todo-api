@@ -1,6 +1,6 @@
 'use strict';
 
-import { List } from '@prisma/client';
+import { List } from '.prisma/client';
 import { isValidNumericId } from '../utils/validators';
 import ListRepositroy from '../repositories/listRepository';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
