@@ -24,23 +24,22 @@ npm run lint --fix
 
 ### Project structure
 
-todo-api
-├───.husky
-│   └───_
-├───prisma
-└───src
-    ├───api
-    │   ├───controllers
-    │   └───middlewares
-    ├───data
-    │   ├───constants
-    │   ├───errors
-    │   ├───exceptions
-    │   ├───models
-    │   └───types
-    ├───database
-    │   └───context
-    ├───logs
-    ├───repositories
-    ├───services
+todo-api\
+├───.husky\
+├───prisma\
+└───src\
+    ├───api\
+    │   ├───controllers\
+    │   └───middlewares\
+    ├───data\
+    │   ├───constants\
+    │   ├───errors\
+    │   ├───exceptions\
+    │   ├───models\
+    │   └───types\
+    ├───database\
+    │   └───context\
+    ├───logs\
+    ├───repositories\
+    ├───services\
     └───utils
