@@ -1,12 +1,12 @@
 'use strict';
 
+import logger from '../../utils/logger';
 import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/BaseException';
 import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import logger from '../../utils/logger';
 
 function errorHandlerMiddleware(error: unknown, request: Request, response: Response, next: NextFunction) {
   let responseStatusCode = HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;

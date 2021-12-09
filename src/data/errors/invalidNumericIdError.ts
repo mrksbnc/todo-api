@@ -6,6 +6,7 @@ import ErrorMessageEnum from '../constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
 const InvalidNumericIdError = new BaseException({
+  name: 'InvalidNumericIdError',
   message: ErrorMessageEnum.INVALID_NUMERIC_ID,
   httpException: new HttpException({
     status: HttpStatusCodeEnum.BAD_REQUEST,

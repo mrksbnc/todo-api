@@ -6,6 +6,7 @@ import ErrorMessageEnum from '../constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
 const TokenNotFoundError = new BaseException({
+  name: 'TokenNotFoundError',
   message: ErrorMessageEnum.MISSING_AUTH_TOKEN,
   httpException: new HttpException({
     status: HttpStatusCodeEnum.UNAUTHORIZED,

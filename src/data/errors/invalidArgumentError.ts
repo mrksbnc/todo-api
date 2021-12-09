@@ -6,6 +6,7 @@ import ErrorMessageEnum from '../constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
 const InvalidArgumentError = new BaseException({
+  name: 'InvalidArgumentError',
   message: ErrorMessageEnum.INVALID_ARGUMENT,
   httpException: new HttpException({
     status: HttpStatusCodeEnum.BAD_REQUEST,

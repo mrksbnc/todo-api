@@ -2,13 +2,11 @@
 
 import jwt from 'jsonwebtoken';
 import config from '../../config';
-import { decodeJwtToken } from '../../utils/token';
 import { Request, Response, NextFunction } from 'express';
 import BaseResponse from '../../data/models/baseResponse';
-import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
-import TokenNotFoundError from '../../data/errors/tokenNotFoundError';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
+import { createToken, decodeJwtToken } from '../../utils/token';
 import InvalidTokenError from '../../data/errors/invalidTokenError';
+import TokenNotFoundError from '../../data/errors/tokenNotFoundError';
 
 const authenticationMiddleware = function (request: Request, response: Response, next: NextFunction) {
   if (request.path.includes('register') || request.path.includes('login')) {
@@ -36,9 +34,7 @@ const authenticationMiddleware = function (request: Request, response: Response,
   const decodedPayload = decodeJwtToken(token);
   response.locals.userId = decodedPayload.userId;
 
-  const newToken = jwt.sign(decodedPayload, config.auth.secret, {
-    expiresIn: config.auth.jwt_exp,
-  });
+  const newToken = createToken(decodedPayload);
 
   response.cookie('todo_api_authorization', newToken, {
     secure: config.isProd,
