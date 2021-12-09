@@ -24,7 +24,7 @@ model User {
 model List {
   id          Int      @id @default(autoincrement())
   name        String   @db.VarChar(64)
-  description String   @db.VarChar(256)
+  description String?  @db.VarChar(256)
   userId      Int      @map("user_id")
   color       String   @default("ffffff") @db.VarChar(6)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -36,7 +36,7 @@ model List {
 model Todo {
   id          Int       @id @default(autoincrement())
   name        String    @db.VarChar(64)
-  description String    @db.VarChar(256)
+  description String?   @db.VarChar(256)
   userId      Int       @map("user_id")
   listId      Int?      @map("list_id")
   completedFl Boolean   @default(false) @map("completed_fl")

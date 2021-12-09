@@ -1,6 +1,6 @@
 'use strict';
 
-import { List } from '@prisma/client';
+import { List } from '.prisma/client';
 import { isValidNumericId } from '../utils/validators';
 import ListRepositroy from '../repositories/listRepository';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
@@ -77,7 +77,7 @@ class ListService {
     }
     if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
-    let validatedIds: number[] = [];
+    const validatedIds: number[] = [];
     for (const id of ids) {
       if (isValidNumericId(id)) validatedIds.push(id);
     }

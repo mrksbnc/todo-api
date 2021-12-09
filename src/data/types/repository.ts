@@ -17,7 +17,7 @@ export interface IUpdateUserData {
 
 export interface ICreateListData {
   name: string;
-  description: string;
+  description?: string;
   userId: number;
   color: string;
 }

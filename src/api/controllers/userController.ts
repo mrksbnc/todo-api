@@ -9,6 +9,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
+import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
 
 class UserController {
   public readonly router: Router;
@@ -78,10 +79,16 @@ class UserController {
   };
 
   private initializeRoutes() {
-    this.router.get(this.path + '/' + 'get/:id', param('id').exists(), this.getById);
-    this.router.get(this.path + '/' + 'get/email/:email', param('email').exists().isEmail(), this.getByEmail);
-    this.router.put(this.path + '/' + 'update', body('id').exists(), body('data').exists(), this.update);
-    this.router.delete(this.path + '/' + 'delete/:id', param('id').exists(), this.delete);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt(), this.getById);
+    this.router.get(this.path + '/get/email/:email', param('email').exists().isEmail(), this.getByEmail);
+    this.router.put(
+      this.path + '/update',
+      contentTypeValidatorMiddleware,
+      body('id').exists(),
+      body('data').exists().isObject(),
+      this.update,
+    );
+    this.router.delete(this.path + '/delete/:id', param('id').exists().toInt(), this.delete);
   }
 }
 

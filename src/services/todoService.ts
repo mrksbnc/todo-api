@@ -1,6 +1,6 @@
 'use strict';
 
-import { Todo } from '@prisma/client';
+import { Todo } from '.prisma/client';
 import { isValidNumericId } from '../utils/validators';
 import TodoRepositroy from '../repositories/todoRepository';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
@@ -19,8 +19,8 @@ class TodoService {
     await this.repository.create(data);
   }
 
-  public async createMany(dataCollection: ICreateTodoData[]) {
-    await this.repository.createMany(dataCollection);
+  public async createMany(collection: ICreateTodoData[]) {
+    await this.repository.createMany(collection);
   }
 
   public async getById(id: number): Promise<Todo> {
@@ -32,14 +32,14 @@ class TodoService {
     return todo;
   }
 
-  public async findManyByUserId(userId: number) {
+  public async getManyByUserId(userId: number) {
     if (!isValidNumericId(userId)) throw InvalidNumericIdError;
 
     const todoCollection = await this.repository.findManyByUserId(userId);
     return todoCollection;
   }
 
-  public async findManyByListId(listId: number) {
+  public async getManyByListId(listId: number) {
     if (!isValidNumericId(listId)) throw InvalidNumericIdError;
 
     const todoCollection = await this.repository.findManyByListId(listId);
@@ -88,7 +88,7 @@ class TodoService {
     }
     if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
-    let validatedIds: number[] = [];
+    const validatedIds: number[] = [];
     for (const id of ids) {
       if (isValidNumericId(id)) validatedIds.push(id);
     }
