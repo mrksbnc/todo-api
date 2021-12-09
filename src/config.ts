@@ -11,6 +11,7 @@ const config = Object.freeze({
   isProd: process.env.NODE_ENV === 'production',
   server: {
     port: Number(process.env.PORT),
+    enabled_request_methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
   auth: {
     salt_rounds: Number(process.env.SALT_ROUNDS),

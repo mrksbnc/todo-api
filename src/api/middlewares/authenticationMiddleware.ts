@@ -14,32 +14,27 @@ const authenticationMiddleware = function (request: Request, response: Response,
     return;
   }
 
-  const token = request.cookies['todo_api_authorization'] as string;
-  if (!token) {
+  const bearerToken = request.headers['authorization'];
+  if (!bearerToken) {
     response
       .status(TokenNotFoundError.httpException.status)
       .json(new BaseResponse({ success: false, message: TokenNotFoundError.httpException.message }));
     return;
   }
 
+  const token = bearerToken.split(' ')[1];
   const decodedPayload = decodeJwtToken(token);
   try {
-    jwt.verify(token, config.auth.secret);
+    jwt.verify(token.trim(), config.auth.secret);
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       const tokenExpirationStatus = checkExpirationStatus(decodedPayload);
       if (tokenExpirationStatus === 'grace') {
-        const newToken = createToken(decodedPayload);
-
-        response.cookie('todo_api_authorization', newToken, {
-          secure: config.isProd,
-          maxAge: 86400 * 1000,
-          httpOnly: false,
-        });
+        const newToken = createToken({ userId: decodedPayload.userId, name: decodedPayload.name });
+        response.set('authorization', newToken);
         next();
       }
     }
-
     response
       .status(InvalidTokenError.httpException.status)
       .json(new BaseResponse({ success: false, message: InvalidTokenError.httpException.message }));
@@ -47,14 +42,8 @@ const authenticationMiddleware = function (request: Request, response: Response,
   }
 
   response.locals.userId = decodedPayload.userId;
-
-  const newToken = createToken(decodedPayload);
-
-  response.cookie('todo_api_authorization', newToken, {
-    secure: config.isProd,
-    maxAge: 86400 * 1000,
-    httpOnly: false,
-  });
+  const newToken = createToken({ userId: decodedPayload.userId, name: decodedPayload.name });
+  response.set('authorization', newToken);
   next();
 };
 
