@@ -10,6 +10,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
+import config from '../../config';
+import logger from '../../utils/logger';
 
 class AuthController {
   public readonly router: Router;
@@ -24,12 +26,10 @@ class AuthController {
     this.initializeRoutes();
   }
 
-  public register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly register = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const createUserArgs: ICreateUserData = request.body;
       await this.userService.create(createUserArgs);
@@ -40,22 +40,20 @@ class AuthController {
     }
   };
 
-  public login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+  private readonly login = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-        next(InvalidArgumentError);
-      }
+      if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
 
       response
         .status(HttpStatusCodeEnum.OK)
-        .cookie('todo-api-token', token, {
+        .cookie('todo_api_authorization', token, {
+          secure: config.isProd,
           maxAge: 86400 * 1000,
           httpOnly: false,
-          secure: false,
         })
         .json(new BaseResponse<PartialUser>({ data: user }));
     } catch (error) {

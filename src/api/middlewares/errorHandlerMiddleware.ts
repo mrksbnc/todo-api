@@ -5,70 +5,39 @@ import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/BaseException';
+import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import ApiErrorMessageEnum from '../../data/constants/apiErrorMessageEnum';
-
-function getErrorDetails(error: any) {
-  if (error instanceof BaseException) {
-    return { message: error.message, stack: error.stack };
-  }
-
-  if (error instanceof HttpException) {
-    return { message: error.message, stack: null };
-  }
-
-  return { message: ApiErrorMessageEnum.INTERNAL_SERVVER_ERROR, stack: null };
-}
-
-function logErrorMessage({ message, stack }: { message: string; stack?: string | null }) {
-  logger.error(message, stack);
-}
-
-function isErrorStatusCode(statusCode: number): boolean {
-  return statusCode >= 400 && statusCode < 600;
-}
-
-function getHttpStatusCode({ error, response }: { error: any; response: Response }): number {
-  const statusCodeFromError = error.status || error.statusCode;
-  if (error instanceof BaseException) {
-    if (isErrorStatusCode(error.httpException.status)) {
-      return error.httpException.status;
-    }
-  }
-  if (error instanceof HttpException) {
-    if (isErrorStatusCode(error.status)) {
-      return error.status;
-    }
-  }
-  if (isErrorStatusCode(statusCodeFromError)) {
-    return statusCodeFromError;
-  }
-  const statusCodeFromResponse = response.statusCode;
-  if (isErrorStatusCode(statusCodeFromResponse)) {
-    return statusCodeFromResponse;
-  }
-  return HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
-}
 
 function errorHandlerMiddleware(error: unknown, request: Request, response: Response, next: NextFunction) {
-  const { message, stack } = getErrorDetails(error);
-  const statusCode = getHttpStatusCode({ error, response });
+  let responseStatusCode = HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
+  let responseErrorMessage = String(ErrorMessageEnum.INTERNAL_SERVVER_ERROR);
 
-  logErrorMessage({ message, stack });
+  if (error instanceof HttpException) {
+    responseErrorMessage = error.message;
+    responseStatusCode = error.status;
+  }
+
+  if (error instanceof BaseException) {
+    responseStatusCode = error.httpException.status;
+    responseErrorMessage = error.httpException.message;
+  }
 
   if (response.headersSent) {
     return next(error);
   }
 
-  response.status(statusCode);
+  response.status(responseStatusCode);
   response.format({
     'application/json': () => {
-      response.json(new BaseResponse({ success: false, message: getErrorDetails(error).message }));
+      response.json(new BaseResponse({ success: false, message: responseErrorMessage }));
     },
     default: () => {
-      response.type('text/plain').send(getErrorDetails(error).message);
+      response.type('text/plain').send(responseErrorMessage);
     },
   });
+
+  const _e = error as Error;
+  logger.error(_e.message, '\r\n', error);
   next();
 }
 

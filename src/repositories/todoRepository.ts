@@ -37,9 +37,9 @@ class TodoRepositroy {
     await this.context.update({ where: { id }, data });
   }
 
-  public async updateMany(ids: number[], args: IUpdateTodoData[]) {
+  public async updateMany(ids: number[], collection: IUpdateTodoData[]) {
     ids.forEach(async (id, index) => {
-      await this.context.update({ where: { id }, data: args[index] });
+      await this.context.update({ where: { id }, data: collection[index] });
     });
   }
 

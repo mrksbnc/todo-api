@@ -19,3 +19,7 @@ export function createToken(payload: ITokenPayload): string {
   const token = jwt.sign(payload, config.auth.secret, { expiresIn: '24h' });
   return token;
 }
+
+export function decodeJwtToken(token: string): IDecodedToken {
+  return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+}

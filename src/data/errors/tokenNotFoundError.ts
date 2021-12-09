@@ -5,13 +5,13 @@ import HttpException from '../exceptions/httpException';
 import ErrorMessageEnum from '../constants/errorMessageEnum';
 import HttpStatusCodeEnum from '../constants/httpStatusCodeEnum';
 
-const ResourceNotFoundError = new BaseException({
-  name: 'ResourceNotFoundError',
-  message: ErrorMessageEnum.RESOURCE_NOT_FOUND,
+const TokenNotFoundError = new BaseException({
+  name: 'TokenNotFoundError',
+  message: ErrorMessageEnum.MISSING_AUTH_TOKEN,
   httpException: new HttpException({
-    status: HttpStatusCodeEnum.NOT_FOUND,
-    message: ErrorMessageEnum.RESOURCE_NOT_FOUND,
+    status: HttpStatusCodeEnum.UNAUTHORIZED,
+    message: ErrorMessageEnum.MISSING_AUTH_TOKEN,
   }),
 });
 
-export default ResourceNotFoundError;
+export default TokenNotFoundError;

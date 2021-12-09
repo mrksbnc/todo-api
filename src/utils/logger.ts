@@ -19,7 +19,7 @@ const logger = bunyan.createLogger({
   streams: [
     {
       level: 'info',
-      stream: pretty(process.stdout, { timeStamps: false }),
+      stream: pretty(process.stdout, { timeStamps: true }),
     },
     {
       level: 'info',
