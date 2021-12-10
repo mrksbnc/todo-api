@@ -3,7 +3,7 @@
 import logger from '../../utils/logger';
 import { PrismaClient } from '.prisma/client';
 
-const baseDbContext = new PrismaClient({
+const baseContext = new PrismaClient({
   errorFormat: 'minimal',
   log: [
     { emit: 'event', level: 'query' },
@@ -11,11 +11,11 @@ const baseDbContext = new PrismaClient({
   ],
 });
 
-baseDbContext.$on('error', (error) => {
+baseContext.$on('error', (error) => {
   logger.error(error.message, error);
 });
 
-baseDbContext.$use(async (params, next) => {
+baseContext.$use(async (params, next) => {
   const before = Date.now();
   const result = await next(params);
   const after = Date.now();
@@ -24,4 +24,4 @@ baseDbContext.$use(async (params, next) => {
   return result;
 });
 
-export default baseDbContext;
+export default baseContext;
