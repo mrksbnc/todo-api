@@ -34,7 +34,9 @@ class AuthController {
       const createUserData: ICreateUserData = request.body;
       await this.userService.create(createUserData);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
+      response
+        .status(HttpStatusCodeEnum.OK)
+        .json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
     } catch (error) {
       next(error);
     }
@@ -48,14 +50,8 @@ class AuthController {
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
 
-      response
-        .status(HttpStatusCodeEnum.OK)
-        .cookie('todo_api_authorization', token, {
-          secure: config.isProd,
-          maxAge: 86400 * 1000,
-          httpOnly: false,
-        })
-        .json(new BaseResponse<PartialUser>({ data: user }));
+      response.set('authorization', 'Bearer ' + token);
+      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<PartialUser>({ data: user }));
     } catch (error) {
       next(error);
     }

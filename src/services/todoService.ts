@@ -32,6 +32,17 @@ class TodoService {
     return todo;
   }
 
+  public async getMany(ids: number[]) {
+    const validIds: number[] = [];
+    for (const id of ids) {
+      if (isValidNumericId(id)) validIds.push(id);
+    }
+    if (validIds.length === 0) throw InvalidArgumentError;
+
+    const collection = await this.repository.findMany(ids);
+    return collection;
+  }
+
   public async getManyByUserId(userId: number) {
     if (!isValidNumericId(userId)) throw InvalidNumericIdError;
 

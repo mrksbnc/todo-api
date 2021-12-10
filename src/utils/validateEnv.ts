@@ -12,6 +12,7 @@ const validateEnv = () => {
     APP_NAME: str(),
     NODE_ENV: str(),
     LOG_PERIOD: str(),
+    BASE_URL: str(),
     MAX_LOG_FILE_COUNT: num(),
     SALT_ROUNDS: str(),
     SECRET: str(),

@@ -70,6 +70,10 @@ class UserService {
 
   public async update(id: number, data: IUpdateUserData): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
+
+    const user = await this.repository.findById(id);
+    if (!user) throw ResourceNotFoundError;
+
     if (data.password) {
       const hash = await services.auth.generatePasswordHash(data.password);
       data.password = hash;
@@ -79,6 +83,10 @@ class UserService {
 
   public async delete(id: number): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
+
+    const user = await this.repository.findById(id);
+    if (!user) throw ResourceNotFoundError;
+
     await this.repository.delete(id);
   }
 }

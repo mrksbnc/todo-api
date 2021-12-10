@@ -79,7 +79,7 @@ class UserController {
   };
 
   private initializeRoutes() {
-    this.router.get(this.path + '/get/:id', param('id').exists().toInt(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.get(this.path + '/get/email/:email', param('email').exists().isEmail(), this.getByEmail);
     this.router.put(
       this.path + '/update',
@@ -88,7 +88,7 @@ class UserController {
       body('data').exists().isObject(),
       this.update,
     );
-    this.router.delete(this.path + '/delete/:id', param('id').exists().toInt(), this.delete);
+    this.router.delete(this.path + '/delete/:id', param('id').exists().toInt().isNumeric(), this.delete);
   }
 }
 

@@ -13,7 +13,7 @@ import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorM
 
 class TodoController {
   public readonly router: Router;
-  private readonly path = '/list';
+  private readonly path = '/todo';
   protected readonly service: TodoService;
 
   constructor(service: TodoService) {
@@ -59,6 +59,20 @@ class TodoController {
       const todo = await this.service.getById(id);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo>({ data: todo }));
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private readonly getMany = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const { ids }: { ids: number[] } = request.body;
+      const collection = await this.service.getMany(ids);
+
+      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo[]>({ data: collection }));
     } catch (error) {
       next(error);
     }
@@ -165,7 +179,7 @@ class TodoController {
       this.path + '/create',
       contentTypeValidatorMiddleware,
       body('name').exists().isLength({ max: 64 }),
-      body('userId').exists().toInt(),
+      body('userId').exists().toInt().isNumeric(),
       this.create,
     );
     this.router.post(
@@ -174,10 +188,27 @@ class TodoController {
       body('data').exists().isArray(),
       this.createMany,
     );
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.post(
+      this.path + '/getMany',
+      contentTypeValidatorMiddleware,
+      body('ids').exists().isArray(),
+      this.getMany,
+    );
+    this.router.get(
+      this.path + '/get/user/:userId',
+      param('userId').exists().toInt().isNumeric(),
+      this.getManyByUserId,
+    );
+    this.router.get(
+      this.path + '/get/list/:listId',
+      param('listId').exists().toInt().isNumeric(),
+      this.getManyByListId,
+    );
     this.router.put(
       this.path + '/update',
       contentTypeValidatorMiddleware,
-      body('id').exists().toInt(),
+      body('id').exists().toInt().isNumeric(),
       body('data').exists().isObject(),
       this.update,
     );
@@ -188,10 +219,7 @@ class TodoController {
       body('data').exists().isArray(),
       this.updateMany,
     );
-    this.router.get(this.path + '/get/:id', param('id').exists().toInt(), this.getById);
-    this.router.get(this.path + '/get/user/:userId', param('userId').exists().toInt(), this.getManyByUserId);
-    this.router.get(this.path + '/get/list/:listId', param('listId').exists().toInt(), this.getManyByListId);
-    this.router.delete(this.path + '/delete/:id', body('id').exists().toInt(), this.delete);
+    this.router.delete(this.path + '/delete/:id', param('id').exists().toInt().isNumeric(), this.delete);
     this.router.post(
       this.path + '/deleteMany',
       contentTypeValidatorMiddleware,

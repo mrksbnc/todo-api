@@ -28,11 +28,22 @@ class ListService {
     return list;
   }
 
+  public async getMany(ids: number[]) {
+    const validIds: number[] = [];
+    for (const id of ids) {
+      if (isValidNumericId(id)) validIds.push(id);
+    }
+    if (validIds.length === 0) throw InvalidArgumentError;
+
+    const collection = await this.repository.findMany(ids);
+    return collection;
+  }
+
   public async getManyByUserId(userId: number): Promise<List[]> {
     if (!isValidNumericId(userId)) throw InvalidNumericIdError;
 
-    const listCollection = await this.repository.findManyByUserId(userId);
-    return listCollection;
+    const collection = await this.repository.findManyByUserId(userId);
+    return collection;
   }
 
   public async update(id: number, data: IUpdateListData): Promise<void> {
