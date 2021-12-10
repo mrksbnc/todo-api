@@ -4,18 +4,13 @@ import logger from '../utils/logger';
 import { PrismaClient } from '.prisma/client';
 
 class Database {
-  private async connect(context: PrismaClient) {
-    await context.$connect();
-  }
-
   public async initializeDatabase(context: PrismaClient) {
     try {
-      await this.connect(context);
+      await context.$connect();
 
-      logger.info('database init finished successfully');
+      logger.info('database connection established successfully');
     } catch (error) {
-      logger.fatal('database init failed');
-      logger.error(error);
+      logger.fatal('database connection failed', error);
       process.exit(1);
     }
   }

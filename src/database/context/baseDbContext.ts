@@ -11,12 +11,16 @@ const baseDbContext = new PrismaClient({
   ],
 });
 
+baseDbContext.$on('error', (error) => {
+  logger.error(error.message, error);
+});
+
 baseDbContext.$use(async (params, next) => {
   const before = Date.now();
   const result = await next(params);
   const after = Date.now();
 
-  logger.info(`[QUERY] ${params.model}.${params.action} - ${after - before} ms`);
+  logger.info(`QUERY | ${params.model}.${params.action} - ${after - before} ms`);
   return result;
 });
 
