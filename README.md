@@ -30,7 +30,7 @@ npm run lint
 npm run lint --fix
 ```
 
-## Available endpoints
+## Routes
   - #### AuthController
           /auth/register          POST     
           /auth/login             POST
