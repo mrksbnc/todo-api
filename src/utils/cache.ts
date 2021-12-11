@@ -1,8 +1,8 @@
 'use strict';
 
+import logger from './logger';
 import config from '../config';
 import NodeCache, { Key, ValueSetItem } from 'node-cache';
-import logger from './logger';
 
 class Cache {
   private cache: NodeCache;

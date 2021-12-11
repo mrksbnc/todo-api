@@ -1,5 +1,6 @@
 'use strict';
 
+import cache from '../utils/cache';
 import { List } from '.prisma/client';
 import { isValidNumericId } from '../utils/validators';
 import ListRepositroy from '../repositories/listRepository';
@@ -7,7 +8,6 @@ import InvalidArgumentError from '../data/errors/invalidArgumentError';
 import InvalidNumericIdError from '../data/errors/invalidNumericIdError';
 import ResourceNotFoundError from '../data/errors/resourceNotFoundError';
 import { ICreateListData, IUpdateListData } from '../data/types/repository';
-import cache from '../utils/cache';
 
 class ListService {
   private readonly repository: ListRepositroy;

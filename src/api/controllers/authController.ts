@@ -1,6 +1,5 @@
 'use strict';
 
-import config from '../../config';
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import PartialUser from '../../data/types/partialUser';

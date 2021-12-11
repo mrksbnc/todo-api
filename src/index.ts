@@ -3,10 +3,10 @@
 import Server from './server';
 import Database from './database/database';
 import validateEnv from './utils/validateEnv';
-import baseDbContext from './database/context/baseDbContext';
+import baseContext from './database/context/baseContext';
 
 (async () => {
   validateEnv();
-  await new Database().initializeDatabase(baseDbContext);
+  await new Database().initializeDatabase(baseContext);
   new Server().listen();
 })();
