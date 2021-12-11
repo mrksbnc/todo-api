@@ -11,7 +11,8 @@ class ListRepositroy {
   }
 
   public async create(data: ICreateListData) {
-    await this.context.create({ data });
+    const queryResult = await this.context.create({ data });
+    return queryResult;
   }
 
   public async findById(id: number): Promise<List | null> {

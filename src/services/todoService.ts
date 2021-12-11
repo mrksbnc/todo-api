@@ -19,6 +19,7 @@ class TodoService {
   public async create(data: ICreateTodoData): Promise<void> {
     const actionResult = await this.repository.create(data);
     let key = cache.createKey('todo', actionResult.id, 'user', actionResult.userId);
+
     if (actionResult.listId) {
       key = cache.createKey('todo', actionResult.id, 'user', actionResult.userId, 'list', actionResult.listId);
     }
@@ -29,23 +30,24 @@ class TodoService {
     await this.repository.createMany(collection);
   }
 
-  public async getById(id: number, userId: number): Promise<Todo> {
+  public async getById(id: number): Promise<Todo> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
-    const key = cache.createKey('todo', id, 'user', userId);
-    const has = cache.has(key);
+    const key = cache.createKey('todo', id);
+    const completeKey = cache.listKeys().filter((k) => k.includes(key))[0];
+    const has = cache.has(completeKey);
+
     if (has) {
       const todo = cache.get<Todo>(key);
       if (todo) {
         if (todo.listId) {
           const isListIdPresentInKey = key.includes('list.');
           if (!isListIdPresentInKey) {
-            const newKey = cache.createKey('todo', id, 'user', userId, 'list', todo.listId);
+            const newKey = cache.createKey('todo', todo.id, 'user', todo.userId, 'list', todo.listId);
             cache.del(key);
             cache.set<Todo>(newKey, todo);
           }
         }
-
         return todo;
       }
     }
@@ -53,23 +55,37 @@ class TodoService {
     const todo = await this.repository.findById(id);
     if (!todo) throw ResourceNotFoundError;
 
-    cache.set<Todo>(key, todo);
+    let createKey = cache.createKey('todo', todo.id, 'user', todo.userId);
+    if (todo.listId) {
+      createKey = cache.createKey('todo', todo.id, 'user', todo.userId, 'list', todo.listId);
+    }
+    cache.set<Todo>(createKey, todo);
     return todo;
   }
 
-  public async getMany(ids: number[], userId: number) {
+  public async getMany(ids: number[]) {
     const validIds: number[] = [];
     for (const id of ids) {
       if (isValidNumericId(id)) validIds.push(id);
     }
     if (validIds.length === 0) throw InvalidArgumentError;
 
-    const keyCollection = validIds.map((m) => {
-      return cache.createKey('todo', m, 'user', userId);
-    });
     let resultCollection: Todo[] = [];
-    const collection = cache.mget<Todo>(keyCollection);
+    const completeKeys: string[] = [];
+    const cacheKeyList = cache.listKeys();
+    const keyCollection = validIds.map((m) => {
+      return cache.createKey('todo', m);
+    });
 
+    for (let i = 0; i < cacheKeyList.length; ++i) {
+      for (let j = 0; j < keyCollection.length; ++j) {
+        if (cacheKeyList[i].includes(keyCollection[j])) {
+          completeKeys.push(cacheKeyList[i]);
+        }
+      }
+    }
+
+    const collection = cache.mget<Todo>(completeKeys);
     if (Object.keys(collection).length !== 0) {
       for (const key in collection) {
         if (collection[key]) {
@@ -79,22 +95,31 @@ class TodoService {
           const id = Number(key.split('todo')[1].split('.')[1]);
           const dbValue = await this.repository.findById(id);
           if (dbValue) {
-            console.log(dbValue);
             resultCollection.push(dbValue);
             cache.set<Todo>(key, dbValue);
           }
         }
       }
     } else {
-      resultCollection = await this.repository.findMany(ids);
+      resultCollection = await this.repository.findMany(validIds);
       let index = 0;
       while (index < resultCollection.length) {
-        const key = cache.createKey('todo', resultCollection[index].id, 'user', userId);
+        let key = cache.createKey('todo', resultCollection[index].id, 'user', resultCollection[index].userId);
+        if (resultCollection[index].listId) {
+          const listId = Number(resultCollection[index].listId);
+          key = cache.createKey(
+            'todo',
+            resultCollection[index].id,
+            'user',
+            resultCollection[index].userId,
+            'list',
+            listId,
+          );
+        }
         cache.set(key, resultCollection[index]);
         index++;
       }
     }
-
     return resultCollection;
   }
 
@@ -129,7 +154,6 @@ class TodoService {
         index++;
       }
     }
-
     return resultCollection;
   }
 
@@ -150,10 +174,10 @@ class TodoService {
           const id = key.split('todo')[1].split('.')[1];
           const dbValue = await this.repository.findById(Number(id));
           if (dbValue) {
+            const newKey = cache.createKey('todo', dbValue.id, 'user', dbValue.userId, 'list', listId);
+            cache.set<Todo>(newKey, dbValue);
             resultCollection.push(dbValue);
-            cache.set<Todo>(key, dbValue);
           }
-          return resultCollection;
         }
       }
     } else {
@@ -172,7 +196,6 @@ class TodoService {
         index++;
       }
     }
-
     return resultCollection;
   }
 
@@ -218,9 +241,8 @@ class TodoService {
         }
       }
     }
-
-    if (completeKeys.length > 0) {
-      cache.mDel(completeKeys);
+    for (const k of completeKeys) {
+      if (cache.has(k)) cache.del(k);
     }
 
     const validatedIdCollection: number[] = [];
@@ -232,8 +254,9 @@ class TodoService {
         validatedPayloadCollection.push(dataCollection[iterator]);
       }
     }
-    const actionResult = await this.repository.updateMany(ids, dataCollection);
+
     index = 0;
+    const actionResult = await this.repository.updateMany(validatedIdCollection, validatedPayloadCollection);
     while (index < actionResult.length) {
       let key = cache.createKey('todo', actionResult[index].id, 'user', actionResult[index].userId);
       if (actionResult[index].listId) {
@@ -251,11 +274,10 @@ class TodoService {
     const key = cache.createKey('todo', id);
     const completeKey = cache.listKeys().filter((f) => f.includes(key))[0];
 
-    await this.repository.delete(id);
-
-    if (completeKey) {
+    if (cache.has(completeKey)) {
       cache.del(completeKey);
     }
+    await this.repository.delete(id);
   }
 
   public async deleteMany(ids: number[]): Promise<void> {
@@ -274,12 +296,11 @@ class TodoService {
 
     if (validatedIds.length === 0) throw InvalidArgumentError;
 
+    const completeKeys: string[] = [];
+    const cacheKeyList = cache.listKeys();
     const keyCollection = validatedIds.map((m) => {
       return cache.createKey('todo', m);
     });
-
-    const completeKeys: string[] = [];
-    const cacheKeyList = cache.listKeys();
 
     for (let i = 0; i < cacheKeyList.length; ++i) {
       for (let j = 0; j < keyCollection.length; ++j) {
@@ -289,11 +310,10 @@ class TodoService {
       }
     }
 
-    await this.repository.deleteMany(validatedIds);
-
-    if (completeKeys.length > 0) {
-      cache.mDel(completeKeys);
+    for (const k of completeKeys) {
+      if (cache.has(k)) cache.del(k);
     }
+    await this.repository.deleteMany(validatedIds);
   }
 }
 

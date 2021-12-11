@@ -56,8 +56,7 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      const userId = Number(response.locals.userId);
-      const todo = await this.service.getById(id, userId);
+      const todo = await this.service.getById(id);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo>({ data: todo }));
     } catch (error) {
@@ -71,8 +70,7 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids }: { ids: number[] } = request.body;
-      const userId = Number(response.locals.userId);
-      const collection = await this.service.getMany(ids, userId);
+      const collection = await this.service.getMany(ids);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo[]>({ data: collection }));
     } catch (error) {
