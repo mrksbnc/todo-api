@@ -86,10 +86,6 @@ class Cache {
   public createKey(...args: Key[]): string {
     return args.join('.');
   }
-
-  public createKeyFromPath(path: string): string {
-    return path.split('/').splice(1).join('.');
-  }
 }
 
 export default new Cache();
