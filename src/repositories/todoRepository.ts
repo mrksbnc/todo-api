@@ -10,8 +10,9 @@ class TodoRepositroy {
     this.context = context;
   }
 
-  public async create(data: ICreateTodoData): Promise<void> {
-    await this.context.create({ data });
+  public async create(data: ICreateTodoData): Promise<Todo> {
+    const queryResult = await this.context.create({ data });
+    return queryResult;
   }
 
   public async createMany(data: ICreateTodoData[]) {
@@ -44,14 +45,21 @@ class TodoRepositroy {
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateTodoData) {
-    await this.context.update({ where: { id }, data });
+  public async update(id: number, data: IUpdateTodoData): Promise<Todo> {
+    const queryResult = await this.context.update({ where: { id }, data });
+    return queryResult;
   }
 
-  public async updateMany(ids: number[], collection: IUpdateTodoData[]) {
-    ids.forEach(async (id, index) => {
-      await this.context.update({ where: { id }, data: collection[index] });
-    });
+  public async updateMany(ids: number[], collection: IUpdateTodoData[]): Promise<Todo[]> {
+    let index = 0;
+    const queryResultCollection: Todo[] = [];
+
+    while (index < ids.length) {
+      const queryResult = await this.context.update({ where: { id: ids[index] }, data: collection[index] });
+      queryResultCollection.push(queryResult);
+      ++index;
+    }
+    return queryResultCollection;
   }
 
   public async delete(id: number) {
@@ -59,9 +67,11 @@ class TodoRepositroy {
   }
 
   public async deleteMany(ids: number[]): Promise<void> {
-    ids.forEach(async (id) => {
-      await this.context.delete({ where: { id } });
-    });
+    let index = 0;
+    while (index < ids.length) {
+      await this.context.delete({ where: { id: ids[index] } });
+      ++index;
+    }
   }
 }
 

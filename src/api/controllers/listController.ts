@@ -2,7 +2,6 @@
 
 import { List } from '@prisma/client';
 import ListService from '../../services/listService';
-import { ExpressRedisCache } from 'express-redis-cache';
 import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
@@ -16,10 +15,8 @@ class ListController {
   public readonly router: Router;
   private readonly path = '/list';
   protected readonly service: ListService;
-  private readonly cache: ExpressRedisCache;
 
-  constructor(service: ListService, cache: ExpressRedisCache) {
-    this.cache = cache;
+  constructor(service: ListService) {
     this.service = service;
     this.router = Router();
     this.initializeRoutes();
@@ -152,14 +149,12 @@ class ListController {
     this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
-      this.cache.route(),
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-      this.cache.route(),
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );

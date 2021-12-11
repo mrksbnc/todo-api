@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import config from '../config';
 import { createToken } from '../utils/token';
 import PartialUser from '../data/types/partialUser';
+import { ITokenPayload } from '../data/types/token';
 import UserRepositroy from '../repositories/userRepository';
 import NotFoundError from '../data/errors/resourceNotFoundError';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
@@ -34,7 +35,11 @@ class AuthService {
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) throw InvalidArgumentError;
 
-    const jwtPayload = { userId: user.id, name: `${user.firstName} ${user.lastName}` };
+    const jwtPayload: ITokenPayload = {
+      userId: user.id,
+      email: user.email,
+      name: `${user.firstName} ${user.lastName}`,
+    };
     const token = createToken(jwtPayload);
     const partialUser = services.user.createPartialUser(user);
 

@@ -10,8 +10,9 @@ class UserRepositroy {
     this.context = context;
   }
 
-  public async create(data: ICreateUserData): Promise<void> {
-    await this.context.create({ data });
+  public async create(data: ICreateUserData): Promise<User> {
+    const queryResult = await this.context.create({ data });
+    return queryResult;
   }
 
   public async findById(id: number): Promise<User | null> {
@@ -24,8 +25,9 @@ class UserRepositroy {
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateUserData): Promise<void> {
-    await this.context.update({ where: { id }, data });
+  public async update(id: number, data: IUpdateUserData): Promise<User> {
+    const queryResult = await this.context.update({ where: { id }, data });
+    return queryResult;
   }
 
   public async delete(id: number): Promise<void> {

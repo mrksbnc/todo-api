@@ -1,24 +1,95 @@
 'use strict';
 
-import logger from './logger';
 import config from '../config';
-import { ExpressRedisCache } from 'express-redis-cache';
+import NodeCache, { Key, ValueSetItem } from 'node-cache';
+import logger from './logger';
 
-/* eslint @typescript-eslint/no-var-requires: "off" */
-export const cache: ExpressRedisCache = require('express-redis-cache')({
-  host: config.cache.host,
-  port: config.cache.port,
-});
+class Cache {
+  private cache: NodeCache;
 
-cache.on('connected', function () {
-  logger.info('redis connection established successfully');
-});
+  constructor() {
+    this.cache = new NodeCache({
+      stdTTL: config.cache.std_ttl,
+      checkperiod: config.cache.checkperiod,
+      deleteOnExpire: config.cache.delete_on_expire,
+    });
 
-cache.on('disconnected', function () {
-  logger.info('cache disconnected');
-});
+    this.cache.on('set', (key: Key, value: unknown) => {
+      logger.info(`[CACHE] new value added to cache key: ${key}, value: ${JSON.stringify(value)}`);
+    });
 
-cache.on('error', (error: unknown) => {
-  const e = error as Error;
-  logger.error(e.message, error);
-});
+    this.cache.on('expired', (key: Key) => {
+      logger.info(`[CACHE] ${key} expired, data going to be deleted from memory`);
+    });
+  }
+
+  public get<T>(key: Key): T | undefined {
+    return this.cache.get(key);
+  }
+
+  public mget<T>(keys: Key[]): { [key: string]: T | undefined } {
+    return this.cache.mget(keys);
+  }
+
+  public take(key: Key): void {
+    return this.cache.take(key);
+  }
+
+  public set<T>(key: Key, value: T): boolean {
+    return this.cache.set(key, value);
+  }
+
+  public mSet(data: ValueSetItem[]) {
+    return this.cache.mset(data);
+  }
+
+  public del(key: Key): number {
+    return this.cache.del(key);
+  }
+
+  public mDel(keys: Key[]): number {
+    return this.cache.del(keys);
+  }
+
+  public getTtl(key: Key): number | undefined {
+    return this.cache.getTtl(key);
+  }
+
+  public changeTtl(key: Key, ttl: number): boolean {
+    return this.cache.ttl(key, ttl);
+  }
+
+  public listKeys(): string[] {
+    return this.cache.keys();
+  }
+
+  public has(key: Key): boolean {
+    return this.cache.has(key);
+  }
+
+  public getStats(): NodeCache.Stats {
+    return this.cache.getStats();
+  }
+
+  public flush(): void {
+    return this.cache.flushAll();
+  }
+
+  public flushStats(): void {
+    return this.cache.flushStats();
+  }
+
+  public close() {
+    this.cache.close();
+  }
+
+  public createKey(...args: Key[]): string {
+    return args.join('.');
+  }
+
+  public createKeyFromPath(path: string): string {
+    return path.split('/').splice(1).join('.');
+  }
+}
+
+export default new Cache();

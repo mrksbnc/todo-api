@@ -2,7 +2,6 @@
 
 import { Todo } from '@prisma/client';
 import TodoService from '../../services/todoService';
-import { ExpressRedisCache } from 'express-redis-cache';
 import BaseResponse from '../../data/models/baseResponse';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -16,10 +15,8 @@ class TodoController {
   public readonly router: Router;
   private readonly path = '/todo';
   protected readonly service: TodoService;
-  private readonly cache: ExpressRedisCache;
 
-  constructor(service: TodoService, cache: ExpressRedisCache) {
-    this.cache = cache;
+  constructor(service: TodoService) {
     this.service = service;
     this.router = Router();
     this.initializeRoutes();
@@ -59,7 +56,8 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      const todo = await this.service.getById(id);
+      const userId = Number(response.locals.userId);
+      const todo = await this.service.getById(id, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo>({ data: todo }));
     } catch (error) {
@@ -73,7 +71,8 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids }: { ids: number[] } = request.body;
-      const collection = await this.service.getMany(ids);
+      const userId = Number(response.locals.userId);
+      const collection = await this.service.getMany(ids, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo[]>({ data: collection }));
     } catch (error) {
@@ -191,23 +190,20 @@ class TodoController {
       body('data').exists().isArray(),
       this.createMany,
     );
-    this.router.get(this.path + '/get/:id', this.cache.route(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
-      this.cache.route(),
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-      this.cache.route(),
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );
     this.router.get(
       this.path + '/get/list/:listId',
-      this.cache.route(),
       param('listId').exists().toInt().isNumeric(),
       this.getManyByListId,
     );

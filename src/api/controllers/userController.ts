@@ -2,7 +2,6 @@
 
 import UserService from '../../services/userService';
 import PartialUser from '../../data/types/partialUser';
-import { ExpressRedisCache } from 'express-redis-cache';
 import BaseResponse from '../../data/models/baseResponse';
 import { IUpdateUserData } from '../../data/types/repository';
 import { body, param, validationResult } from 'express-validator';
@@ -16,10 +15,8 @@ class UserController {
   public readonly router: Router;
   private readonly path = '/user';
   protected readonly service: UserService;
-  private readonly cache: ExpressRedisCache;
 
-  constructor(service: UserService, cache: ExpressRedisCache) {
-    this.cache = cache;
+  constructor(service: UserService) {
     this.service = service;
     this.router = Router();
     this.initializeRoutes();

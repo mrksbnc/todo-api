@@ -35,24 +35,33 @@ class ListRepositroy {
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateListData) {
-    await this.context.update({ where: { id }, data });
+  public async update(id: number, data: IUpdateListData): Promise<List> {
+    const queryResult = await this.context.update({ where: { id }, data });
+    return queryResult;
   }
 
-  public async updateMany(ids: number[], collection: IUpdateListData[]) {
-    ids.forEach(async (id, index) => {
-      await this.context.update({ where: { id }, data: collection[index] });
-    });
+  public async updateMany(ids: number[], collection: IUpdateListData[]): Promise<List[]> {
+    let index = 0;
+    const queryResultCollection: List[] = [];
+
+    while (index < ids.length) {
+      const queryResult = await this.context.update({ where: { id: ids[index] }, data: collection[index] });
+      queryResultCollection.push(queryResult);
+      ++index;
+    }
+    return queryResultCollection;
   }
 
-  public async delete(id: number) {
+  public async delete(id: number): Promise<void> {
     await this.context.delete({ where: { id } });
   }
 
   public async deleteMany(ids: number[]): Promise<void> {
-    ids.forEach(async (id) => {
-      await this.context.delete({ where: { id } });
-    });
+    let index = 0;
+    while (index < ids.length) {
+      await this.context.delete({ where: { id: ids[index] } });
+      ++index;
+    }
   }
 }
 
