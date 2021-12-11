@@ -1,10 +1,10 @@
 'use strict';
 
 import { List } from '@prisma/client';
-import { body, param, validationResult } from 'express-validator';
 import ListService from '../../services/listService';
 import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response, Router } from 'express';
+import { body, param, validationResult } from 'express-validator';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
@@ -42,7 +42,8 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      const list = await this.service.getById(id);
+      const userId = Number(response.locals.userId);
+      const list = await this.service.getById(id, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<List>({ data: list }));
     } catch (error) {
@@ -56,7 +57,8 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids }: { ids: number[] } = request.body;
-      const collection = await this.service.getMany(ids);
+      const userId = Number(response.locals.userId);
+      const collection = await this.service.getMany(ids, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<List[]>({ data: collection }));
     } catch (error) {
@@ -88,7 +90,8 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { id, data }: { id: number; data: IUpdateListData } = request.body;
-      await this.service.update(id, data);
+      const userId = Number(response.locals.userId);
+      await this.service.update(id, data, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED }));
     } catch (error) {
@@ -102,7 +105,8 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids, data }: { ids: number[]; data: IUpdateListData[] } = request.body;
-      await this.service.updateMany(ids, data);
+      const userId = Number(response.locals.userId);
+      await this.service.updateMany(ids, data, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED_MANY }));
     } catch (error) {
@@ -116,7 +120,8 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      await this.service.delete(id);
+      const userId = Number(response.locals.userId);
+      await this.service.delete(id, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED }));
     } catch (error) {
@@ -130,7 +135,8 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids }: { ids: number[] } = request.body;
-      await this.service.deleteMany(ids);
+      const userId = Number(response.locals.userId);
+      await this.service.deleteMany(ids, userId);
 
       response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED_MANY }));
     } catch (error) {

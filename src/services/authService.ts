@@ -5,17 +5,11 @@ import bcrypt from 'bcrypt';
 import config from '../config';
 import { createToken } from '../utils/token';
 import PartialUser from '../data/types/partialUser';
-import UserRepositroy from '../repositories/userRepository';
+import { ITokenPayload } from '../data/types/token';
 import NotFoundError from '../data/errors/resourceNotFoundError';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
 
 class AuthService {
-  private readonly repository: UserRepositroy;
-
-  constructor(repository: UserRepositroy) {
-    this.repository = repository;
-  }
-
   public async generatePasswordHash(plainTextPassword: string): Promise<string> {
     const salt = await bcrypt.genSalt(config.auth.salt_rounds);
     const hash = await bcrypt.hash(plainTextPassword, salt);
@@ -34,7 +28,11 @@ class AuthService {
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) throw InvalidArgumentError;
 
-    const jwtPayload = { userId: user.id, name: `${user.firstName} ${user.lastName}` };
+    const jwtPayload: ITokenPayload = {
+      userId: user.id,
+      email: user.email,
+      name: `${user.firstName} ${user.lastName}`,
+    };
     const token = createToken(jwtPayload);
     const partialUser = services.user.createPartialUser(user);
 

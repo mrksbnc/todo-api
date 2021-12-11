@@ -7,7 +7,6 @@ class Database {
   public async initializeDatabase(context: PrismaClient) {
     try {
       await context.$connect();
-
       logger.info('database connection established successfully');
     } catch (error) {
       logger.fatal('database connection failed', error);

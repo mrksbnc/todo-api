@@ -47,7 +47,7 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "redis": "^4.0.0"
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -59,8 +59,6 @@
     "@types/jest": "^27.0.3",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/morgan": "^1.9.3",
-    "@types/redis": "^4.0.11",
-    "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
     "eslint": "^8.4.1",

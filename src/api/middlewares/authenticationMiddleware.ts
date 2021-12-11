@@ -8,7 +8,7 @@ import InvalidTokenError from '../../data/errors/invalidTokenError';
 import TokenNotFoundError from '../../data/errors/tokenNotFoundError';
 import { checkExpirationStatus, createToken, decodeJwtToken } from '../../utils/token';
 
-const authenticationMiddleware = function (request: Request, response: Response, next: NextFunction) {
+function authenticationMiddleware(request: Request, response: Response, next: NextFunction) {
   if (request.path.includes('register') || request.path.includes('login')) {
     next();
     return;
@@ -30,7 +30,11 @@ const authenticationMiddleware = function (request: Request, response: Response,
     if (error instanceof jwt.TokenExpiredError) {
       const tokenExpirationStatus = checkExpirationStatus(decodedPayload);
       if (tokenExpirationStatus === 'grace') {
-        const newToken = createToken({ userId: decodedPayload.userId, name: decodedPayload.name });
+        const newToken = createToken({
+          userId: decodedPayload.userId,
+          email: decodedPayload.email,
+          name: decodedPayload.name,
+        });
         response.set('authorization', 'Bearer ' + newToken);
         next();
         return;
@@ -43,9 +47,13 @@ const authenticationMiddleware = function (request: Request, response: Response,
   }
 
   response.locals.userId = decodedPayload.userId;
-  const newToken = createToken({ userId: decodedPayload.userId, name: decodedPayload.name });
+  const newToken = createToken({
+    userId: decodedPayload.userId,
+    email: decodedPayload.email,
+    name: decodedPayload.name,
+  });
   response.set('authorization', 'Bearer ' + newToken);
   next();
-};
+}
 
 export default authenticationMiddleware;

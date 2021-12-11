@@ -7,7 +7,7 @@ import AuthService from './authService';
 import repositories from '../repositories';
 
 const services = Object.freeze({
-  auth: new AuthService(repositories.user),
+  auth: new AuthService(),
   user: new UserService(repositories.user),
   todo: new TodoService(repositories.todo),
   list: new ListService(repositories.list),
