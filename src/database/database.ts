@@ -11,11 +11,9 @@ class Database {
   public async initializeDatabase(context: PrismaClient) {
     try {
       await this.connect(context);
-
-      logger.info('database init finished successfully');
+      logger.info('database connection established successfully');
     } catch (error) {
-      logger.fatal('database init failed');
-      logger.error(error);
+      logger.fatal('database connection failed! process will exit now', error);
       process.exit(1);
     }
   }

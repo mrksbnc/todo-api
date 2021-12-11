@@ -11,13 +11,18 @@ const config = Object.freeze({
   isProd: process.env.NODE_ENV === 'production',
   server: {
     port: Number(process.env.PORT),
-    base_url: process.env.NODE_ENV === 'production' ? String(process.env.BASE_URL) : 'http://localhost',
+    base_url:
+      process.env.NODE_ENV === 'production' ? String(process.env.BASE_URL_PROD) : String(process.env.BASE_URL_DEV),
     enabled_request_methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
   auth: {
     salt_rounds: Number(process.env.SALT_ROUNDS),
     secret: String(process.env.SECRET),
     jwt_exp: String(process.env.JWT_EXP),
+  },
+  cache: {
+    host: String(process.env.REDIS_CACHE_HOST),
+    port: Number(process.env.REDIS_CACHE_PORT),
   },
   log: {
     log_period: String(process.env.LOG_PERIOD),
