@@ -154,10 +154,9 @@ class ListService {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
     const key = cache.createKey('list', id, 'user', userId);
-    const completeKey = cache.listKeys().filter((f) => f.includes(key))[0];
 
-    if (cache.has(completeKey)) {
-      cache.del(completeKey);
+    if (cache.has(key)) {
+      cache.del(key);
     }
     await this.repository.delete(id);
   }
