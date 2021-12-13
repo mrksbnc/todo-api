@@ -1,5 +1,5 @@
 {
-  "name": "todo-api",
+  "name": "tododeck-api",
   "version": "0.0.0-development",
   "description": "simple restful api for my todo app project written in typescript with express",
   "main": "index.js",
