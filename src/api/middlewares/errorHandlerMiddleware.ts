@@ -1,7 +1,6 @@
 'use strict';
 
 import logger from '../../utils/logger';
-import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response } from 'express';
 import HttpException from '../../data/exceptions/httpException';
 import BaseException from '../../data/exceptions/baseException';
@@ -29,7 +28,7 @@ function errorHandlerMiddleware(error: unknown, request: Request, response: Resp
   response.status(responseStatusCode);
   response.format({
     'application/json': () => {
-      response.json(new BaseResponse({ success: false, message: responseErrorMessage }));
+      response.json({ success: false, message: responseErrorMessage });
     },
     default: () => {
       response.type('text/plain').send(responseErrorMessage);

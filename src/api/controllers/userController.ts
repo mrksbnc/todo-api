@@ -1,8 +1,6 @@
 'use strict';
 
 import UserService from '../../services/userService';
-import PartialUser from '../../data/types/partialUser';
-import BaseResponse from '../../data/models/baseResponse';
 import { IUpdateUserData } from '../../data/types/repository';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -30,7 +28,7 @@ class UserController {
       const id = Number(request.params.id);
       const user = await this.service.getPartialUserById(id);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<PartialUser>({ data: user }));
+      response.status(HttpStatusCodeEnum.OK).json({ user });
     } catch (error) {
       next(error);
     }
@@ -44,7 +42,7 @@ class UserController {
       const email = String(request.params.email);
       const user = await this.service.getPartialUserByEmail(email);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<PartialUser>({ data: user }));
+      response.status(HttpStatusCodeEnum.OK).json({ user });
     } catch (error) {
       next(error);
     }
@@ -58,7 +56,7 @@ class UserController {
       const { id, data }: { id: number; data: IUpdateUserData } = request.body;
       await this.service.update(id, data);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
     } catch (error) {
       next(error);
     }
@@ -72,7 +70,7 @@ class UserController {
       const id = Number(request.params.id);
       await this.service.delete(id);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
     } catch (error) {
       next(error);
     }

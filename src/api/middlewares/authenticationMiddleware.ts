@@ -3,7 +3,6 @@
 import jwt from 'jsonwebtoken';
 import config from '../../config';
 import { Request, Response, NextFunction } from 'express';
-import BaseResponse from '../../data/models/baseResponse';
 import InvalidTokenError from '../../data/errors/invalidTokenError';
 import TokenNotFoundError from '../../data/errors/tokenNotFoundError';
 import { checkExpirationStatus, createToken, decodeJwtToken } from '../../utils/token';
@@ -18,7 +17,7 @@ function authenticationMiddleware(request: Request, response: Response, next: Ne
   if (!bearerToken) {
     response
       .status(TokenNotFoundError.httpException.status)
-      .json(new BaseResponse({ success: false, message: TokenNotFoundError.httpException.message }));
+      .json({ success: false, message: TokenNotFoundError.httpException.message });
     return;
   }
 
@@ -42,7 +41,7 @@ function authenticationMiddleware(request: Request, response: Response, next: Ne
     }
     response
       .status(InvalidTokenError.httpException.status)
-      .json(new BaseResponse({ success: false, message: InvalidTokenError.httpException.message }));
+      .json({ success: false, message: InvalidTokenError.httpException.message });
     return;
   }
 

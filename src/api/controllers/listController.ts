@@ -1,8 +1,6 @@
 'use strict';
 
-import { List } from '@prisma/client';
 import ListService from '../../services/listService';
-import BaseResponse from '../../data/models/baseResponse';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
@@ -30,7 +28,7 @@ class ListController {
       const data: ICreateListData = request.body;
       await this.service.create(data);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.CREATED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
     } catch (error) {
       next(error);
     }
@@ -45,7 +43,7 @@ class ListController {
       const userId = Number(response.locals.userId);
       const list = await this.service.getById(id, userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<List>({ data: list }));
+      response.status(HttpStatusCodeEnum.OK).json({ list });
     } catch (error) {
       next(error);
     }
@@ -60,7 +58,7 @@ class ListController {
       const userId = Number(response.locals.userId);
       const collection = await this.service.getMany(ids, userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<List[]>({ data: collection }));
+      response.status(HttpStatusCodeEnum.OK).json({ collection });
     } catch (error) {
       next(error);
     }
@@ -76,9 +74,9 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const userId = Number(request.params.userId);
-      const listCollection = await this.service.getManyByUserId(userId);
+      const collection = await this.service.getManyByUserId(userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<List[]>({ data: listCollection }));
+      response.status(HttpStatusCodeEnum.OK).json({ collection });
     } catch (error) {
       next(error);
     }
@@ -93,7 +91,7 @@ class ListController {
       const userId = Number(response.locals.userId);
       await this.service.update(id, data, userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
     } catch (error) {
       next(error);
     }
@@ -108,7 +106,7 @@ class ListController {
       const userId = Number(response.locals.userId);
       await this.service.updateMany(ids, data, userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED_MANY }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
     } catch (error) {
       next(error);
     }
@@ -123,7 +121,7 @@ class ListController {
       const userId = Number(response.locals.userId);
       await this.service.delete(id, userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
     } catch (error) {
       next(error);
     }
@@ -138,7 +136,7 @@ class ListController {
       const userId = Number(response.locals.userId);
       await this.service.deleteMany(ids, userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED_MANY }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED_MANY });
     } catch (error) {
       next(error);
     }
