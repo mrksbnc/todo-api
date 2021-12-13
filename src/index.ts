@@ -1,7 +1,7 @@
 'use strict';
 
 import Server from './server';
-import Database from './database/database';
+import Database from './database';
 import validateEnv from './utils/validateEnv';
 import baseContext from './database/context/baseContext';
 

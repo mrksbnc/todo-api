@@ -6,17 +6,10 @@ import config from '../config';
 import { createToken } from '../utils/token';
 import PartialUser from '../data/types/partialUser';
 import { ITokenPayload } from '../data/types/token';
-import UserRepositroy from '../repositories/userRepository';
 import NotFoundError from '../data/errors/resourceNotFoundError';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
 
 class AuthService {
-  private readonly repository: UserRepositroy;
-
-  constructor(repository: UserRepositroy) {
-    this.repository = repository;
-  }
-
   public async generatePasswordHash(plainTextPassword: string): Promise<string> {
     const salt = await bcrypt.genSalt(config.auth.salt_rounds);
     const hash = await bcrypt.hash(plainTextPassword, salt);

@@ -14,6 +14,8 @@ class Cache {
       deleteOnExpire: config.cache.delete_on_expire,
     });
 
+    logger.info('cache initialized successfully');
+
     this.cache.on('set', (key: Key, value: unknown) => {
       logger.info(`[CACHE] new value added to cache key: ${key}, value: ${JSON.stringify(value)}`);
     });
