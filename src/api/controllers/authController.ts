@@ -2,8 +2,6 @@
 
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
-import PartialUser from '../../data/types/partialUser';
-import BaseResponse from '../../data/models/baseResponse';
 import { body, validationResult } from 'express-validator';
 import { ICreateUserData } from '../../data/types/repository';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -33,9 +31,7 @@ class AuthController {
       const createUserData: ICreateUserData = request.body;
       await this.userService.create(createUserData);
 
-      response
-        .status(HttpStatusCodeEnum.OK)
-        .json(new BaseResponse({ message: ResponseMessageEnum.CREATED, success: true }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED, success: true });
     } catch (error) {
       next(error);
     }
@@ -49,8 +45,7 @@ class AuthController {
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
 
-      response.set('authorization', 'Bearer ' + token);
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<PartialUser>({ data: user }));
+      response.status(HttpStatusCodeEnum.OK).json({ user, token: `Bearer ${token}` });
     } catch (error) {
       next(error);
     }

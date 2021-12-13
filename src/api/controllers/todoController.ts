@@ -1,8 +1,6 @@
 'use strict';
 
-import { Todo } from '@prisma/client';
 import TodoService from '../../services/todoService';
-import BaseResponse from '../../data/models/baseResponse';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
@@ -30,7 +28,7 @@ class TodoController {
       const data: ICreateTodoData = request.body;
       await this.service.create(data);
 
-      response.status(HttpStatusCodeEnum.CREATED).json(new BaseResponse({ message: ResponseMessageEnum.CREATED }));
+      response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED });
     } catch (error) {
       next(error);
     }
@@ -44,7 +42,7 @@ class TodoController {
       const data: ICreateTodoData[] = request.body.data;
       await this.service.createMany(data);
 
-      response.status(HttpStatusCodeEnum.CREATED).json(new BaseResponse({ message: ResponseMessageEnum.CREATED_MANY }));
+      response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED_MANY });
     } catch (error) {
       next(error);
     }
@@ -58,7 +56,7 @@ class TodoController {
       const id = Number(request.params.id);
       const todo = await this.service.getById(id);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo>({ data: todo }));
+      response.status(HttpStatusCodeEnum.OK).json({ todo });
     } catch (error) {
       next(error);
     }
@@ -72,7 +70,7 @@ class TodoController {
       const { ids }: { ids: number[] } = request.body;
       const collection = await this.service.getMany(ids);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo[]>({ data: collection }));
+      response.status(HttpStatusCodeEnum.OK).json({ collection });
     } catch (error) {
       next(error);
     }
@@ -88,9 +86,9 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const userId = Number(request.params.userId);
-      const listCollection = await this.service.getManyByUserId(userId);
+      const collection = await this.service.getManyByUserId(userId);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo[]>({ data: listCollection }));
+      response.status(HttpStatusCodeEnum.OK).json({ collection });
     } catch (error) {
       next(error);
     }
@@ -107,9 +105,9 @@ class TodoController {
         if (!errors.isEmpty()) next(InvalidArgumentError);
 
         const listId = Number(request.params.listId);
-        const listCollection = await this.service.getManyByListId(listId);
+        const collection = await this.service.getManyByListId(listId);
 
-        response.status(HttpStatusCodeEnum.OK).json(new BaseResponse<Todo[]>({ data: listCollection }));
+        response.status(HttpStatusCodeEnum.OK).json({ collection });
       } catch (error) {
         next(error);
       }
@@ -126,7 +124,7 @@ class TodoController {
       const { id, data }: { id: number; data: IUpdateTodoData } = request.body;
       await this.service.update(id, data);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
     } catch (error) {
       next(error);
     }
@@ -140,7 +138,7 @@ class TodoController {
       const { ids, data }: { ids: number[]; data: IUpdateTodoData[] } = request.body;
       await this.service.updateMany(ids, data);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.UPDATED_MANY }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
     } catch (error) {
       next(error);
     }
@@ -154,7 +152,7 @@ class TodoController {
       const id = Number(request.params.id);
       await this.service.delete(id);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
     } catch (error) {
       next(error);
     }
@@ -168,7 +166,7 @@ class TodoController {
       const { ids }: { ids: number[] } = request.body;
       await this.service.deleteMany(ids);
 
-      response.status(HttpStatusCodeEnum.OK).json(new BaseResponse({ message: ResponseMessageEnum.DELETED_MANY }));
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED_MANY });
     } catch (error) {
       next(error);
     }
