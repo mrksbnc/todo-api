@@ -10,6 +10,7 @@ enum ErrorMessageEnum {
   INVALID_NUMERIC_ID = 'Invalid numeric id received from client',
   MISSING_AUTH_TOKEN = 'Authorization token missing from header',
   RESOURCE_ALREADY_EXISTS = 'Resource already exists in database',
+  INCORRECT_USER_DATA = 'Incorrect user data received from client',
   INVALID_AUTH_TOKEN = 'Invalid authentication token received from client',
   UNAUTHORIZED = 'Authentication is required to access the requested resource',
   INVALID_CONTENT_TYPE = 'Invalid content type, server requires application/json',

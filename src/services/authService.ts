@@ -7,7 +7,7 @@ import { createToken } from '../utils/token';
 import PartialUser from '../data/types/partialUser';
 import { ITokenPayload } from '../data/types/token';
 import NotFoundError from '../data/errors/resourceNotFoundError';
-import InvalidArgumentError from '../data/errors/invalidArgumentError';
+import IncorrectUserDataError from '../data/errors/incorrectUserDataError';
 
 class AuthService {
   public async generatePasswordHash(plainTextPassword: string): Promise<string> {
@@ -26,7 +26,7 @@ class AuthService {
     if (!user) throw NotFoundError;
 
     const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) throw InvalidArgumentError;
+    if (!isValidPassword) throw IncorrectUserDataError;
 
     const jwtPayload: ITokenPayload = {
       userId: user.id,
