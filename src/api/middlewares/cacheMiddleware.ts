@@ -2,6 +2,6 @@
 
 import apicache from 'apicache';
 
-const cache = apicache.middleware;
+const cache = apicache.options({ defaultDuration: '30 minutes' }).middleware;
 
 export default cache;

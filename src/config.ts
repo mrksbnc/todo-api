@@ -20,9 +20,6 @@ const config = Object.freeze({
     secret: String(process.env.SECRET),
     jwt_exp: String(process.env.JWT_EXP),
   },
-  cache: {
-    std_ttl: String(process.env.STD_TDL),
-  },
   log: {
     log_period: String(process.env.LOG_PERIOD),
     log_dir_path: path.resolve('src', 'logs'),
