@@ -21,9 +21,7 @@ const config = Object.freeze({
     jwt_exp: String(process.env.JWT_EXP),
   },
   cache: {
-    std_ttl: Number(process.env.STD_TDL),
-    checkperiod: Number(process.env.CHECKPERIOD),
-    delete_on_expire: Boolean(process.env.DELETE_ON_EXPIRE),
+    std_ttl: String(process.env.STD_TDL),
   },
   log: {
     log_period: String(process.env.LOG_PERIOD),

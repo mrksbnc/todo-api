@@ -8,6 +8,7 @@ import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
 import { ICreateListData, IUpdateListData } from '../../data/types/repository';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
+import cache from '../middlewares/cacheMiddleware';
 
 class ListController {
   public readonly router: Router;
@@ -40,8 +41,7 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      const userId = Number(response.locals.userId);
-      const list = await this.service.getById(id, userId);
+      const list = await this.service.getById(id);
 
       response.status(HttpStatusCodeEnum.OK).json({ list });
     } catch (error) {
@@ -55,8 +55,7 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids }: { ids: number[] } = request.body;
-      const userId = Number(response.locals.userId);
-      const collection = await this.service.getMany(ids, userId);
+      const collection = await this.service.getMany(ids);
 
       response.status(HttpStatusCodeEnum.OK).json({ collection });
     } catch (error) {
@@ -88,8 +87,7 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { id, data }: { id: number; data: IUpdateListData } = request.body;
-      const userId = Number(response.locals.userId);
-      await this.service.update(id, data, userId);
+      await this.service.update(id, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
     } catch (error) {
@@ -103,8 +101,7 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids, data }: { ids: number[]; data: IUpdateListData[] } = request.body;
-      const userId = Number(response.locals.userId);
-      await this.service.updateMany(ids, data, userId);
+      await this.service.updateMany(ids, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
     } catch (error) {
@@ -118,8 +115,7 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      const userId = Number(response.locals.userId);
-      await this.service.delete(id, userId);
+      await this.service.delete(id);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
     } catch (error) {
@@ -133,8 +129,7 @@ class ListController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { ids }: { ids: number[] } = request.body;
-      const userId = Number(response.locals.userId);
-      await this.service.deleteMany(ids, userId);
+      await this.service.deleteMany(ids);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED_MANY });
     } catch (error) {
@@ -150,15 +145,17 @@ class ListController {
       body('userId').toInt().isNumeric(),
       this.create,
     );
-    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
+      cache(),
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
+      cache(),
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );

@@ -34,6 +34,7 @@
   "dependencies": {
     "@mechanicalhuman/bunyan-pretty": "^3.0.3",
     "@prisma/client": "^3.6.0",
+    "apicache": "^1.6.3",
     "bcrypt": "^5.0.1",
     "bunyan": "^1.8.15",
     "cookie-parser": "^1.4.6",
@@ -45,10 +46,10 @@
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0",
-    "node-cache": "^5.1.2"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@types/apicache": "^1.6.1",
     "@types/bcrypt": "^5.0.0",
     "@types/bunyan": "^1.8.8",
     "@types/cookie-parser": "^1.4.2",
