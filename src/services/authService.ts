@@ -4,7 +4,6 @@ import services from '.';
 import bcrypt from 'bcrypt';
 import config from '../config';
 import { createToken } from '../utils/token';
-import PartialUser from '../data/types/partialUser';
 import { ITokenPayload } from '../data/types/token';
 import NotFoundError from '../data/errors/resourceNotFoundError';
 import IncorrectUserDataError from '../data/errors/incorrectUserDataError';
@@ -21,7 +20,7 @@ class AuthService {
     return isMatch;
   }
 
-  public async login(email: string, password: string): Promise<{ token: string; user: PartialUser }> {
+  public async login(email: string, password: string): Promise<{ token: string }> {
     const user = await services.user.getUserByEmail(email);
     if (!user) throw NotFoundError;
 
@@ -34,11 +33,9 @@ class AuthService {
       name: `${user.firstName} ${user.lastName}`,
     };
     const token = createToken(jwtPayload);
-    const partialUser = services.user.createPartialUser(user);
 
     return {
       token,
-      user: partialUser,
     };
   }
 }

@@ -43,9 +43,9 @@ class AuthController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { email, password }: { email: string; password: string } = request.body;
-      const { token, user } = await this.authService.login(email, password);
+      const { token } = await this.authService.login(email, password);
 
-      response.status(HttpStatusCodeEnum.OK).json({ user, token: `Bearer ${token}` });
+      response.status(HttpStatusCodeEnum.OK).json({ token: `Bearer ${token}` });
     } catch (error) {
       next(error);
     }
