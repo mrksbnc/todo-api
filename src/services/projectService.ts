@@ -1,30 +1,30 @@
 'use strict';
 
-import { List } from '.prisma/client';
+import { Project } from '.prisma/client';
 import { isValidNumericId } from '../utils/validators';
-import ListRepositroy from '../repositories/listRepository';
+import ProjectRepositroy from '../repositories/projectRepository';
 import InvalidArgumentError from '../data/errors/invalidArgumentError';
 import InvalidNumericIdError from '../data/errors/invalidNumericIdError';
 import ResourceNotFoundError from '../data/errors/resourceNotFoundError';
-import { ICreateListData, IUpdateListData } from '../data/types/repository';
+import { ICreateProjectData, IUpdateProjectData } from '../data/types/repository';
 
-class ListService {
-  private readonly repository: ListRepositroy;
+class ProjectService {
+  private readonly repository: ProjectRepositroy;
 
-  constructor(repository: ListRepositroy) {
+  constructor(repository: ProjectRepositroy) {
     this.repository = repository;
   }
 
-  public async create(data: ICreateListData): Promise<void> {
+  public async create(data: ICreateProjectData): Promise<void> {
     await this.repository.create(data);
   }
 
-  public async getById(id: number): Promise<List> {
+  public async getById(id: number): Promise<Project> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
-    const list = await this.repository.findById(id);
+    const project = await this.repository.findById(id);
 
-    if (!list) throw ResourceNotFoundError;
-    return list;
+    if (!project) throw ResourceNotFoundError;
+    return project;
   }
 
   public async getMany(ids: number[]) {
@@ -38,19 +38,19 @@ class ListService {
     return collection;
   }
 
-  public async getManyByUserId(userId: number): Promise<List[]> {
+  public async getManyByUserId(userId: number): Promise<Project[]> {
     if (!isValidNumericId(userId)) throw InvalidNumericIdError;
 
     const collection = await this.repository.findManyByUserId(userId);
     return collection;
   }
 
-  public async update(id: number, data: IUpdateListData): Promise<void> {
+  public async update(id: number, data: IUpdateProjectData): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
     await this.repository.update(id, data);
   }
 
-  public async updateMany(ids: number[], collection: IUpdateListData[]): Promise<void> {
+  public async updateMany(ids: number[], collection: IUpdateProjectData[]): Promise<void> {
     let index = 0;
     let isMinimumOneValidNumericIdFound = false;
     while (!isMinimumOneValidNumericIdFound) {
@@ -60,7 +60,7 @@ class ListService {
     if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
     const validatedIdCollection: number[] = [];
-    const validatedPayloadCollection: IUpdateListData[] = [];
+    const validatedPayloadCollection: IUpdateProjectData[] = [];
 
     for (let iterator = 0; iterator < ids.length; ++iterator) {
       if (isValidNumericId(ids[iterator])) {
@@ -95,4 +95,4 @@ class ListService {
   }
 }
 
-export default ListService;
+export default ProjectService;

@@ -1,26 +1,26 @@
 'use strict';
 
-import { List, Prisma } from '.prisma/client';
-import { ICreateListData, IUpdateListData } from '../data/types/repository';
+import { Project, Prisma } from '.prisma/client';
+import { ICreateProjectData, IUpdateProjectData } from '../data/types/repository';
 
-class ListRepositroy {
-  private readonly context: Prisma.ListDelegate<false>;
+class ProjectRepositroy {
+  private readonly context: Prisma.ProjectDelegate<false>;
 
-  constructor(context: Prisma.ListDelegate<false>) {
+  constructor(context: Prisma.ProjectDelegate<false>) {
     this.context = context;
   }
 
-  public async create(data: ICreateListData) {
+  public async create(data: ICreateProjectData) {
     const queryResult = await this.context.create({ data });
     return queryResult;
   }
 
-  public async findById(id: number): Promise<List | null> {
+  public async findById(id: number): Promise<Project | null> {
     const queryResult = await this.context.findUnique({ where: { id } });
     return queryResult;
   }
 
-  public async findMany(ids: number[]): Promise<List[]> {
+  public async findMany(ids: number[]): Promise<Project[]> {
     const actionResult = [];
 
     for (const id of ids) {
@@ -31,19 +31,19 @@ class ListRepositroy {
     return actionResult;
   }
 
-  public async findManyByUserId(userId: number): Promise<List[]> {
+  public async findManyByUserId(userId: number): Promise<Project[]> {
     const queryResult = await this.context.findMany({ where: { userId } });
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateListData): Promise<List> {
+  public async update(id: number, data: IUpdateProjectData): Promise<Project> {
     const queryResult = await this.context.update({ where: { id }, data });
     return queryResult;
   }
 
-  public async updateMany(ids: number[], collection: IUpdateListData[]): Promise<List[]> {
+  public async updateMany(ids: number[], collection: IUpdateProjectData[]): Promise<Project[]> {
     let index = 0;
-    const queryResultCollection: List[] = [];
+    const queryResultCollection: Project[] = [];
 
     while (index < ids.length) {
       const queryResult = await this.context.update({ where: { id: ids[index] }, data: collection[index] });
@@ -66,4 +66,4 @@ class ListRepositroy {
   }
 }
 
-export default ListRepositroy;
+export default ProjectRepositroy;

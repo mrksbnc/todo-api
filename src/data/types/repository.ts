@@ -15,14 +15,14 @@ export interface IUpdateUserData {
   password?: string;
 }
 
-export interface ICreateListData {
+export interface ICreateProjectData {
   name: string;
   description?: string;
   userId: number;
   color: string;
 }
 
-export interface IUpdateListData {
+export interface IUpdateProjectData {
   id: number;
   name?: string;
   description?: string;

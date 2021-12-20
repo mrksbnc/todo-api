@@ -9,12 +9,13 @@ CREATE TABLE `users` (
     `password` VARCHAR(512) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+
     UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `lists` (
+CREATE TABLE `projects` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
     `description` VARCHAR(256) NULL,
@@ -22,6 +23,7 @@ CREATE TABLE `lists` (
     `color` VARCHAR(6) NOT NULL DEFAULT 'ffffff',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -36,5 +38,6 @@ CREATE TABLE `todos` (
     `due_date` DATETIME(3) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

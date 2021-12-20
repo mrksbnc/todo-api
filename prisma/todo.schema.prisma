@@ -21,7 +21,7 @@ model User {
   @@map("users")
 }
 
-model List {
+model Project {
   id          Int      @id @default(autoincrement())
   name        String   @db.VarChar(64)
   description String?  @db.VarChar(256)
@@ -30,7 +30,7 @@ model List {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@map("lists")
+  @@map("projects")
 }
 
 model Todo {

@@ -1,21 +1,21 @@
 'use strict';
 
-import ListService from '../../services/listService';
+import cache from '../middlewares/cacheMiddleware';
+import ProjectService from '../../services/projectService';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
 import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
-import { ICreateListData, IUpdateListData } from '../../data/types/repository';
+import { ICreateProjectData, IUpdateProjectData } from '../../data/types/repository';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
-import cache from '../middlewares/cacheMiddleware';
 
-class ListController {
+class ProjectController {
   public readonly router: Router;
   private readonly path = '/list';
-  protected readonly service: ListService;
+  protected readonly service: ProjectService;
 
-  constructor(service: ListService) {
+  constructor(service: ProjectService) {
     this.service = service;
     this.router = Router();
     this.initializeRoutes();
@@ -26,7 +26,7 @@ class ListController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const data: ICreateListData = request.body;
+      const data: ICreateProjectData = request.body;
       await this.service.create(data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
@@ -86,7 +86,7 @@ class ListController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { id, data }: { id: number; data: IUpdateListData } = request.body;
+      const { id, data }: { id: number; data: IUpdateProjectData } = request.body;
       await this.service.update(id, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
@@ -100,7 +100,7 @@ class ListController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { ids, data }: { ids: number[]; data: IUpdateListData[] } = request.body;
+      const { ids, data }: { ids: number[]; data: IUpdateProjectData[] } = request.body;
       await this.service.updateMany(ids, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
@@ -183,4 +183,4 @@ class ListController {
   }
 }
 
-export default ListController;
+export default ProjectController;

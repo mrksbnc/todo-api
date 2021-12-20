@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../../utils/logger';
-import { Prisma, PrismaClient } from '.prisma/client';
+import { PrismaClient } from '.prisma/client';
 
 const baseContext = new PrismaClient({
   errorFormat: 'minimal',
