@@ -39,7 +39,8 @@ model Todo {
   description String?   @db.VarChar(256)
   userId      Int       @map("user_id")
   listId      Int?      @map("list_id")
-  completedFl Boolean   @default(false) @map("completed_fl")
+  important   Boolean   @default(false) @db.TinyInt
+  completedFl Boolean   @default(false) @map("completed_fl") @db.TinyInt
   dueDate     DateTime? @map("due_date") @db.Date
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")

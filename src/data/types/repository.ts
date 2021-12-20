@@ -34,8 +34,10 @@ export interface ICreateTodoData {
   name: string;
   description: string;
   userId: number;
-  completedFl: boolean;
   dueDate?: Date;
+  listId?: number;
+  important?: boolean;
+  completedFl?: boolean;
 }
 
 export interface IUpdateTodoData {
@@ -43,6 +45,8 @@ export interface IUpdateTodoData {
   name?: string;
   description?: string;
   userId?: number;
+  listId?: number;
+  important?: boolean;
   completedFl?: boolean;
   dueDate?: Date;
 }

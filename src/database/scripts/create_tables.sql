@@ -34,8 +34,9 @@ CREATE TABLE `todos` (
     `description` VARCHAR(256) NULL,
     `user_id` INTEGER NOT NULL,
     `list_id` INTEGER NULL,
+    `important` BOOLEAN NOT NULL DEFAULT false,
     `completed_fl` BOOLEAN NOT NULL DEFAULT false,
-    `due_date` DATETIME(3) NULL,
+    `due_date` DATE NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 

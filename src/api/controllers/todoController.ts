@@ -1,5 +1,6 @@
 'use strict';
 
+import cache from '../middlewares/cacheMiddleware';
 import TodoService from '../../services/todoService';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -8,7 +9,6 @@ import InvalidArgumentError from '../../data/errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
 import { ICreateTodoData, IUpdateTodoData } from '../../data/types/repository';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
-import cache from '../middlewares/cacheMiddleware';
 
 class TodoController {
   public readonly router: Router;

@@ -29,8 +29,13 @@ class TodoRepositroy {
     return queryResult;
   }
 
+  public async findImportantCountByUserId(userId: number): Promise<number> {
+    const queryResult = await this.context.count({ where: { userId, important: true, completedFl: false } });
+    return queryResult;
+  }
+
   public async findCountByListId(listId: number): Promise<number> {
-    const queryResult = await this.context.count({ where: { listId } });
+    const queryResult = await this.context.count({ where: { listId, completedFl: false } });
     return queryResult;
   }
 
@@ -39,7 +44,9 @@ class TodoRepositroy {
     const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     const tomorrow = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1));
 
-    const queryResult = await this.context.count({ where: { userId, dueDate: { gte: today, lt: tomorrow } } });
+    const queryResult = await this.context.count({
+      where: { userId, dueDate: { gte: today, lt: tomorrow }, completedFl: false },
+    });
     return queryResult;
   }
 
@@ -48,7 +55,9 @@ class TodoRepositroy {
     const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     const tomorrow = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1));
 
-    const queryResult = await this.context.count({ where: { listId, dueDate: { gte: today, lt: tomorrow } } });
+    const queryResult = await this.context.count({
+      where: { listId, dueDate: { gte: today, lt: tomorrow }, completedFl: false },
+    });
     return queryResult;
   }
 
