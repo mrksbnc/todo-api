@@ -56,6 +56,13 @@ class TodoService {
     return count;
   }
 
+  public async getImportantCountByUserId(userId: number): Promise<number> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findImportantCountByUserId(userId);
+    return count;
+  }
+
   public async getCountByListId(listId: number): Promise<number> {
     if (!isValidNumericId(listId)) throw InvalidNumericIdError;
 

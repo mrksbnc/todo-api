@@ -81,6 +81,24 @@ class TodoController {
     }
   };
 
+  private readonly getImportantCountByUserId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const userId = Number(request.params.userId);
+      const count = await this.service.getImportantCountByUserId(userId);
+
+      response.status(HttpStatusCodeEnum.OK).json({ count });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   private readonly getCountByListId = async (
     request: Request,
     response: Response,
@@ -269,6 +287,11 @@ class TodoController {
       this.path + '/get/count/user/:userId',
       param('userId').exists().toInt().isNumeric(),
       this.getCountByUserId,
+    );
+    this.router.get(
+      this.path + '/get/count/user/important/:userId',
+      param('userId').exists().toInt().isNumeric(),
+      this.getImportantCountByUserId,
     );
     this.router.get(
       this.path + '/get/count/date/list/:listId',
