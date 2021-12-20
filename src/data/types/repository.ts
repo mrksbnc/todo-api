@@ -19,7 +19,6 @@ export interface ICreateProjectData {
   name: string;
   description?: string;
   userId: number;
-  color: string;
 }
 
 export interface IUpdateProjectData {
@@ -27,7 +26,6 @@ export interface IUpdateProjectData {
   name?: string;
   description?: string;
   userId?: number;
-  color?: string;
 }
 
 export interface ICreateTodoData {

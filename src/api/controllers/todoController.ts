@@ -1,6 +1,5 @@
 'use strict';
 
-import cache from '../middlewares/cacheMiddleware';
 import TodoService from '../../services/todoService';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
@@ -277,7 +276,7 @@ class TodoController {
       body('data').exists().isArray(),
       this.createMany,
     );
-    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.get(
       this.path + '/get/count/list/:listId',
       param('listId').exists().toInt().isNumeric(),
@@ -303,23 +302,23 @@ class TodoController {
       param('userId').exists().toInt().isNumeric(),
       this.getDueTodayCountByUserId,
     );
-    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
-      cache(),
+
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-      cache(),
+
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );
     this.router.get(
       this.path + '/get/list/:listId',
-      cache(),
+
       param('listId').exists().toInt().isNumeric(),
       this.getManyByListId,
     );

@@ -1,7 +1,0 @@
-'use strict';
-
-import apicache from 'apicache';
-
-const cache = apicache.options({ defaultDuration: '10 minutes' }).middleware;
-
-export default cache;

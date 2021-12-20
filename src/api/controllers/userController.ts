@@ -1,6 +1,5 @@
 'use strict';
 
-import cache from '../middlewares/cacheMiddleware';
 import UserService from '../../services/userService';
 import { IUpdateUserData } from '../../data/types/repository';
 import { body, param, validationResult } from 'express-validator';
@@ -78,8 +77,8 @@ class UserController {
   };
 
   private initializeRoutes() {
-    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
-    this.router.get(this.path + '/get/email/:email', cache(), param('email').exists().isEmail(), this.getByEmail);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/email/:email', param('email').exists().isEmail(), this.getByEmail);
     this.router.put(
       this.path + '/update',
       contentTypeValidatorMiddleware,

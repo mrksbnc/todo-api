@@ -1,6 +1,5 @@
 'use strict';
 
-import cache from '../middlewares/cacheMiddleware';
 import ProjectService from '../../services/projectService';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
@@ -163,7 +162,7 @@ class ProjectController {
       body('userId').toInt().isNumeric(),
       this.create,
     );
-    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.get(
       this.path + '/get/count/:userId',
       param('userId').exists().toInt().isNumeric(),
@@ -171,14 +170,12 @@ class ProjectController {
     );
     this.router.post(
       this.path + '/getMany',
-      cache(),
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-      cache(),
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );
