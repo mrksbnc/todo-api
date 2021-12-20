@@ -24,6 +24,34 @@ class TodoRepositroy {
     return queryResult;
   }
 
+  public async findCountByUserId(userId: number): Promise<number> {
+    const queryResult = await this.context.count({ where: { userId } });
+    return queryResult;
+  }
+
+  public async findCountByListId(listId: number): Promise<number> {
+    const queryResult = await this.context.count({ where: { listId } });
+    return queryResult;
+  }
+
+  public async findDueTodayCountByUserId(userId: number): Promise<number> {
+    const now = new Date(Date.now());
+    const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const tomorrow = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+
+    const queryResult = await this.context.count({ where: { userId, dueDate: { gte: today, lt: tomorrow } } });
+    return queryResult;
+  }
+
+  public async findDueTodayCountByListId(listId: number): Promise<number> {
+    const now = new Date(Date.now());
+    const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const tomorrow = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+
+    const queryResult = await this.context.count({ where: { listId, dueDate: { gte: today, lt: tomorrow } } });
+    return queryResult;
+  }
+
   public async findMany(ids: number[]): Promise<Todo[]> {
     const actionResult = [];
 

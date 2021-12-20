@@ -20,7 +20,13 @@ class TodoService {
   }
 
   public async createMany(collection: ICreateTodoData[]) {
-    await this.repository.createMany(collection);
+    const formatted = collection.map((m) => {
+      if (m.dueDate) {
+        m.dueDate = new Date(m.dueDate);
+      }
+      return m;
+    });
+    await this.repository.createMany(formatted);
   }
 
   public async getById(id: number): Promise<Todo> {
@@ -41,6 +47,34 @@ class TodoService {
 
     const collection = await this.repository.findMany(validIds);
     return collection;
+  }
+
+  public async getCountByUserId(userId: number): Promise<number> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findCountByUserId(userId);
+    return count;
+  }
+
+  public async getCountByListId(listId: number): Promise<number> {
+    if (!isValidNumericId(listId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findCountByUserId(listId);
+    return count;
+  }
+
+  public async getDueTodayCountByListId(userId: number): Promise<number> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findDueTodayCountByListId(userId);
+    return count;
+  }
+
+  public async getDueTodayCountByUserId(userId: number): Promise<number> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findDueTodayCountByUserId(userId);
+    return count;
   }
 
   public async getManyByUserId(userId: number): Promise<Todo[]> {

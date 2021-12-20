@@ -63,6 +63,78 @@ class TodoController {
     }
   };
 
+  private readonly getCountByUserId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const userId = Number(request.params.userId);
+      const count = await this.service.getCountByUserId(userId);
+
+      response.status(HttpStatusCodeEnum.OK).json({ count });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private readonly getCountByListId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const listId = Number(request.params.listId);
+      const count = await this.service.getCountByListId(listId);
+
+      response.status(HttpStatusCodeEnum.OK).json({ count });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private readonly getDueTodayCountByUserId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const userId = Number(request.params.userId);
+      const count = await this.service.getDueTodayCountByUserId(userId);
+
+      response.status(HttpStatusCodeEnum.OK).json({ count });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private readonly getDueTodayCountByListId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const listId = Number(request.params.listId);
+      const count = await this.service.getDueTodayCountByListId(listId);
+
+      response.status(HttpStatusCodeEnum.OK).json({ count });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   private readonly getMany = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
     try {
       const errors = validationResult(request);
@@ -186,6 +258,27 @@ class TodoController {
       contentTypeValidatorMiddleware,
       body('data').exists().isArray(),
       this.createMany,
+    );
+    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(
+      this.path + '/get/count/list/:listId',
+      param('listId').exists().toInt().isNumeric(),
+      this.getCountByListId,
+    );
+    this.router.get(
+      this.path + '/get/count/user/:userId',
+      param('userId').exists().toInt().isNumeric(),
+      this.getCountByUserId,
+    );
+    this.router.get(
+      this.path + '/get/count/date/list/:listId',
+      param('listId').exists().toInt().isNumeric(),
+      this.getDueTodayCountByListId,
+    );
+    this.router.get(
+      this.path + '/get/count/date/user/:userId',
+      param('userId').exists().toInt().isNumeric(),
+      this.getDueTodayCountByUserId,
     );
     this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(

@@ -31,6 +31,11 @@ class ProjectRepositroy {
     return actionResult;
   }
 
+  public async findCountByUserId(userId: number): Promise<number> {
+    const queryResult = await this.context.count({ where: { userId } });
+    return queryResult;
+  }
+
   public async findManyByUserId(userId: number): Promise<Project[]> {
     const queryResult = await this.context.findMany({ where: { userId } });
     return queryResult;

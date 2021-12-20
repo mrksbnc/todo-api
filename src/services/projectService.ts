@@ -38,6 +38,13 @@ class ProjectService {
     return collection;
   }
 
+  public async getCountByUserId(userId: number): Promise<number> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findCountByUserId(userId);
+    return count;
+  }
+
   public async getManyByUserId(userId: number): Promise<Project[]> {
     if (!isValidNumericId(userId)) throw InvalidNumericIdError;
 
