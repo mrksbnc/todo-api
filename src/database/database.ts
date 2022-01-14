@@ -22,9 +22,9 @@ class Database implements IDatabase {
     let isSuccessfulConnectionMade = true;
     try {
       await this.context.$connect();
-      logger.info('connection with ORDO context established successfully!');
+      logger.info('connection with database established successfully!');
     } catch (error) {
-      logger.error('connection with ORDO context failed!', error);
+      logger.error('connection with database failed!', error);
       isSuccessfulConnectionMade = false;
     }
 
