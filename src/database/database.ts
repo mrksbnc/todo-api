@@ -1,14 +1,21 @@
 'use strict';
 
-import { PrismaClient } from '@prisma/client';
-import { IDatabase, IDatabaseConstructor } from '../data/interfaces/IDatabase';
 import logger from '../utils/logger';
+import { PrismaClient } from '@prisma/client';
+import { IDelegateCollection } from '../data/interfaces/IDelegateCollection';
+import { IDatabase, IDatabaseConstructor } from '../data/interfaces/IDatabase';
 
 class Database implements IDatabase {
   readonly context: PrismaClient;
+  readonly delegateCollection: IDelegateCollection;
 
   constructor({ context }: IDatabaseConstructor) {
     this.context = context;
+    this.delegateCollection = Object.freeze({
+      todo: this.context.todo,
+      user: this.context.user,
+      project: this.context.project,
+    });
   }
 
   public async createConnection() {
@@ -30,4 +37,4 @@ class Database implements IDatabase {
   }
 }
 
-export default Database
+export default Database;
