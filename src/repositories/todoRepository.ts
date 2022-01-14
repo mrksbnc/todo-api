@@ -5,23 +5,23 @@ import { ICreateTodoData } from '../data/types/createTypes';
 import { IUpdateTodoData } from '../data/types/updateTypes';
 
 class TodoRepositroy {
-  private readonly context: Prisma.TodoDelegate<false>;
+  private readonly delegate: Prisma.TodoDelegate<false>;
 
-  constructor(context: Prisma.TodoDelegate<false>) {
-    this.context = context;
+  constructor(delegate: Prisma.TodoDelegate<false>) {
+    this.delegate = delegate;
   }
 
   public async create(data: ICreateTodoData): Promise<Todo> {
-    const queryResult = await this.context.create({ data });
+    const queryResult = await this.delegate.create({ data });
     return queryResult;
   }
 
   public async createMany(data: ICreateTodoData[]) {
-    await this.context.createMany({ data });
+    await this.delegate.createMany({ data });
   }
 
   public async findById(id: number): Promise<Todo | null> {
-    const queryResult = await this.context.findUnique({ where: { id } });
+    const queryResult = await this.delegate.findUnique({ where: { id } });
     return queryResult;
   }
 
@@ -29,7 +29,7 @@ class TodoRepositroy {
     const actionResult = [];
 
     for (const id of ids) {
-      const queryResult = await this.context.findUnique({ where: { id } });
+      const queryResult = await this.delegate.findUnique({ where: { id } });
       if (queryResult) actionResult.push(queryResult);
     }
 
@@ -37,17 +37,17 @@ class TodoRepositroy {
   }
 
   public async findManyByUserId(userId: number): Promise<Todo[]> {
-    const queryResult = await this.context.findMany({ where: { userId } });
+    const queryResult = await this.delegate.findMany({ where: { userId } });
     return queryResult;
   }
 
   public async findManyByListId(listId: number): Promise<Todo[]> {
-    const queryResult = await this.context.findMany({ where: { listId } });
+    const queryResult = await this.delegate.findMany({ where: { listId } });
     return queryResult;
   }
 
   public async update(id: number, data: IUpdateTodoData): Promise<Todo> {
-    const queryResult = await this.context.update({ where: { id }, data });
+    const queryResult = await this.delegate.update({ where: { id }, data });
     return queryResult;
   }
 
@@ -56,7 +56,7 @@ class TodoRepositroy {
     const queryResultCollection: Todo[] = [];
 
     while (index < ids.length) {
-      const queryResult = await this.context.update({ where: { id: ids[index] }, data: collection[index] });
+      const queryResult = await this.delegate.update({ where: { id: ids[index] }, data: collection[index] });
       queryResultCollection.push(queryResult);
       ++index;
     }
@@ -64,13 +64,13 @@ class TodoRepositroy {
   }
 
   public async delete(id: number) {
-    await this.context.delete({ where: { id } });
+    await this.delegate.delete({ where: { id } });
   }
 
   public async deleteMany(ids: number[]): Promise<void> {
     let index = 0;
     while (index < ids.length) {
-      await this.context.delete({ where: { id: ids[index] } });
+      await this.delegate.delete({ where: { id: ids[index] } });
       ++index;
     }
   }

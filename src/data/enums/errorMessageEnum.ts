@@ -7,6 +7,7 @@ enum ErrorMessageEnum {
   ROUTE_NOT_FOUND = 'The requested path could not be found',
   INVALID_ARGUMENT = 'Invalid argument received from client',
   RESOURCE_NOT_FOUND = 'The requested resource was not found',
+  TOKEN_NOT_FOUND = 'No access token was found to this request',
   INVALID_NUMERIC_ID = 'Invalid numeric id received from client',
   MISSING_AUTH_TOKEN = 'Authorization token missing from header',
   RESOURCE_ALREADY_EXISTS = 'Resource already exists in database',

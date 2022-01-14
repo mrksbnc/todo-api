@@ -2,12 +2,12 @@
 
 import services from '.';
 import bcrypt from 'bcrypt';
-import config from '../config';
+import config from '../config/baseConfig';
 import { createToken } from '../utils/token';
+import { TokenPayload } from '../data/types/token';
 import PartialUser from '../data/types/partialUser';
-import { ITokenPayload } from '../data/types/token';
-import NotFoundError from '../data/errors/resourceNotFoundError';
-import InvalidArgumentError from '../data/errors/invalidArgumentError';
+import InvalidArgumentError from '../errors/invalidArgumentError';
+import ResourceNotFoundError from '../errors/resourceNotFoundError';
 
 class AuthService {
   public async generatePasswordHash(plainTextPassword: string): Promise<string> {
@@ -23,12 +23,12 @@ class AuthService {
 
   public async login(email: string, password: string): Promise<{ token: string; user: PartialUser }> {
     const user = await services.user.getUserByEmail(email);
-    if (!user) throw NotFoundError;
+    if (!user) throw ResourceNotFoundError;
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) throw InvalidArgumentError;
 
-    const jwtPayload: ITokenPayload = {
+    const jwtPayload: TokenPayload = {
       userId: user.id,
       email: user.email,
       name: `${user.firstName} ${user.lastName}`,

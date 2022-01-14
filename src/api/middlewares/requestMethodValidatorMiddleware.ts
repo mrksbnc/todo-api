@@ -1,9 +1,9 @@
 'use strict';
 
-import config from '../../config';
+import config from '../../config/baseConfig';
 import { NextFunction, Request, Response } from 'express';
-import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import ErrorMessageEnum from '../../data/enums/errorMessageEnum';
 
 function requestMethodValidatorMiddleware(request: Request, response: Response, next: NextFunction) {
   config.server.enabled_request_methods.includes(request.method)

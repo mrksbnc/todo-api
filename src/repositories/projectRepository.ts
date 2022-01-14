@@ -5,19 +5,19 @@ import { ICreateProjectData } from '../data/types/createTypes';
 import { IUpdateProjectData } from '../data/types/updateTypes';
 
 class ProjectRepositroy {
-  private readonly context: Prisma.ProjectDelegate<false>;
+  private readonly delegate: Prisma.ProjectDelegate<false>;
 
-  constructor(context: Prisma.ProjectDelegate<false>) {
-    this.context = context;
+  constructor(delegate: Prisma.ProjectDelegate<false>) {
+    this.delegate = delegate;
   }
 
   public async create(data: ICreateProjectData) {
-    const queryResult = await this.context.create({ data });
+    const queryResult = await this.delegate.create({ data });
     return queryResult;
   }
 
   public async findById(id: number): Promise<Project | null> {
-    const queryResult = await this.context.findUnique({ where: { id } });
+    const queryResult = await this.delegate.findUnique({ where: { id } });
     return queryResult;
   }
 
@@ -25,7 +25,7 @@ class ProjectRepositroy {
     const actionResult = [];
 
     for (const id of ids) {
-      const queryResult = await this.context.findUnique({ where: { id } });
+      const queryResult = await this.delegate.findUnique({ where: { id } });
       if (queryResult) actionResult.push(queryResult);
     }
 
@@ -33,12 +33,12 @@ class ProjectRepositroy {
   }
 
   public async findManyByUserId(userId: number): Promise<Project[]> {
-    const queryResult = await this.context.findMany({ where: { userId } });
+    const queryResult = await this.delegate.findMany({ where: { userId } });
     return queryResult;
   }
 
   public async update(id: number, data: IUpdateProjectData): Promise<Project> {
-    const queryResult = await this.context.update({ where: { id }, data });
+    const queryResult = await this.delegate.update({ where: { id }, data });
     return queryResult;
   }
 
@@ -47,7 +47,7 @@ class ProjectRepositroy {
     const queryResultCollection: Project[] = [];
 
     while (index < ids.length) {
-      const queryResult = await this.context.update({ where: { id: ids[index] }, data: collection[index] });
+      const queryResult = await this.delegate.update({ where: { id: ids[index] }, data: collection[index] });
       queryResultCollection.push(queryResult);
       ++index;
     }
@@ -55,13 +55,13 @@ class ProjectRepositroy {
   }
 
   public async delete(id: number): Promise<void> {
-    await this.context.delete({ where: { id } });
+    await this.delegate.delete({ where: { id } });
   }
 
   public async deleteMany(ids: number[]): Promise<void> {
     let index = 0;
     while (index < ids.length) {
-      await this.context.delete({ where: { id: ids[index] } });
+      await this.delegate.delete({ where: { id: ids[index] } });
       ++index;
     }
   }

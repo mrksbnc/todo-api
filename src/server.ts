@@ -3,8 +3,8 @@
 import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
-import config from './config';
 import logger from './utils/logger';
+import config from './config/baseConfig';
 import cookieParser from 'cookie-parser';
 import controllers from './api/controllers';
 import express, { Application } from 'express';

@@ -1,11 +1,12 @@
 'use strict';
 
 import jwt from 'jsonwebtoken';
-import config from '../../config';
+import config from '../../config/baseConfig';
 import { Request, Response, NextFunction } from 'express';
-import InvalidTokenError from '../../data/errors/invalidTokenError';
-import TokenNotFoundError from '../../data/errors/tokenNotFoundError';
+
 import { checkExpirationStatus, createToken, decodeJwtToken } from '../../utils/token';
+import TokenNotFoundError from '../../errors/tokenNotFoundError';
+import InvalidAuthTokenError from '../../errors/invalidAuthTokenError';
 
 function authenticationMiddleware(request: Request, response: Response, next: NextFunction) {
   if (request.path.includes('register') || request.path.includes('login')) {
@@ -16,8 +17,8 @@ function authenticationMiddleware(request: Request, response: Response, next: Ne
   const bearerToken = request.headers['authorization'];
   if (!bearerToken) {
     response
-      .status(TokenNotFoundError.httpException.status)
-      .json({ success: false, message: TokenNotFoundError.httpException.message });
+      .status(TokenNotFoundError.httpError.status)
+      .json({ success: false, message: TokenNotFoundError.httpError.message });
     return;
   }
 
@@ -40,8 +41,8 @@ function authenticationMiddleware(request: Request, response: Response, next: Ne
       }
     }
     response
-      .status(InvalidTokenError.httpException.status)
-      .json({ success: false, message: InvalidTokenError.httpException.message });
+      .status(InvalidAuthTokenError.httpError.status)
+      .json({ success: false, message: InvalidAuthTokenError.httpError.message });
     return;
   }
 
