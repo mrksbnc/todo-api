@@ -1,14 +1,14 @@
 'use strict';
 
 import TodoService from '../../services/todoService';
+import { ICreateTodoData } from '../../data/types/createTypes';
+import { IUpdateTodoData } from '../../data/types/updateTypes';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import InvalidArgumentError from '../../data/errors/invalidArgumentError';
-import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
-import { ICreateTodoData, IUpdateTodoData } from '../../data/types/repository';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import InvalidArgumentError from '../../errors/invalidArgumentError';
+import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
-import cache from '../middlewares/cacheMiddleware';
 
 class TodoController {
   public readonly router: Router;
@@ -187,23 +187,23 @@ class TodoController {
       body('data').exists().isArray(),
       this.createMany,
     );
-    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
-      cache(),
+
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-      cache(),
+
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );
     this.router.get(
       this.path + '/get/list/:listId',
-      cache(),
+
       param('listId').exists().toInt().isNumeric(),
       this.getManyByListId,
     );

@@ -2,16 +2,16 @@
 
 export type ExpirationStatus = 'expired' | 'active' | 'grace';
 
-export interface ITokenPayload {
+export type TokenPayload = {
   userId: number;
   email: string;
   name: string;
-}
+};
 
-export interface IDecodedToken {
+export type DecodedToken = {
   userId: number;
   name: string;
   email: string;
   iat: number;
   exp: number;
-}
+};

@@ -1,12 +1,13 @@
 'use strict';
 
 import { Todo } from '.prisma/client';
-import { isValidNumericId } from '../utils/validators';
+import { isValidNumericId } from '../validators';
+import { ICreateTodoData } from '../data/types/createTypes';
+import { IUpdateTodoData } from '../data/types/updateTypes';
 import TodoRepositroy from '../repositories/todoRepository';
-import InvalidArgumentError from '../data/errors/invalidArgumentError';
-import InvalidNumericIdError from '../data/errors/invalidNumericIdError';
-import ResourceNotFoundError from '../data/errors/resourceNotFoundError';
-import { ICreateTodoData, IUpdateTodoData } from '../data/types/repository';
+import InvalidArgumentError from '../errors/invalidArgumentError';
+import InvalidNumericIdError from '../errors/invalidNumericIdError';
+import ResourceNotFoundError from '../errors/resourceNotFoundError';
 
 class TodoService {
   private readonly repository: TodoRepositroy;

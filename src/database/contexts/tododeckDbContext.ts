@@ -1,9 +1,9 @@
 'use strict';
 
 import logger from '../../utils/logger';
-import { Prisma, PrismaClient } from '.prisma/client';
+import { PrismaClient } from '@prisma/client';
 
-const baseContext = new PrismaClient({
+const tododeckDbContext = new PrismaClient({
   errorFormat: 'minimal',
   log: [
     { emit: 'event', level: 'query' },
@@ -11,7 +11,7 @@ const baseContext = new PrismaClient({
   ],
 });
 
-baseContext.$use(async (params, next) => {
+tododeckDbContext.$use(async (params, next) => {
   const before = Date.now();
   const result = await next(params);
   const after = Date.now();
@@ -20,8 +20,8 @@ baseContext.$use(async (params, next) => {
   return result;
 });
 
-baseContext.$on('error', (event) => {
+tododeckDbContext.$on('error', (event) => {
   logger.error(event.message, event.target);
 });
 
-export default baseContext;
+export default tododeckDbContext;

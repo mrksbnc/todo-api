@@ -1,12 +1,11 @@
 'use strict';
 
 import Server from './server';
-import Database from './database';
-import validateEnv from './utils/validateEnv';
-import baseContext from './database/context/baseContext';
+import database from './database';
+import validateEnv from './validators/validateEnv';
 
 (async () => {
   validateEnv();
-  await new Database().initializeDatabase(baseContext);
+  await database.createConnection();
   new Server().listen();
 })();

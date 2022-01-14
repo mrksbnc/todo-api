@@ -1,8 +1,8 @@
 'use strict';
 
 import { NextFunction, Request, Response } from 'express';
-import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
+import ErrorMessageEnum from '../../data/enums/errorMessageEnum';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 
 function contentTypeValidatorMiddleware(request: Request, response: Response, next: NextFunction) {
   request.headers['content-type'] !== 'application/json'

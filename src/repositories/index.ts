@@ -1,14 +1,14 @@
 'use strict';
 
-import ListRepositroy from './listRepository';
+import database from '../database';
 import TodoRepositroy from './todoRepository';
 import UserRepositroy from './userRepository';
-import { listContext, todoContext, userContext } from '../database/context';
+import ProjectRepository from './projectRepository';
 
 const repositories = Object.freeze({
-  todo: new TodoRepositroy(todoContext),
-  list: new ListRepositroy(listContext),
-  user: new UserRepositroy(userContext),
+  todo: new TodoRepositroy(database.delegateCollection.todo),
+  user: new UserRepositroy(database.delegateCollection.user),
+  project: new ProjectRepository(database.delegateCollection.project),
 });
 
 export default repositories;

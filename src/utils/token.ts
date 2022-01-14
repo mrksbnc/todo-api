@@ -1,10 +1,10 @@
 'use strict';
 
 import jwt from 'jsonwebtoken';
-import config from '../config';
-import { ExpirationStatus, IDecodedToken, ITokenPayload } from '../data/types/token';
+import baseConfig from '../config/baseConfig';
+import { ExpirationStatus, DecodedToken, TokenPayload } from '../data/types/token';
 
-export function checkExpirationStatus(token: IDecodedToken): ExpirationStatus {
+export function checkExpirationStatus(token: DecodedToken): ExpirationStatus {
   const now = Date.now();
   if (token.exp > now) return 'active';
 
@@ -15,11 +15,11 @@ export function checkExpirationStatus(token: IDecodedToken): ExpirationStatus {
   return 'expired';
 }
 
-export function createToken(payload: ITokenPayload): string {
-  const token = jwt.sign(payload, config.auth.secret, { expiresIn: '24h' });
+export function createToken(payload: TokenPayload): string {
+  const token = jwt.sign(payload, baseConfig.auth.secret, { expiresIn: '24h' });
   return token;
 }
 
-export function decodeJwtToken(token: string): IDecodedToken {
+export function decodeJwtToken(token: string): DecodedToken {
   return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
 }

@@ -3,9 +3,9 @@
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.resolve('./.env') });
 
-const config = Object.freeze({
+const baseConfig = Object.freeze({
   node_env: String(process.env.NODE_ENV),
   app_name: String(process.env.APP_NAME),
   isProd: process.env.NODE_ENV === 'production',
@@ -20,9 +20,6 @@ const config = Object.freeze({
     secret: String(process.env.SECRET),
     jwt_exp: String(process.env.JWT_EXP),
   },
-  cache: {
-    std_ttl: String(process.env.STD_TDL),
-  },
   log: {
     log_period: String(process.env.LOG_PERIOD),
     log_dir_path: path.resolve('src', 'logs'),
@@ -32,4 +29,4 @@ const config = Object.freeze({
   },
 });
 
-export default config;
+export default baseConfig;

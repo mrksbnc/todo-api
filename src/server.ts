@@ -3,14 +3,14 @@
 import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
-import config from './config';
 import logger from './utils/logger';
+import config from './config/baseConfig';
 import cookieParser from 'cookie-parser';
 import controllers from './api/controllers';
 import express, { Application } from 'express';
+import httpLogHandlerMiddleware from './api/middlewares/httpLogMiddleware';
 import errorHandlerMiddleware from './api/middlewares/errorHandlerMiddleware';
 import headerHandlerMiddleware from './api/middlewares/headerHandlerMiddleware';
-import httpLogHandlerMiddleware from './api/middlewares/httpLogHandlerMiddleware';
 import authenticationMiddleware from './api/middlewares/authenticationMiddleware';
 import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
 import requestMethodValidatorMiddleware from './api/middlewares/requestMethodValidatorMiddleware';

@@ -1,16 +1,16 @@
 'use strict';
 
-import ListService from '../../services/listService';
+import ListService from '../../services/projectService';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import InvalidArgumentError from '../../data/errors/invalidArgumentError';
-import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
-import { ICreateListData, IUpdateListData } from '../../data/types/repository';
+import { ICreateProjectData } from '../../data/types/createTypes';
+import { IUpdateProjectData } from '../../data/types/updateTypes';
+import InvalidArgumentError from '../../errors/invalidArgumentError';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
-import cache from '../middlewares/cacheMiddleware';
 
-class ListController {
+class ProjectController {
   public readonly router: Router;
   private readonly path = '/list';
   protected readonly service: ListService;
@@ -26,7 +26,7 @@ class ListController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const data: ICreateListData = request.body;
+      const data: ICreateProjectData = request.body;
       await this.service.create(data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
@@ -86,7 +86,7 @@ class ListController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { id, data }: { id: number; data: IUpdateListData } = request.body;
+      const { id, data }: { id: number; data: IUpdateProjectData } = request.body;
       await this.service.update(id, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
@@ -100,7 +100,7 @@ class ListController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { ids, data }: { ids: number[]; data: IUpdateListData[] } = request.body;
+      const { ids, data }: { ids: number[]; data: IUpdateProjectData[] } = request.body;
       await this.service.updateMany(ids, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
@@ -145,17 +145,15 @@ class ListController {
       body('userId').toInt().isNumeric(),
       this.create,
     );
-    this.router.get(this.path + '/get/:id', cache(), param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
-      cache(),
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-      cache(),
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );
@@ -183,4 +181,4 @@ class ListController {
   }
 }
 
-export default ListController;
+export default ProjectController;

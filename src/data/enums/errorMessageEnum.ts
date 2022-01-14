@@ -1,12 +1,13 @@
 'use strict';
 
 enum ErrorMessageEnum {
-  TOKEN_EXPIRED = 'Sent token is already expired',
+  TOKEN_EXPIRED = 'Access token expired',
   INTERNAL_SERVVER_ERROR = 'Internal server error',
   REQUEST_METHOD_NOT_ALLOWED = 'Request method not allowed',
   ROUTE_NOT_FOUND = 'The requested path could not be found',
   INVALID_ARGUMENT = 'Invalid argument received from client',
   RESOURCE_NOT_FOUND = 'The requested resource was not found',
+  TOKEN_NOT_FOUND = 'No access token was found to this request',
   INVALID_NUMERIC_ID = 'Invalid numeric id received from client',
   MISSING_AUTH_TOKEN = 'Authorization token missing from header',
   RESOURCE_ALREADY_EXISTS = 'Resource already exists in database',

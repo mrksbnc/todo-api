@@ -1,31 +1,27 @@
 'use strict';
 
-import { Prisma, Todo } from '.prisma/client';
-import { ICreateTodoData } from '../data/types/createTypes';
-import { IUpdateTodoData } from '../data/types/updateTypes';
+import { Project, Prisma } from '.prisma/client';
+import { ICreateProjectData } from '../data/types/createTypes';
+import { IUpdateProjectData } from '../data/types/updateTypes';
 
-class TodoRepositroy {
-  private readonly delegate: Prisma.TodoDelegate<false>;
+class ProjectRepositroy {
+  private readonly delegate: Prisma.ProjectDelegate<false>;
 
-  constructor(delegate: Prisma.TodoDelegate<false>) {
+  constructor(delegate: Prisma.ProjectDelegate<false>) {
     this.delegate = delegate;
   }
 
-  public async create(data: ICreateTodoData): Promise<Todo> {
+  public async create(data: ICreateProjectData) {
     const queryResult = await this.delegate.create({ data });
     return queryResult;
   }
 
-  public async createMany(data: ICreateTodoData[]) {
-    await this.delegate.createMany({ data });
-  }
-
-  public async findById(id: number): Promise<Todo | null> {
+  public async findById(id: number): Promise<Project | null> {
     const queryResult = await this.delegate.findUnique({ where: { id } });
     return queryResult;
   }
 
-  public async findMany(ids: number[]): Promise<Todo[]> {
+  public async findMany(ids: number[]): Promise<Project[]> {
     const actionResult = [];
 
     for (const id of ids) {
@@ -36,24 +32,19 @@ class TodoRepositroy {
     return actionResult;
   }
 
-  public async findManyByUserId(userId: number): Promise<Todo[]> {
+  public async findManyByUserId(userId: number): Promise<Project[]> {
     const queryResult = await this.delegate.findMany({ where: { userId } });
     return queryResult;
   }
 
-  public async findManyByListId(listId: number): Promise<Todo[]> {
-    const queryResult = await this.delegate.findMany({ where: { listId } });
-    return queryResult;
-  }
-
-  public async update(id: number, data: IUpdateTodoData): Promise<Todo> {
+  public async update(id: number, data: IUpdateProjectData): Promise<Project> {
     const queryResult = await this.delegate.update({ where: { id }, data });
     return queryResult;
   }
 
-  public async updateMany(ids: number[], collection: IUpdateTodoData[]): Promise<Todo[]> {
+  public async updateMany(ids: number[], collection: IUpdateProjectData[]): Promise<Project[]> {
     let index = 0;
-    const queryResultCollection: Todo[] = [];
+    const queryResultCollection: Project[] = [];
 
     while (index < ids.length) {
       const queryResult = await this.delegate.update({ where: { id: ids[index] }, data: collection[index] });
@@ -63,7 +54,7 @@ class TodoRepositroy {
     return queryResultCollection;
   }
 
-  public async delete(id: number) {
+  public async delete(id: number): Promise<void> {
     await this.delegate.delete({ where: { id } });
   }
 
@@ -76,4 +67,4 @@ class TodoRepositroy {
   }
 }
 
-export default TodoRepositroy;
+export default ProjectRepositroy;

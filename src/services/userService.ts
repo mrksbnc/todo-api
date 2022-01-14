@@ -2,13 +2,14 @@
 
 import services from '.';
 import { User } from '.prisma/client';
+import { isValidNumericId } from '../validators';
 import PartialUser from '../data/types/partialUser';
-import { isValidNumericId } from '../utils/validators';
 import UserRepositroy from '../repositories/userRepository';
-import ResourceNotFoundError from '../data/errors/resourceNotFoundError';
-import InvalidNumericIdError from '../data/errors/invalidNumericIdError';
-import { ICreateUserData, IUpdateUserData } from '../data/types/repository';
-import ResourceAlreadyExistsError from '../data/errors/resourceAlreadyExistsError';
+import { ICreateUserData } from '../data/types/createTypes';
+import { IUpdateUserData } from '../data/types/updateTypes';
+import ResourceNotFoundError from '../errors/resourceNotFoundError';
+import InvalidNumericIdError from '../errors/invalidNumericIdError';
+import ResourceAlreadyExistsError from '../errors/resourceAlreadyExistsError';
 
 class UserService {
   private readonly repository: UserRepositroy;

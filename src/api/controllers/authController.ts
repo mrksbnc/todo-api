@@ -3,11 +3,11 @@
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import { body, validationResult } from 'express-validator';
-import { ICreateUserData } from '../../data/types/repository';
+import { ICreateUserData } from '../../data/types/createTypes';
 import { NextFunction, Request, Response, Router } from 'express';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
-import InvalidArgumentError from '../../data/errors/invalidArgumentError';
-import ResponseMessageEnum from '../../data/constants/responseMessageEnum';
+import InvalidArgumentError from '../../errors/invalidArgumentError';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
 
 class AuthController {

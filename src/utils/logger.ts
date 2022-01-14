@@ -2,11 +2,11 @@
 
 import fs from 'fs';
 import bunyan from 'bunyan';
-import config from '../config';
+import baseConfig from '../config/baseConfig';
 
 /* eslint @typescript-eslint/no-var-requires: "off" */
 const pretty = require('@mechanicalhuman/bunyan-pretty');
-const logDirPath = config.log.log_dir_path;
+const logDirPath = baseConfig.log.log_dir_path;
 
 if (!fs.existsSync(logDirPath)) {
   fs.mkdirSync(logDirPath);
@@ -14,7 +14,7 @@ if (!fs.existsSync(logDirPath)) {
 
 const logger = bunyan.createLogger({
   level: 'debug',
-  name: config.app_name,
+  name: baseConfig.app_name,
   serializers: bunyan.stdSerializers,
   streams: [
     {
@@ -24,16 +24,16 @@ const logger = bunyan.createLogger({
     {
       level: 'info',
       type: 'rotating-file',
-      period: config.log.log_period,
-      path: config.log.info_log_path,
-      count: config.log.max_log_file_count,
+      period: baseConfig.log.log_period,
+      path: baseConfig.log.info_log_path,
+      count: baseConfig.log.max_log_file_count,
     },
     {
       level: 'error',
       type: 'rotating-file',
-      period: config.log.log_period,
-      path: config.log.error_log_path,
-      count: config.log.max_log_file_count,
+      period: baseConfig.log.log_period,
+      path: baseConfig.log.error_log_path,
+      count: baseConfig.log.max_log_file_count,
     },
   ],
 });
