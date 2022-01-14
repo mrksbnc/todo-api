@@ -1,6 +1,6 @@
 'use strict';
 
-import ListService from '../../services/projectService';
+import ProjectService from '../../services/projectService';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { ICreateProjectData } from '../../data/types/createTypes';
@@ -12,10 +12,10 @@ import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorM
 
 class ProjectController {
   public readonly router: Router;
-  private readonly path = '/list';
-  protected readonly service: ListService;
+  private readonly path = '/project';
+  protected readonly service: ProjectService;
 
-  constructor(service: ListService) {
+  constructor(service: ProjectService) {
     this.service = service;
     this.router = Router();
     this.initializeRoutes();
