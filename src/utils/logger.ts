@@ -14,7 +14,7 @@ if (!fs.existsSync(logDirPath)) {
 
 const logger = bunyan.createLogger({
   level: 'debug',
-  name: config.app_name,
+  name: config.app_id,
   serializers: bunyan.stdSerializers,
   streams: [
     {
@@ -24,14 +24,14 @@ const logger = bunyan.createLogger({
     {
       level: 'info',
       type: 'rotating-file',
-      period: config.log.log_period,
+      period: config.log.period,
       path: config.log.info_log_path,
       count: config.log.max_log_file_count,
     },
     {
       level: 'error',
       type: 'rotating-file',
-      period: config.log.log_period,
+      period: config.log.period,
       path: config.log.error_log_path,
       count: config.log.max_log_file_count,
     },

@@ -1,18 +1,8 @@
 'use strict';
 
-import logger from '../utils/logger';
-import { PrismaClient } from '.prisma/client';
+import Database from './database';
+import tododeckDbContext from './contexts/tododeckDbContext';
 
-class Database {
-  public async initializeDatabase(context: PrismaClient) {
-    try {
-      await context.$connect();
-      logger.info('database connection established successfully');
-    } catch (error) {
-      logger.fatal('database connection failed', error);
-      process.exit(1);
-    }
-  }
-}
+const database = new Database({ context: tododeckDbContext });
 
-export default Database;
+export default database;

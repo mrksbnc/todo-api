@@ -1,24 +1,24 @@
 'use strict';
 
 import logger from '../../utils/logger';
+import HttpError from '../../errors/httpError';
+import GeneralError from '../../errors/generalError';
 import { NextFunction, Request, Response } from 'express';
-import HttpException from '../../data/exceptions/httpException';
-import BaseException from '../../data/exceptions/baseException';
-import ErrorMessageEnum from '../../data/constants/errorMessageEnum';
-import HttpStatusCodeEnum from '../../data/constants/httpStatusCodeEnum';
+import ErrorMessageEnum from '../../data/enums/errorMessageEnum';
+import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 
 function errorHandlerMiddleware(error: unknown, request: Request, response: Response, next: NextFunction) {
   let responseStatusCode = HttpStatusCodeEnum.INTERNAL_SERVER_ERROR;
   let responseErrorMessage = String(ErrorMessageEnum.INTERNAL_SERVVER_ERROR);
 
-  if (error instanceof HttpException) {
+  if (error instanceof HttpError) {
     responseErrorMessage = error.message;
     responseStatusCode = error.status;
   }
 
-  if (error instanceof BaseException) {
-    responseStatusCode = error.httpException.status;
-    responseErrorMessage = error.httpException.message;
+  if (error instanceof GeneralError) {
+    responseStatusCode = error.httpError.status;
+    responseErrorMessage = error.httpError.message;
   }
 
   if (response.headersSent) {
