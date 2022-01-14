@@ -41,9 +41,27 @@ class ProjectController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      const list = await this.service.getById(id);
+      const project = await this.service.getById(id);
 
-      response.status(HttpStatusCodeEnum.OK).json({ list });
+      response.status(HttpStatusCodeEnum.OK).json({ project });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private readonly getCountByUserId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const userId = Number(request.params.userId);
+      const count = await this.service.getCountByUserId(userId);
+
+      response.status(HttpStatusCodeEnum.OK).json({ count });
     } catch (error) {
       next(error);
     }
@@ -146,14 +164,21 @@ class ProjectController {
       this.create,
     );
     this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
+    this.router.get(
+      this.path + '/get/count/:userId',
+      param('userId').exists().toInt().isNumeric(),
+      this.getCountByUserId,
+    );
     this.router.post(
       this.path + '/getMany',
+
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
+
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );

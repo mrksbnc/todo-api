@@ -22,10 +22,10 @@ class ProjectService {
 
   public async getById(id: number): Promise<Project> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
-    const list = await this.repository.findById(id);
+    const project = await this.repository.findById(id);
 
-    if (!list) throw ResourceNotFoundError;
-    return list;
+    if (!project) throw ResourceNotFoundError;
+    return project;
   }
 
   public async getMany(ids: number[]) {
@@ -37,6 +37,13 @@ class ProjectService {
 
     const collection = await this.repository.findMany(validIds);
     return collection;
+  }
+
+  public async getCountByUserId(userId: number): Promise<number> {
+    if (!isValidNumericId(userId)) throw InvalidNumericIdError;
+
+    const count = await this.repository.findCountByUserId(userId);
+    return count;
   }
 
   public async getManyByUserId(userId: number): Promise<Project[]> {
