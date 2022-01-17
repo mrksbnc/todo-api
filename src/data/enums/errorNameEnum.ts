@@ -3,6 +3,7 @@
 enum ErrorNameEnum {
   TOKEN_NOT_FOUND = 'TokenNotFoundError',
   ROUTE_NOT_FOUND = 'RouteNotFoundError',
+  INVALID_DELEGATE = 'InvalidDelegateError',
   INVALID_ARGUMENT = 'InvalidArgumentError',
   RESOURCE_NOT_FOUND = 'ResourceNotFoundError',
   INVALID_NUMERIC_ID = 'InvalidNumericIdError',

@@ -11,6 +11,7 @@ enum ErrorMessageEnum {
   MISSING_AUTH_TOKEN = 'Authorization token missing from header',
   RESOURCE_ALREADY_EXISTS = 'Resource already exists in database',
   TOKEN_NOT_FOUND = 'Access token is missing in the request header',
+  INVALID_DELEGATE = 'Argument delegate does not exists on context',
   INVALID_AUTH_TOKEN = 'Invalid authentication token received from client',
   UNAUTHORIZED = 'Authentication is required to access the requested resource',
   INVALID_CONTENT_TYPE = 'Invalid content type, server requires application/json',
