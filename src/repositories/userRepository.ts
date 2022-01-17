@@ -4,7 +4,7 @@ import { Prisma, User } from '.prisma/client';
 import { CreateUserData } from '../types/createModels';
 import { UpdateUserData } from '../types/updateModels';
 
-class UserRepositroy {
+class UserRepository {
   private readonly delegate: Prisma.UserDelegate<false>;
 
   constructor(delegate: Prisma.UserDelegate<false>) {
@@ -36,4 +36,4 @@ class UserRepositroy {
   }
 }
 
-export default UserRepositroy;
+export default UserRepository;

@@ -1,13 +1,14 @@
 'use strict';
 
 import database from '../database';
-import TodoRepositroy from './todoRepository';
-import UserRepositroy from './userRepository';
+import TodoRepository from './todoRepository';
+import UserRepository from './userRepository';
 import ProjectRepository from './projectRepository';
+import IRepositoryCollection from 'interfaces/IRepositoryCollection';
 
-const repositories = Object.freeze({
-  todo: new TodoRepositroy(database.delegateCollection.todo),
-  user: new UserRepositroy(database.delegateCollection.user),
+const repositories: IRepositoryCollection = Object.freeze({
+  todo: new TodoRepository(database.delegateCollection.todo),
+  user: new UserRepository(database.delegateCollection.user),
   project: new ProjectRepository(database.delegateCollection.project),
 });
 

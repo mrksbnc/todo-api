@@ -5,8 +5,9 @@ import TodoService from './todoService';
 import AuthService from './authService';
 import repositories from '../repositories';
 import ProjectService from './projectService';
+import IServiceCollection from 'interfaces/IServiceCollection';
 
-const services = Object.freeze({
+const services: IServiceCollection = Object.freeze({
   auth: new AuthService(),
   user: new UserService(repositories.user),
   todo: new TodoService(repositories.todo),

@@ -4,7 +4,7 @@ import { Prisma, Todo } from '.prisma/client';
 import { CreateTodoData } from '../types/createModels';
 import { UpdateTodoData } from '../types/updateModels';
 
-class TodoRepositroy {
+class TodoRepository {
   private readonly context: Prisma.TodoDelegate<false>;
 
   constructor(context: Prisma.TodoDelegate<false>) {
@@ -109,4 +109,4 @@ class TodoRepositroy {
   }
 }
 
-export default TodoRepositroy;
+export default TodoRepository;
