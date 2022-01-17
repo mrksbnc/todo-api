@@ -1,9 +1,10 @@
 'use strict';
 
 import services from '.';
+import cache from '../utils/cache';
 import { User } from '.prisma/client';
-import { isValidNumericId } from '../validators';
 import PartialUser from '../types/partialUser';
+import { isValidNumericId } from '../validators';
 import { CreateUserData } from '../types/createModels';
 import { UpdateUserData } from '../types/updateModels';
 import UserRepositroy from '../repositories/userRepository';
@@ -41,7 +42,7 @@ class UserService {
       firstName: data.firstName,
     }) as User;
 
-    await this.repository.create(newUser);
+    const createdUser = await this.repository.create(newUser);
   }
 
   public async getUserByEmail(email: string): Promise<User> {

@@ -2,10 +2,11 @@
 
 import path from 'path';
 import dotenv from 'dotenv';
+import IBaseConfig from '../types/interfaces/IBaseConfig';
 
 dotenv.config({ path: path.resolve('./.env') });
 
-const baseConfig = Object.freeze({
+const baseConfig: IBaseConfig = Object.freeze({
   node_env: String(process.env.NODE_ENV),
   app_name: String(process.env.APP_NAME),
   isProd: process.env.NODE_ENV === 'production',
@@ -19,6 +20,10 @@ const baseConfig = Object.freeze({
     salt_rounds: Number(process.env.SALT_ROUNDS),
     secret: String(process.env.SECRET),
     jwt_exp: String(process.env.JWT_EXP),
+  },
+  redis: {
+    port: Number(process.env.REDIS_PORT),
+    host: String(process.env.REDIS_HOST),
   },
   log: {
     log_period: String(process.env.LOG_PERIOD),

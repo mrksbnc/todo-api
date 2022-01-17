@@ -54,7 +54,7 @@ class Server {
 
   public listen() {
     this.app.listen(this.port, () => {
-      logger.info(`${config.app_name} started on ${config.server.base_url}:${this.port} in ${config.node_env} mode`);
+      logger.info(`${config.app_name} started on ${config.server.base_url}:${this.port} in ${config.node_env} mode!`);
     });
   }
 }
