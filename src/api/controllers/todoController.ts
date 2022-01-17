@@ -1,17 +1,17 @@
 'use strict';
 
 import { Todo } from '.prisma/client';
+import cache from '../../utils/cache';
 import TodoService from '../../services/todoService';
 import { CreateTodoData } from '../../types/createModels';
 import { UpdateTodoData } from '../../types/updateModels';
 import { body, param, validationResult } from 'express-validator';
-import e, { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
-import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
-import cache from '../../utils/cache';
 import ResourceNotFoundError from '../../errors/resourceNotFoundError';
+import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
 
 class TodoController {
   public readonly router: Router;
