@@ -19,16 +19,10 @@ class Database implements IDatabase {
   }
 
   public async createConnection() {
-    let isSuccessfulConnectionMade = true;
     try {
       await this.context.$connect();
       logger.info('connection with database established successfully!');
     } catch (error) {
-      logger.error('connection with database failed!', error);
-      isSuccessfulConnectionMade = false;
-    }
-
-    if (!isSuccessfulConnectionMade) {
       logger.fatal(
         'connection with required database contexts could not be established! process will exit with non 0 exit code',
       );
