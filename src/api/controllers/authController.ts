@@ -60,7 +60,7 @@ class AuthController {
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
 
-      const dto = { token, user };
+      const dto = { token: `Bearer ${token}`, user };
       response.status(HttpStatusCodeEnum.OK).json(
         new BaseResponse({
           dto,
