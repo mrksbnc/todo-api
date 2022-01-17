@@ -29,7 +29,7 @@ class UserService {
     return partialUser;
   }
 
-  public async create(data: CreateUserData): Promise<void> {
+  public async create(data: CreateUserData): Promise<PartialUser> {
     const user = await this.repository.findByEmail(data.email);
     if (user) throw ResourceAlreadyExistsError;
 
@@ -41,7 +41,8 @@ class UserService {
       firstName: data.firstName,
     }) as User;
 
-    await this.repository.create(newUser);
+    const createdUser = await this.repository.create(newUser);
+    return this.createPartialUser(createdUser);
   }
 
   public async getUserByEmail(email: string): Promise<User> {
