@@ -1,8 +1,8 @@
 'use strict';
 
 import { Prisma, Todo } from '.prisma/client';
-import { ICreateTodoData } from '../data/types/createTypes';
-import { IUpdateTodoData } from '../data/types/updateTypes';
+import { CreateTodoData } from '../types/createModels';
+import { UpdateTodoData } from '../types/updateModels';
 
 class TodoRepositroy {
   private readonly context: Prisma.TodoDelegate<false>;
@@ -11,12 +11,12 @@ class TodoRepositroy {
     this.context = context;
   }
 
-  public async create(data: ICreateTodoData): Promise<Todo> {
+  public async create(data: CreateTodoData): Promise<Todo> {
     const queryResult = await this.context.create({ data });
     return queryResult;
   }
 
-  public async createMany(data: ICreateTodoData[]) {
+  public async createMany(data: CreateTodoData[]) {
     await this.context.createMany({ data });
   }
 
@@ -79,12 +79,12 @@ class TodoRepositroy {
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateTodoData): Promise<Todo> {
+  public async update(id: number, data: UpdateTodoData): Promise<Todo> {
     const queryResult = await this.context.update({ where: { id }, data });
     return queryResult;
   }
 
-  public async updateMany(ids: number[], collection: IUpdateTodoData[]): Promise<Todo[]> {
+  public async updateMany(ids: number[], collection: UpdateTodoData[]): Promise<Todo[]> {
     let index = 0;
     const queryResultCollection: Todo[] = [];
 

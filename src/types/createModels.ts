@@ -1,20 +1,20 @@
 'use strict';
 
-export type ICreateUserData = {
+export type CreateUserData = {
   email: string;
   firstName: string;
   lastName: string;
   password: string;
 };
 
-export type ICreateProjectData = {
+export type CreateProjectData = {
   name: string;
   description?: string;
   userId: number;
   color: string;
 };
 
-export type ICreateTodoData = {
+export type CreateTodoData = {
   name: string;
   description: string;
   userId: number;

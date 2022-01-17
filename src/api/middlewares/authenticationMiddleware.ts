@@ -3,13 +3,12 @@
 import jwt from 'jsonwebtoken';
 import config from '../../config/baseConfig';
 import { Request, Response, NextFunction } from 'express';
-
-import { checkExpirationStatus, createToken, decodeJwtToken } from '../../utils/token';
 import TokenNotFoundError from '../../errors/tokenNotFoundError';
 import InvalidAuthTokenError from '../../errors/invalidAuthTokenError';
+import { checkExpirationStatus, createToken, decodeJwtToken } from '../../utils/token';
 
 function authenticationMiddleware(request: Request, response: Response, next: NextFunction) {
-  if (request.path.includes('register') || request.path.includes('login')) {
+  if (request.path === '/' || request.path.includes('register') || request.path.includes('login')) {
     next();
     return;
   }

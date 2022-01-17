@@ -1,8 +1,8 @@
 'use strict';
 
 import TodoService from '../../services/todoService';
-import { ICreateTodoData } from '../../data/types/createTypes';
-import { IUpdateTodoData } from '../../data/types/updateTypes';
+import { CreateTodoData } from '../../types/createModels';
+import { UpdateTodoData } from '../../types/updateModels';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
@@ -26,7 +26,7 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const data: ICreateTodoData = request.body;
+      const data: CreateTodoData = request.body;
       await this.service.create(data);
 
       response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED });
@@ -40,7 +40,7 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const data: ICreateTodoData[] = request.body.data;
+      const data: CreateTodoData[] = request.body.data;
       await this.service.createMany(data);
 
       response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED_MANY });
@@ -212,7 +212,7 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { id, data }: { id: number; data: IUpdateTodoData } = request.body;
+      const { id, data }: { id: number; data: UpdateTodoData } = request.body;
       await this.service.update(id, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
@@ -226,7 +226,7 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { ids, data }: { ids: number[]; data: IUpdateTodoData[] } = request.body;
+      const { ids, data }: { ids: number[]; data: UpdateTodoData[] } = request.body;
       await this.service.updateMany(ids, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });

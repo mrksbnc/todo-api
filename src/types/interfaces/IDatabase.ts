@@ -1,6 +1,6 @@
 'use strict';
 
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 export interface IDatabase {
   readonly context: PrismaClient<

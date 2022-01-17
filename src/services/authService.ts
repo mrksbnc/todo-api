@@ -4,8 +4,8 @@ import services from '.';
 import bcrypt from 'bcrypt';
 import config from '../config/baseConfig';
 import { createToken } from '../utils/token';
-import { TokenPayload } from '../data/types/token';
-import PartialUser from '../data/types/partialUser';
+import { TokenPayload } from '../types/token';
+import PartialUser from '../types/partialUser';
 import InvalidArgumentError from '../errors/invalidArgumentError';
 import ResourceNotFoundError from '../errors/resourceNotFoundError';
 

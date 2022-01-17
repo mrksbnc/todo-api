@@ -1,7 +1,7 @@
 'use strict';
 
 import UserService from '../../services/userService';
-import { IUpdateUserData } from '../../data/types/updateTypes';
+import { UpdateUserData } from '../../types/updateModels';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
@@ -53,7 +53,7 @@ class UserController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { id, data }: { id: number; data: IUpdateUserData } = request.body;
+      const { id, data }: { id: number; data: UpdateUserData } = request.body;
       await this.service.update(id, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });

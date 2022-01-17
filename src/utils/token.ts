@@ -2,7 +2,7 @@
 
 import jwt from 'jsonwebtoken';
 import baseConfig from '../config/baseConfig';
-import { ExpirationStatus, DecodedToken, TokenPayload } from '../data/types/token';
+import { ExpirationStatus, DecodedToken, TokenPayload } from '../types/token';
 
 export function checkExpirationStatus(token: DecodedToken): ExpirationStatus {
   const now = Date.now();

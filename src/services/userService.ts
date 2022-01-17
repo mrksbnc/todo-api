@@ -3,10 +3,10 @@
 import services from '.';
 import { User } from '.prisma/client';
 import { isValidNumericId } from '../validators';
-import PartialUser from '../data/types/partialUser';
+import PartialUser from '../types/partialUser';
+import { CreateUserData } from '../types/createModels';
+import { UpdateUserData } from '../types/updateModels';
 import UserRepositroy from '../repositories/userRepository';
-import { ICreateUserData } from '../data/types/createTypes';
-import { IUpdateUserData } from '../data/types/updateTypes';
 import ResourceNotFoundError from '../errors/resourceNotFoundError';
 import InvalidNumericIdError from '../errors/invalidNumericIdError';
 import ResourceAlreadyExistsError from '../errors/resourceAlreadyExistsError';
@@ -29,7 +29,7 @@ class UserService {
     return partialUser;
   }
 
-  public async create(data: ICreateUserData): Promise<void> {
+  public async create(data: CreateUserData): Promise<void> {
     const user = await this.repository.findByEmail(data.email);
     if (user) throw ResourceAlreadyExistsError;
 
@@ -69,7 +69,7 @@ class UserService {
     return partialUser;
   }
 
-  public async update(id: number, data: IUpdateUserData): Promise<void> {
+  public async update(id: number, data: UpdateUserData): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
     const user = await this.repository.findById(id);

@@ -1,6 +1,6 @@
 'use strict';
 
-import { IHttpError, IHttpErrorConstructor } from '../data/interfaces/IHttpError';
+import { IHttpError, IHttpErrorConstructor } from '../types/interfaces/IHttpError';
 
 class HttpError implements IHttpError {
   public status: number;

@@ -1,6 +1,6 @@
 'use strict';
 
-export type IUpdateUserData = {
+export type UpdateUserData = {
   id: number;
   email?: string;
   firstName?: string;
@@ -8,7 +8,7 @@ export type IUpdateUserData = {
   password?: string;
 };
 
-export type IUpdateProjectData = {
+export type UpdateProjectData = {
   id: number;
   name?: string;
   description?: string;
@@ -16,7 +16,7 @@ export type IUpdateProjectData = {
   color?: string;
 };
 
-export type IUpdateTodoData = {
+export type UpdateTodoData = {
   id: number;
   name?: string;
   description?: string;

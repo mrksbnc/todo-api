@@ -33,16 +33,16 @@
   },
   "dependencies": {
     "@mechanicalhuman/bunyan-pretty": "^3.0.3",
-    "@prisma/client": "^3.6.0",
+    "@prisma/client": "^3.8.1",
     "bcrypt": "^5.0.1",
     "bunyan": "^1.8.15",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
+    "dotenv": "^14.1.0",
     "envalid": "^7.2.2",
     "express": "^4.17.1",
     "express-validator": "^6.13.0",
-    "helmet": "^4.6.0",
+    "helmet": "^5.0.1",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0"
@@ -62,7 +62,7 @@
     "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
-    "prisma": "^3.6.0",
+    "prisma": "^3.8.1",
     "supertest": "^6.1.6",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.3"

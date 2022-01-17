@@ -1,10 +1,10 @@
 'use strict';
 
 import ProjectService from '../../services/projectService';
+import { CreateProjectData } from '../../types/createModels';
+import { UpdateProjectData } from '../../types/updateModels';
 import { NextFunction, Request, Response, Router } from 'express';
 import { body, param, validationResult } from 'express-validator';
-import { ICreateProjectData } from '../../data/types/createTypes';
-import { IUpdateProjectData } from '../../data/types/updateTypes';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
@@ -26,7 +26,7 @@ class ProjectController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const data: ICreateProjectData = request.body;
+      const data: CreateProjectData = request.body;
       await this.service.create(data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
@@ -104,7 +104,7 @@ class ProjectController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { id, data }: { id: number; data: IUpdateProjectData } = request.body;
+      const { id, data }: { id: number; data: UpdateProjectData } = request.body;
       await this.service.update(id, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
@@ -118,7 +118,7 @@ class ProjectController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { ids, data }: { ids: number[]; data: IUpdateProjectData[] } = request.body;
+      const { ids, data }: { ids: number[]; data: UpdateProjectData[] } = request.body;
       await this.service.updateMany(ids, data);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
@@ -171,14 +171,12 @@ class ProjectController {
     );
     this.router.post(
       this.path + '/getMany',
-
       contentTypeValidatorMiddleware,
       body('ids').exists().isArray(),
       this.getMany,
     );
     this.router.get(
       this.path + '/get/user/:userId',
-
       param('userId').exists().toInt().isNumeric(),
       this.getManyByUserId,
     );
