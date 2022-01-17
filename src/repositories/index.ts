@@ -4,7 +4,7 @@ import database from '../database';
 import TodoRepository from './todoRepository';
 import UserRepository from './userRepository';
 import ProjectRepository from './projectRepository';
-import IRepositoryCollection from 'interfaces/IRepositoryCollection';
+import IRepositoryCollection from '../types/interfaces/IRepositoryCollection';
 
 const repositories: IRepositoryCollection = Object.freeze({
   todo: new TodoRepository(database.delegateCollection.todo),
