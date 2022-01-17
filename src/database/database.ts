@@ -2,8 +2,8 @@
 
 import logger from '../utils/logger';
 import { PrismaClient } from '@prisma/client';
-import { IDelegateCollection } from '../data/interfaces/IDelegateCollection';
-import { IDatabase, IDatabaseConstructor } from '../data/interfaces/IDatabase';
+import { IDelegateCollection } from '../types/interfaces/IDelegateCollection';
+import { IDatabase, IDatabaseConstructor } from '../types/interfaces/IDatabase';
 
 class Database implements IDatabase {
   readonly context: PrismaClient;

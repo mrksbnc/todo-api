@@ -1,5 +1,7 @@
 'use strict';
 
+import HttpError from '../../errors/httpError';
+
 export interface IGerneralError {
   name: string;
   stack?: string;

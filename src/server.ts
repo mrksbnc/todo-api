@@ -35,6 +35,7 @@ class Server {
   }
 
   private initializeMiddlewares(): void {
+    this.app.use(authenticationMiddleware);
     this.app.all('*', headerHandlerMiddleware);
     this.app.use(helmet({ hidePoweredBy: true }));
     this.app.use(cors());
@@ -42,11 +43,9 @@ class Server {
 
     this.app.use(requestMethodValidatorMiddleware);
     this.app.use(httpLogHandlerMiddleware);
-
     this.app.use(cookieParser());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ type: 'application/json' }));
-    this.app.use(authenticationMiddleware);
   }
 
   public getServer() {

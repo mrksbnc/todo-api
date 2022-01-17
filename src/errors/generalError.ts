@@ -1,7 +1,7 @@
 'use strict';
 
 import HttpError from './httpError';
-import { IGerneralError, IGerneralErrorConstructor } from '../data/interfaces/IGeneralError';
+import { IGerneralError, IGerneralErrorConstructor } from '../types/interfaces/IGeneralError';
 
 class GeneralError extends Error implements IGerneralError {
   public name: string;

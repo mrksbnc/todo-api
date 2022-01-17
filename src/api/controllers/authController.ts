@@ -2,8 +2,8 @@
 
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
+import { CreateUserData } from '../../types/createModels';
 import { body, validationResult } from 'express-validator';
-import { ICreateUserData } from '../../data/types/createTypes';
 import { NextFunction, Request, Response, Router } from 'express';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
@@ -28,7 +28,7 @@ class AuthController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const createUserData: ICreateUserData = request.body;
+      const createUserData: CreateUserData = request.body;
       await this.userService.create(createUserData);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED, success: true });

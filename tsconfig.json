@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "strict": true,
+    "outDir": "dist",
     "lib": ["ESNext"],
     "target": "ESNEXT",
-    "outDir": "./dist",
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -11,6 +11,6 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

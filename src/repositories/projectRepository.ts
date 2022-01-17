@@ -1,8 +1,8 @@
 'use strict';
 
 import { Project, Prisma } from '.prisma/client';
-import { ICreateProjectData } from '../data/types/createTypes';
-import { IUpdateProjectData } from '../data/types/updateTypes';
+import { CreateProjectData } from '../types/createModels';
+import { UpdateProjectData } from '../types/updateModels';
 
 class ProjectRepositroy {
   private readonly context: Prisma.ProjectDelegate<false>;
@@ -11,7 +11,7 @@ class ProjectRepositroy {
     this.context = context;
   }
 
-  public async create(data: ICreateProjectData) {
+  public async create(data: CreateProjectData) {
     const queryResult = await this.context.create({ data });
     return queryResult;
   }
@@ -42,12 +42,12 @@ class ProjectRepositroy {
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateProjectData): Promise<Project> {
+  public async update(id: number, data: UpdateProjectData): Promise<Project> {
     const queryResult = await this.context.update({ where: { id }, data });
     return queryResult;
   }
 
-  public async updateMany(ids: number[], collection: IUpdateProjectData[]): Promise<Project[]> {
+  public async updateMany(ids: number[], collection: UpdateProjectData[]): Promise<Project[]> {
     let index = 0;
     const queryResultCollection: Project[] = [];
 

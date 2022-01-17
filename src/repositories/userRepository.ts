@@ -1,17 +1,17 @@
 'use strict';
 
 import { Prisma, User } from '.prisma/client';
-import { ICreateUserData } from '../data/types/createTypes';
-import { IUpdateUserData } from '../data/types/updateTypes';
+import { CreateUserData } from '../types/createModels';
+import { UpdateUserData } from '../types/updateModels';
 
-class UserRepositroy {
+class UserRepository {
   private readonly delegate: Prisma.UserDelegate<false>;
 
   constructor(delegate: Prisma.UserDelegate<false>) {
     this.delegate = delegate;
   }
 
-  public async create(data: ICreateUserData): Promise<User> {
+  public async create(data: CreateUserData): Promise<User> {
     const queryResult = await this.delegate.create({ data });
     return queryResult;
   }
@@ -26,7 +26,7 @@ class UserRepositroy {
     return queryResult;
   }
 
-  public async update(id: number, data: IUpdateUserData): Promise<User> {
+  public async update(id: number, data: UpdateUserData): Promise<User> {
     const queryResult = await this.delegate.update({ where: { id }, data });
     return queryResult;
   }
@@ -36,4 +36,4 @@ class UserRepositroy {
   }
 }
 
-export default UserRepositroy;
+export default UserRepository;

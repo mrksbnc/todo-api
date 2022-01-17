@@ -2,8 +2,8 @@
 
 import { Project } from '.prisma/client';
 import { isValidNumericId } from '../validators';
-import { ICreateProjectData } from '../data/types/createTypes';
-import { IUpdateProjectData } from '../data/types/updateTypes';
+import { CreateProjectData } from '../types/createModels';
+import { UpdateProjectData } from '../types/updateModels';
 import ProjectRepositroy from '../repositories/projectRepository';
 import InvalidArgumentError from '../errors/invalidArgumentError';
 import InvalidNumericIdError from '../errors/invalidNumericIdError';
@@ -16,7 +16,7 @@ class ProjectService {
     this.repository = repository;
   }
 
-  public async create(data: ICreateProjectData): Promise<void> {
+  public async create(data: CreateProjectData): Promise<void> {
     await this.repository.create(data);
   }
 
@@ -53,12 +53,12 @@ class ProjectService {
     return collection;
   }
 
-  public async update(id: number, data: IUpdateProjectData): Promise<void> {
+  public async update(id: number, data: UpdateProjectData): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
     await this.repository.update(id, data);
   }
 
-  public async updateMany(ids: number[], collection: IUpdateProjectData[]): Promise<void> {
+  public async updateMany(ids: number[], collection: UpdateProjectData[]): Promise<void> {
     let index = 0;
     let isMinimumOneValidNumericIdFound = false;
     while (!isMinimumOneValidNumericIdFound) {
@@ -68,7 +68,7 @@ class ProjectService {
     if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
     const validatedIdCollection: number[] = [];
-    const validatedPayloadCollection: IUpdateProjectData[] = [];
+    const validatedPayloadCollection: UpdateProjectData[] = [];
 
     for (let iterator = 0; iterator < ids.length; ++iterator) {
       if (isValidNumericId(ids[iterator])) {

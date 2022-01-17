@@ -2,8 +2,8 @@
 
 import { Todo } from '.prisma/client';
 import { isValidNumericId } from '../validators';
-import { ICreateTodoData } from '../data/types/createTypes';
-import { IUpdateTodoData } from '../data/types/updateTypes';
+import { CreateTodoData } from '../types/createModels';
+import { UpdateTodoData } from '../types/updateModels';
 import TodoRepositroy from '../repositories/todoRepository';
 import InvalidArgumentError from '../errors/invalidArgumentError';
 import InvalidNumericIdError from '../errors/invalidNumericIdError';
@@ -16,11 +16,11 @@ class TodoService {
     this.repository = repository;
   }
 
-  public async create(data: ICreateTodoData): Promise<void> {
+  public async create(data: CreateTodoData): Promise<void> {
     await this.repository.create(data);
   }
 
-  public async createMany(collection: ICreateTodoData[]) {
+  public async createMany(collection: CreateTodoData[]) {
     const formatted = collection.map((m) => {
       if (m.dueDate) {
         m.dueDate = new Date(m.dueDate);
@@ -99,12 +99,12 @@ class TodoService {
     return collection;
   }
 
-  public async update(id: number, data: IUpdateTodoData): Promise<void> {
+  public async update(id: number, data: UpdateTodoData): Promise<void> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
     await this.repository.update(id, data);
   }
 
-  public async updateMany(ids: number[], dataCollection: IUpdateTodoData[]): Promise<void> {
+  public async updateMany(ids: number[], dataCollection: UpdateTodoData[]): Promise<void> {
     let index = 0;
     let isMinimumOneValidNumericIdFound = false;
     while (!isMinimumOneValidNumericIdFound) {
@@ -114,7 +114,7 @@ class TodoService {
     if (!isMinimumOneValidNumericIdFound) throw InvalidArgumentError;
 
     const validatedIdCollection: number[] = [];
-    const validatedPayloadCollection: IUpdateTodoData[] = [];
+    const validatedPayloadCollection: UpdateTodoData[] = [];
 
     for (let iterator = 0; iterator < ids.length; ++iterator) {
       if (isValidNumericId(ids[iterator])) {
