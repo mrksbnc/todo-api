@@ -1,7 +1,6 @@
 'use strict';
 
 import services from '.';
-import cache from '../utils/cache';
 import { User } from '.prisma/client';
 import PartialUser from '../types/partialUser';
 import { isValidNumericId } from '../validators';
@@ -42,7 +41,7 @@ class UserService {
       firstName: data.firstName,
     }) as User;
 
-    const createdUser = await this.repository.create(newUser);
+    await this.repository.create(newUser);
   }
 
   public async getUserByEmail(email: string): Promise<User> {
@@ -70,7 +69,7 @@ class UserService {
     return partialUser;
   }
 
-  public async update(id: number, data: UpdateUserData): Promise<void> {
+  public async update(id: number, data: UpdateUserData): Promise<PartialUser> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
 
     const user = await this.repository.findById(id);
@@ -80,7 +79,10 @@ class UserService {
       const hash = await services.auth.generatePasswordHash(data.password);
       data.password = hash;
     }
-    await this.repository.update(id, data);
+
+    const updateResult = await this.repository.update(id, data);
+    const partialUser = this.createPartialUser(updateResult);
+    return partialUser;
   }
 
   public async delete(id: number): Promise<void> {
