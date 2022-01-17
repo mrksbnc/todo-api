@@ -1,18 +1,19 @@
 'use strict';
 
 import cache from '../../utils/cache';
+import { LoginDTO } from '../../types/dto';
 import PartialUser from '../../types/partialUser';
+import { isResponseOk } from '../../utils/response';
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import { CreateUserData } from '../../types/createModels';
+import BaseResponse from '../../data/models/baseResponse';
 import { body, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
-import BaseResponse from '../../data/models/baseResponse';
-import { isResponseOk } from '../../utils/response';
 
 class AuthController {
   public readonly router: Router;
@@ -40,11 +41,10 @@ class AuthController {
 
       response.status(HttpStatusCodeEnum.OK).json(
         new BaseResponse({
-          isOk: isResponseOk(HttpStatusCodeEnum.OK),
           dto: null,
-          error: null,
           status: HttpStatusCodeEnum.OK,
           message: ResponseMessageEnum.CREATED,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
         }),
       );
     } catch (error) {
@@ -60,14 +60,12 @@ class AuthController {
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
 
-      const dto = { token: `Bearer ${token}`, user };
       response.status(HttpStatusCodeEnum.OK).json(
-        new BaseResponse({
-          dto,
-          error: null,
-          message: null,
+        new BaseResponse<LoginDTO>({
           status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
           isOk: isResponseOk(HttpStatusCodeEnum.OK),
+          dto: { token: `Bearer ${token}`, user },
         }),
       );
     } catch (error) {

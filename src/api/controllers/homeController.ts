@@ -1,10 +1,14 @@
 'use strict';
 
+import { GetAppDataDTO } from '../../types/dto';
+import { isResponseOk } from '../../utils/response';
 import UserService from '../../services/userService';
+import BaseResponse from '../../data/models/baseResponse';
 import { param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
+import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 
 class HomeController {
   public readonly router: Router;
@@ -25,7 +29,14 @@ class HomeController {
       const id = Number(request.params.id);
       const pu = await this.userService.getPartialUserById(id);
 
-      response.status(HttpStatusCodeEnum.OK).json({ user: pu, success: true });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetAppDataDTO>({
+          dto: { user: pu },
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }

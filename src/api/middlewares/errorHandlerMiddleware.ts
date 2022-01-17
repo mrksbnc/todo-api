@@ -31,18 +31,12 @@ function errorHandlerMiddleware(error: unknown, request: Request, response: Resp
   response.format({
     'application/json': () => {
       response.json(
-        new BaseResponse(
-          new BaseResponse({
-            dto: null,
-            message: null,
-            status: responseStatusCode,
-            isOk: isResponseOk(responseStatusCode),
-            error: new HttpError({
-              status: responseStatusCode,
-              message: responseErrorMessage,
-            }),
-          }),
-        ),
+        new BaseResponse({
+          dto: null,
+          status: responseStatusCode,
+          message: responseErrorMessage,
+          isOk: isResponseOk(responseStatusCode),
+        }),
       );
     },
     default: () => {

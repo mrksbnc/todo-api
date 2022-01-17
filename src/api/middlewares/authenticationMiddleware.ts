@@ -2,6 +2,8 @@
 
 import jwt from 'jsonwebtoken';
 import config from '../../config/baseConfig';
+import { isResponseOk } from '../../utils/response';
+import BaseResponse from '../../data/models/baseResponse';
 import { Request, Response, NextFunction } from 'express';
 import TokenNotFoundError from '../../errors/tokenNotFoundError';
 import InvalidAuthTokenError from '../../errors/invalidAuthTokenError';
@@ -15,9 +17,14 @@ function authenticationMiddleware(request: Request, response: Response, next: Ne
 
   const bearerToken = request.headers['authorization'];
   if (!bearerToken) {
-    response
-      .status(TokenNotFoundError.httpError.status)
-      .json({ success: false, message: TokenNotFoundError.httpError.message });
+    response.status(TokenNotFoundError.httpError.status).json(
+      new BaseResponse({
+        dto: null,
+        status: TokenNotFoundError.httpError.status,
+        message: TokenNotFoundError.httpError.message,
+        isOk: isResponseOk(TokenNotFoundError.httpError.status),
+      }),
+    );
     return;
   }
 
@@ -39,9 +46,14 @@ function authenticationMiddleware(request: Request, response: Response, next: Ne
         return;
       }
     }
-    response
-      .status(InvalidAuthTokenError.httpError.status)
-      .json({ success: false, message: InvalidAuthTokenError.httpError.message });
+    response.status(InvalidAuthTokenError.httpError.status).json(
+      new BaseResponse({
+        dto: null,
+        status: InvalidAuthTokenError.httpError.status,
+        message: InvalidAuthTokenError.httpError.message,
+        isOk: isResponseOk(InvalidAuthTokenError.httpError.status),
+      }),
+    );
     return;
   }
 

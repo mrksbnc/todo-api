@@ -10,7 +10,7 @@ import controllers from './api/controllers';
 import express, { Application } from 'express';
 import httpLogHandlerMiddleware from './api/middlewares/httpLogMiddleware';
 import errorHandlerMiddleware from './api/middlewares/errorHandlerMiddleware';
-import headerHandlerMiddleware from './api/middlewares/headerHandlerMiddleware';
+import responseHeaderMiddleware from './api/middlewares/responseHeaderMiddleware';
 import authenticationMiddleware from './api/middlewares/authenticationMiddleware';
 import notFoundHandlerMiddleware from './api/middlewares/notFoundHandlerMiddleware';
 import requestMethodValidatorMiddleware from './api/middlewares/requestMethodValidatorMiddleware';
@@ -37,7 +37,7 @@ class Server {
   private initializeMiddlewares(): void {
     this.app.use(httpLogHandlerMiddleware);
     this.app.use(authenticationMiddleware);
-    this.app.all('*', headerHandlerMiddleware);
+    this.app.all('*', responseHeaderMiddleware);
     this.app.use(helmet({ hidePoweredBy: true }));
     this.app.use(cors());
     this.app.use(hpp());
