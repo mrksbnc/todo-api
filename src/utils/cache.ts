@@ -16,6 +16,11 @@ class RedisClient {
     return new Redis({
       host: baseConfig.redis.host,
       port: baseConfig.redis.port,
+      maxRetriesPerRequest: 10,
+      retryStrategy(times) {
+        const delay = Math.min(times * 50, 2000);
+        return delay;
+      },
     });
   }
 
@@ -40,7 +45,8 @@ class RedisClient {
     const cachedValue: string | null = await this.client.get(key);
     if (cachedValue) {
       try {
-        return JSON.parse(cachedValue) as T;
+        const parsed: T = JSON.parse(cachedValue);
+        return parsed;
       } catch (error) {
         const _e = error as Error;
         logger.error(_e.message, error);
@@ -72,9 +78,10 @@ class RedisClient {
     return parsedResult;
   }
 
-  public async set<T>(key: string, value: T): Promise<void> {
+  public async set<T>(key: string, value: T, exp?: number): Promise<void> {
     const stringifiedValue = JSON.stringify(value);
-    await this.client.set(key, stringifiedValue);
+    const expireTime = exp ? Number(exp) : 1800;
+    await this.client.set(key, stringifiedValue, 'ex', expireTime);
   }
 
   public async delete(key: string): Promise<boolean> {

@@ -16,10 +16,6 @@ class TodoRepository {
     return queryResult;
   }
 
-  public async createMany(data: CreateTodoData[]) {
-    await this.context.createMany({ data });
-  }
-
   public async findById(id: number): Promise<Todo | null> {
     const queryResult = await this.context.findUnique({ where: { id } });
     return queryResult;

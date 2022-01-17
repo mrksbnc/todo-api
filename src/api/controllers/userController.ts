@@ -29,19 +29,19 @@ class UserController {
 
       const key = request.path;
       const cachedValue = await cache.get<PartialUser>(key);
-      const responseData: { user?: PartialUser } = { user: undefined };
+      const dto: { user?: PartialUser } = { user: undefined };
 
       if (cachedValue) {
-        responseData.user = cachedValue;
+        dto.user = cachedValue;
       } else {
         const id = Number(request.params.id);
         const partialUser = await this.service.getPartialUserById(id);
 
         await cache.set(key, partialUser);
-        responseData.user = partialUser;
+        dto.user = partialUser;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json(responseData);
+      response.status(HttpStatusCodeEnum.OK).json(dto);
     } catch (error) {
       next(error);
     }
@@ -55,10 +55,8 @@ class UserController {
       const { id, data }: { id: number; data: UpdateUserData } = request.body;
       const partialUser = await this.service.update(id, data);
       const keyWithId = this.path + '/get/' + id;
-      const keyWithEmail = this.path + '/get/email/' + partialUser.email;
 
       await cache.set<PartialUser>(keyWithId, partialUser);
-      await cache.set<PartialUser>(keyWithEmail, partialUser);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
     } catch (error) {

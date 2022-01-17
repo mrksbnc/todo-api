@@ -1,14 +1,17 @@
 'use strict';
 
+import { Todo } from '.prisma/client';
 import TodoService from '../../services/todoService';
 import { CreateTodoData } from '../../types/createModels';
 import { UpdateTodoData } from '../../types/updateModels';
 import { body, param, validationResult } from 'express-validator';
-import { NextFunction, Request, Response, Router } from 'express';
+import e, { NextFunction, Request, Response, Router } from 'express';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
+import cache from '../../utils/cache';
+import ResourceNotFoundError from '../../errors/resourceNotFoundError';
 
 class TodoController {
   public readonly router: Router;
@@ -27,23 +30,12 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const data: CreateTodoData = request.body;
-      await this.service.create(data);
+      const todo = await this.service.create(data);
+
+      const key = this.path + ' /get/' + todo.id;
+      await cache.set<Todo>(key, todo);
 
       response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  private readonly createMany = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
-    try {
-      const errors = validationResult(request);
-      if (!errors.isEmpty()) next(InvalidArgumentError);
-
-      const data: CreateTodoData[] = request.body.data;
-      await this.service.createMany(data);
-
-      response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED_MANY });
     } catch (error) {
       next(error);
     }
@@ -54,10 +46,21 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const id = Number(request.params.id);
-      const todo = await this.service.getById(id);
+      const key = request.path;
+      const cachedValue = await cache.get<Todo>(key);
+      const dto: { todo?: Todo } = { todo: undefined };
 
-      response.status(HttpStatusCodeEnum.OK).json({ todo });
+      if (cachedValue) {
+        dto.todo = cachedValue;
+      } else {
+        const id = Number(request.params.id);
+        const todo = await this.service.getById(id);
+
+        await cache.set<Todo>(key, todo);
+        dto.todo = todo;
+      }
+
+      response.status(HttpStatusCodeEnum.OK).json(dto);
     } catch (error) {
       next(error);
     }
@@ -140,10 +143,21 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const { ids }: { ids: number[] } = request.body;
-      const collection = await this.service.getMany(ids);
+      const key = request.path;
+      const cachedValues = await cache.get<Todo[]>(key);
+      const dto: { collection: Todo[] } = { collection: [] };
 
-      response.status(HttpStatusCodeEnum.OK).json({ collection });
+      if (cachedValues && cachedValues.length) {
+        dto.collection = cachedValues;
+      } else {
+        const { ids }: { ids: number[] } = request.body;
+        const collection = await this.service.getMany(ids);
+
+        await cache.set<Todo[]>(key, collection);
+        dto.collection = collection;
+      }
+
+      response.status(HttpStatusCodeEnum.OK).json(dto);
     } catch (error) {
       next(error);
     }
@@ -158,10 +172,21 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
-      const userId = Number(request.params.userId);
-      const collection = await this.service.getManyByUserId(userId);
+      const key = request.path;
+      const cachedValues = await cache.get<Todo[]>(key);
+      const dto: { collection: Todo[] } = { collection: [] };
 
-      response.status(HttpStatusCodeEnum.OK).json({ collection });
+      if (cachedValues && cachedValues.length) {
+        dto.collection = cachedValues;
+      } else {
+        const userId = Number(request.params.userId);
+        const collection = await this.service.getManyByUserId(userId);
+
+        await cache.set<Todo[]>(key, collection);
+        dto.collection = collection;
+      }
+
+      response.status(HttpStatusCodeEnum.OK).json(dto);
     } catch (error) {
       next(error);
     }
@@ -177,10 +202,21 @@ class TodoController {
         const errors = validationResult(request);
         if (!errors.isEmpty()) next(InvalidArgumentError);
 
-        const listId = Number(request.params.listId);
-        const collection = await this.service.getManyByListId(listId);
+        const key = request.path;
+        const cachedValues = await cache.get<Todo[]>(key);
+        const dto: { collection: Todo[] } = { collection: [] };
 
-        response.status(HttpStatusCodeEnum.OK).json({ collection });
+        if (cachedValues && cachedValues.length) {
+          dto.collection = cachedValues;
+        } else {
+          const listId = Number(request.params.listId);
+          const collection = await this.service.getManyByListId(listId);
+
+          await cache.set<Todo[]>(key, collection);
+          dto.collection = collection;
+        }
+
+        response.status(HttpStatusCodeEnum.OK).json(dto);
       } catch (error) {
         next(error);
       }
@@ -213,7 +249,15 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const { id, data }: { id: number; data: UpdateTodoData } = request.body;
-      await this.service.update(id, data);
+      const updateResultTodo = await this.service.update(id, data);
+
+      const basicKey = this.path + '/get/' + updateResultTodo.id;
+      const listKey = this.path + '/get/list/' + updateResultTodo.listId;
+      const userKey = this.path + '/get/user/' + updateResultTodo.userId;
+
+      await cache.set(basicKey, updateResultTodo);
+      await cache.set(listKey, updateResultTodo);
+      await cache.set(userKey, updateResultTodo);
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
     } catch (error) {
@@ -226,8 +270,22 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
+      let index = 0;
       const { ids, data }: { ids: number[]; data: UpdateTodoData[] } = request.body;
-      await this.service.updateMany(ids, data);
+      const updateResultTodoList = await this.service.updateMany(ids, data);
+
+      while (index < updateResultTodoList.length) {
+        const iterated = updateResultTodoList[index];
+
+        const basicKey = this.path + '/get/' + iterated.id;
+        const listKey = this.path + '/get/list/' + iterated.listId;
+        const userKey = this.path + '/get/user/' + iterated.userId;
+
+        await cache.set(basicKey, iterated);
+        await cache.set(listKey, iterated);
+        await cache.set(userKey, iterated);
+        ++index;
+      }
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
     } catch (error) {
@@ -241,9 +299,22 @@ class TodoController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const id = Number(request.params.id);
-      await this.service.delete(id);
+      const todo = await this.service.getById(id);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
+      if (todo) {
+        const basicKey = this.path + '/get/' + todo.id;
+        const listKey = this.path + '/get/list/' + todo.listId;
+        const userKey = this.path + '/get/user/' + todo.userId;
+
+        await this.service.delete(id);
+        await cache.delete(basicKey);
+        await cache.delete(listKey);
+        await cache.delete(userKey);
+
+        response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
+      } else {
+        next(ResourceNotFoundError);
+      }
     } catch (error) {
       next(error);
     }
@@ -254,8 +325,23 @@ class TodoController {
       const errors = validationResult(request);
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
+      let index = 0;
       const { ids }: { ids: number[] } = request.body;
       await this.service.deleteMany(ids);
+
+      while (index < ids.length) {
+        const iteratedId = ids[index];
+        const todo = await this.service.getById(iteratedId);
+
+        const basicKey = this.path + '/get/' + todo.id;
+        const listKey = this.path + '/get/list/' + todo.listId;
+        const userKey = this.path + '/get/user/' + todo.userId;
+
+        await cache.delete(basicKey);
+        await cache.delete(listKey);
+        await cache.delete(userKey);
+        ++index;
+      }
 
       response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED_MANY });
     } catch (error) {
@@ -270,12 +356,6 @@ class TodoController {
       body('name').exists().isLength({ max: 64 }),
       body('userId').exists().toInt().isNumeric(),
       this.create,
-    );
-    this.router.post(
-      this.path + '/createMany',
-      contentTypeValidatorMiddleware,
-      body('data').exists().isArray(),
-      this.createMany,
     );
     this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.get(
@@ -303,7 +383,6 @@ class TodoController {
       param('userId').exists().toInt().isNumeric(),
       this.getDueTodayCountByUserId,
     );
-    this.router.get(this.path + '/get/:id', param('id').exists().toInt().isNumeric(), this.getById);
     this.router.post(
       this.path + '/getMany',
       contentTypeValidatorMiddleware,
