@@ -11,6 +11,8 @@ import InvalidArgumentError from '../../errors/invalidArgumentError';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
+import BaseResponse from '../../data/models/baseResponse';
+import { isResponseOk } from '../../utils/response';
 
 class AuthController {
   public readonly router: Router;
@@ -36,7 +38,15 @@ class AuthController {
       const key = '/user/get/' + partialUser.id;
       await cache.set<PartialUser>(key, partialUser);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+          dto: null,
+          error: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.CREATED,
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -50,7 +60,16 @@ class AuthController {
       const { email, password }: { email: string; password: string } = request.body;
       const { token, user } = await this.authService.login(email, password);
 
-      response.status(HttpStatusCodeEnum.OK).json({ user, token: `Bearer ${token}` });
+      const dto = { token, user };
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto,
+          error: null,
+          message: null,
+          status: HttpStatusCodeEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }

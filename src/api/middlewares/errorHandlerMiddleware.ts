@@ -2,8 +2,10 @@
 
 import logger from '../../utils/logger';
 import HttpError from '../../errors/httpError';
+import { isResponseOk } from '../../utils/response';
 import GeneralError from '../../errors/generalError';
 import { NextFunction, Request, Response } from 'express';
+import BaseResponse from '../../data/models/baseResponse';
 import ErrorMessageEnum from '../../data/enums/errorMessageEnum';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 
@@ -28,7 +30,20 @@ function errorHandlerMiddleware(error: unknown, request: Request, response: Resp
   response.status(responseStatusCode);
   response.format({
     'application/json': () => {
-      response.json({ success: false, message: responseErrorMessage });
+      response.json(
+        new BaseResponse(
+          new BaseResponse({
+            dto: null,
+            message: null,
+            status: responseStatusCode,
+            isOk: isResponseOk(responseStatusCode),
+            error: new HttpError({
+              status: responseStatusCode,
+              message: responseErrorMessage,
+            }),
+          }),
+        ),
+      );
     },
     default: () => {
       response.type('text/plain').send(responseErrorMessage);
