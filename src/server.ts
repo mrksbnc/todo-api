@@ -35,14 +35,13 @@ class Server {
   }
 
   private initializeMiddlewares(): void {
+    this.app.use(httpLogHandlerMiddleware);
     this.app.use(authenticationMiddleware);
     this.app.all('*', headerHandlerMiddleware);
     this.app.use(helmet({ hidePoweredBy: true }));
     this.app.use(cors());
     this.app.use(hpp());
-
     this.app.use(requestMethodValidatorMiddleware);
-    this.app.use(httpLogHandlerMiddleware);
     this.app.use(cookieParser());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ type: 'application/json' }));
@@ -54,7 +53,7 @@ class Server {
 
   public listen() {
     this.app.listen(this.port, () => {
-      logger.info(`${config.app_name} started on ${config.server.base_url}:${this.port} in ${config.node_env} mode`);
+      logger.info(`${config.app_name} started on ${config.server.base_url}:${this.port} in ${config.node_env} mode!`);
     });
   }
 }

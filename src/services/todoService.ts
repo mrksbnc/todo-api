@@ -16,18 +16,9 @@ class TodoService {
     this.repository = repository;
   }
 
-  public async create(data: CreateTodoData): Promise<void> {
-    await this.repository.create(data);
-  }
-
-  public async createMany(collection: CreateTodoData[]) {
-    const formatted = collection.map((m) => {
-      if (m.dueDate) {
-        m.dueDate = new Date(m.dueDate);
-      }
-      return m;
-    });
-    await this.repository.createMany(formatted);
+  public async create(data: CreateTodoData): Promise<Todo> {
+    const todo = await this.repository.create(data);
+    return todo;
   }
 
   public async getById(id: number): Promise<Todo> {
@@ -99,12 +90,13 @@ class TodoService {
     return collection;
   }
 
-  public async update(id: number, data: UpdateTodoData): Promise<void> {
+  public async update(id: number, data: UpdateTodoData): Promise<Todo> {
     if (!isValidNumericId(id)) throw InvalidNumericIdError;
-    await this.repository.update(id, data);
+    const updateResult = await this.repository.update(id, data);
+    return updateResult;
   }
 
-  public async updateMany(ids: number[], dataCollection: UpdateTodoData[]): Promise<void> {
+  public async updateMany(ids: number[], dataCollection: UpdateTodoData[]): Promise<Todo[]> {
     let index = 0;
     let isMinimumOneValidNumericIdFound = false;
     while (!isMinimumOneValidNumericIdFound) {
@@ -123,7 +115,8 @@ class TodoService {
       }
     }
 
-    await this.repository.updateMany(validatedIdCollection, validatedPayloadCollection);
+    const result = await this.repository.updateMany(validatedIdCollection, validatedPayloadCollection);
+    return result;
   }
 
   public async delete(id: number): Promise<void> {

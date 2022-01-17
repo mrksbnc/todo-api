@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../utils/logger';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import { IDelegateCollection } from '../types/interfaces/IDelegateCollection';
 import { IDatabase, IDatabaseConstructor } from '../types/interfaces/IDatabase';
 
@@ -19,19 +19,12 @@ class Database implements IDatabase {
   }
 
   public async createConnection() {
-    let isSuccessfulConnectionMade = true;
     try {
       await this.context.$connect();
       logger.info('connection with database established successfully!');
     } catch (error) {
-      logger.error('connection with database failed!', error);
-      isSuccessfulConnectionMade = false;
-    }
-
-    if (!isSuccessfulConnectionMade) {
-      logger.fatal(
-        'connection with required database contexts could not be established! process will exit with non 0 exit code',
-      );
+      logger.fatal('connection with database could not be established due ', error);
+      logger.error('process will exit now with non 0 exit code!');
       process.exit(-1);
     }
   }

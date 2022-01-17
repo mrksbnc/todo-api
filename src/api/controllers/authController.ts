@@ -1,5 +1,7 @@
 'use strict';
 
+import cache from '../../utils/cache';
+import PartialUser from '../../types/partialUser';
 import UserService from '../../services/userService';
 import AuthService from '../../services/authService';
 import { CreateUserData } from '../../types/createModels';
@@ -29,9 +31,12 @@ class AuthController {
       if (!errors.isEmpty()) next(InvalidArgumentError);
 
       const createUserData: CreateUserData = request.body;
-      await this.userService.create(createUserData);
+      const partialUser = await this.userService.create(createUserData);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED, success: true });
+      const key = '/user/get/' + partialUser.id;
+      await cache.set<PartialUser>(key, partialUser);
+
+      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
     } catch (error) {
       next(error);
     }
