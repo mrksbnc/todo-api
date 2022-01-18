@@ -2,7 +2,9 @@
 
 import { Todo } from '.prisma/client';
 import cache from '../../utils/cache';
+import { isResponseOk } from '../../utils/response';
 import TodoService from '../../services/todoService';
+import BaseResponse from '../../data/models/baseResponse';
 import { CreateTodoData } from '../../types/createModels';
 import { UpdateTodoData } from '../../types/updateModels';
 import { body, param, validationResult } from 'express-validator';
@@ -11,6 +13,7 @@ import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import ResourceNotFoundError from '../../errors/resourceNotFoundError';
+import { GetTodoByIdDTO, GetManyTodoDTO, GetTodoCountDTO } from '../../types/dto';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
 
 class TodoController {
@@ -35,7 +38,14 @@ class TodoController {
       const key = this.path + ' /get/' + todo.id;
       await cache.set<Todo>(key, todo);
 
-      response.status(HttpStatusCodeEnum.CREATED).json({ message: ResponseMessageEnum.CREATED });
+      response.status(HttpStatusCodeEnum.CREATED).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.CREATED,
+          message: ResponseMessageEnum.CREATED,
+          isOk: isResponseOk(HttpStatusCodeEnum.CREATED),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -48,7 +58,7 @@ class TodoController {
 
       const key = request.path;
       const cachedValue = await cache.get<Todo>(key);
-      const dto: { todo?: Todo } = { todo: undefined };
+      const dto: GetTodoByIdDTO = { todo: undefined };
 
       if (cachedValue) {
         dto.todo = cachedValue;
@@ -60,7 +70,14 @@ class TodoController {
         dto.todo = todo;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json(dto);
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetTodoByIdDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -77,8 +94,16 @@ class TodoController {
 
       const userId = Number(request.params.userId);
       const count = await this.service.getCountByUserId(userId);
+      const dto: GetTodoCountDTO = { count };
 
-      response.status(HttpStatusCodeEnum.OK).json({ count });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetTodoCountDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -95,8 +120,16 @@ class TodoController {
 
       const listId = Number(request.params.listId);
       const count = await this.service.getCountByListId(listId);
+      const dto: GetTodoCountDTO = { count };
 
-      response.status(HttpStatusCodeEnum.OK).json({ count });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetTodoCountDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -113,8 +146,16 @@ class TodoController {
 
       const userId = Number(request.params.userId);
       const count = await this.service.getDueTodayCountByUserId(userId);
+      const dto: GetTodoCountDTO = { count };
 
-      response.status(HttpStatusCodeEnum.OK).json({ count });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetTodoCountDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -131,8 +172,42 @@ class TodoController {
 
       const listId = Number(request.params.listId);
       const count = await this.service.getDueTodayCountByListId(listId);
+      const dto: GetTodoCountDTO = { count };
 
-      response.status(HttpStatusCodeEnum.OK).json({ count });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetTodoCountDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private readonly getImportantCountByUserId = async (
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) next(InvalidArgumentError);
+
+      const userId = Number(request.params.userId);
+      const count = await this.service.getImportantCountByUserId(userId);
+      const dto: GetTodoCountDTO = { count };
+
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetTodoCountDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -157,7 +232,14 @@ class TodoController {
         dto.collection = collection;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json(dto);
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetManyTodoDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -186,7 +268,14 @@ class TodoController {
         dto.collection = collection;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json(dto);
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetManyTodoDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -216,28 +305,17 @@ class TodoController {
           dto.collection = collection;
         }
 
-        response.status(HttpStatusCodeEnum.OK).json(dto);
+        response.status(HttpStatusCodeEnum.OK).json(
+          new BaseResponse<GetManyTodoDTO>({
+            dto,
+            status: HttpStatusCodeEnum.OK,
+            message: ResponseMessageEnum.OK,
+            isOk: isResponseOk(HttpStatusCodeEnum.OK),
+          }),
+        );
       } catch (error) {
         next(error);
       }
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  private readonly getImportantCountByUserId = async (
-    request: Request,
-    response: Response,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const errors = validationResult(request);
-      if (!errors.isEmpty()) next(InvalidArgumentError);
-
-      const userId = Number(request.params.userId);
-      const count = await this.service.getImportantCountByUserId(userId);
-
-      response.status(HttpStatusCodeEnum.OK).json({ count });
     } catch (error) {
       next(error);
     }
@@ -259,7 +337,14 @@ class TodoController {
       await cache.set(listKey, updateResultTodo);
       await cache.set(userKey, updateResultTodo);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.UPDATED,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -287,7 +372,14 @@ class TodoController {
         ++index;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+          message: ResponseMessageEnum.UPDATED_MANY,
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -311,7 +403,14 @@ class TodoController {
         await cache.delete(listKey);
         await cache.delete(userKey);
 
-        response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
+        response.status(HttpStatusCodeEnum.OK).json(
+          new BaseResponse({
+            dto: null,
+            status: HttpStatusCodeEnum.OK,
+            message: ResponseMessageEnum.DELETED,
+            isOk: isResponseOk(HttpStatusCodeEnum.OK),
+          }),
+        );
       } else {
         next(ResourceNotFoundError);
       }
@@ -343,7 +442,14 @@ class TodoController {
         ++index;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED_MANY });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+          message: ResponseMessageEnum.DELETED_MANY,
+        }),
+      );
     } catch (error) {
       next(error);
     }
