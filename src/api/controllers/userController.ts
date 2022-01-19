@@ -1,9 +1,12 @@
 'use strict';
 
 import cache from '../../utils/cache';
+import { GetUserByIdDTO } from '../../types/dto';
 import PartialUser from '../../types/partialUser';
+import { isResponseOk } from '../../utils/response';
 import UserService from '../../services/userService';
 import { UpdateUserData } from '../../types/updateModels';
+import BaseResponse from '../../data/models/baseResponse';
 import { body, param, validationResult } from 'express-validator';
 import { NextFunction, Request, Response, Router } from 'express';
 import InvalidArgumentError from '../../errors/invalidArgumentError';
@@ -29,7 +32,7 @@ class UserController {
 
       const key = request.path;
       const cachedValue = await cache.get<PartialUser>(key);
-      const dto: { user?: PartialUser } = { user: undefined };
+      const dto: GetUserByIdDTO = { user: undefined };
 
       if (cachedValue) {
         dto.user = cachedValue;
@@ -41,7 +44,14 @@ class UserController {
         dto.user = partialUser;
       }
 
-      response.status(HttpStatusCodeEnum.OK).json(dto);
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetUserByIdDTO>({
+          dto,
+          message: null,
+          status: HttpStatusCodeEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -58,7 +68,14 @@ class UserController {
 
       await cache.set<PartialUser>(keyWithId, partialUser);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.UPDATED,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -75,7 +92,14 @@ class UserController {
       await this.service.delete(id);
       await cache.delete(key);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.DELETED,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }

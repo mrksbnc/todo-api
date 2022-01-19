@@ -17,7 +17,7 @@ class RedisClient {
       host: baseConfig.redis.host,
       port: baseConfig.redis.port,
       maxRetriesPerRequest: 10,
-      retryStrategy(times) {
+      retryStrategy(times: number) {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },

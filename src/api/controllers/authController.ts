@@ -40,7 +40,7 @@ class AuthController {
       await cache.set<PartialUser>(key, partialUser);
 
       response.status(HttpStatusCodeEnum.OK).json(
-        new BaseResponse({
+        new BaseResponse<null>({
           dto: null,
           status: HttpStatusCodeEnum.OK,
           message: ResponseMessageEnum.CREATED,

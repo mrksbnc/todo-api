@@ -9,6 +9,10 @@ import InvalidArgumentError from '../../errors/invalidArgumentError';
 import HttpStatusCodeEnum from '../../data/enums/httpStatusCodeEnum';
 import ResponseMessageEnum from '../../data/enums/responseMessageEnum';
 import contentTypeValidatorMiddleware from '../middlewares/contentTypeValidatorMiddleware';
+import BaseResponse from '../../data/models/baseResponse';
+import { isResponseOk } from '../../utils/response';
+import { Project } from '@prisma/client';
+import { GetManyProjectDTO, GetProjectByIdDTO, GetProjectCountDTO } from '../../types/dto';
 
 class ProjectController {
   public readonly router: Router;
@@ -29,7 +33,14 @@ class ProjectController {
       const data: CreateProjectData = request.body;
       await this.service.create(data);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.CREATED });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.CREATED,
+          message: ResponseMessageEnum.CREATED,
+          isOk: isResponseOk(HttpStatusCodeEnum.CREATED),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -42,8 +53,16 @@ class ProjectController {
 
       const id = Number(request.params.id);
       const project = await this.service.getById(id);
+      const dto: GetProjectByIdDTO = { project };
 
-      response.status(HttpStatusCodeEnum.OK).json({ project });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetProjectByIdDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -60,8 +79,16 @@ class ProjectController {
 
       const userId = Number(request.params.userId);
       const count = await this.service.getCountByUserId(userId);
+      const dto: GetProjectCountDTO = { count };
 
-      response.status(HttpStatusCodeEnum.OK).json({ count });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetProjectCountDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -74,8 +101,16 @@ class ProjectController {
 
       const { ids }: { ids: number[] } = request.body;
       const collection = await this.service.getMany(ids);
+      const dto: GetManyProjectDTO = { collection };
 
-      response.status(HttpStatusCodeEnum.OK).json({ collection });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetManyProjectDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -92,8 +127,16 @@ class ProjectController {
 
       const userId = Number(request.params.userId);
       const collection = await this.service.getManyByUserId(userId);
+      const dto: GetManyProjectDTO = { collection };
 
-      response.status(HttpStatusCodeEnum.OK).json({ collection });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse<GetManyProjectDTO>({
+          dto,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.OK,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -107,21 +150,14 @@ class ProjectController {
       const { id, data }: { id: number; data: UpdateProjectData } = request.body;
       await this.service.update(id, data);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  private readonly updateMany = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
-    try {
-      const errors = validationResult(request);
-      if (!errors.isEmpty()) next(InvalidArgumentError);
-
-      const { ids, data }: { ids: number[]; data: UpdateProjectData[] } = request.body;
-      await this.service.updateMany(ids, data);
-
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.UPDATED_MANY });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.UPDATED,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -135,7 +171,14 @@ class ProjectController {
       const id = Number(request.params.id);
       await this.service.delete(id);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.DELETED,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -149,7 +192,14 @@ class ProjectController {
       const { ids }: { ids: number[] } = request.body;
       await this.service.deleteMany(ids);
 
-      response.status(HttpStatusCodeEnum.OK).json({ message: ResponseMessageEnum.DELETED_MANY });
+      response.status(HttpStatusCodeEnum.OK).json(
+        new BaseResponse({
+          dto: null,
+          status: HttpStatusCodeEnum.OK,
+          message: ResponseMessageEnum.DELETED_MANY,
+          isOk: isResponseOk(HttpStatusCodeEnum.OK),
+        }),
+      );
     } catch (error) {
       next(error);
     }
@@ -186,13 +236,6 @@ class ProjectController {
       body('id').exists().toInt().isNumeric(),
       body('data').exists().isObject(),
       this.update,
-    );
-    this.router.put(
-      this.path + '/updateMany',
-      contentTypeValidatorMiddleware,
-      body('ids').exists().isArray(),
-      body('data').exists().isArray(),
-      this.updateMany,
     );
     this.router.delete(this.path + '/delete/:id', param('id').exists().toInt().isNumeric(), this.delete);
     this.router.post(
