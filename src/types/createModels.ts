@@ -1,23 +1,7 @@
 'use strict';
 
-export type CreateUserData = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-};
+import { Project, Todo, User } from '@prisma/client';
 
-export type CreateProjectData = {
-  name: string;
-  description?: string;
-  userId: number;
-  color: string;
-};
-
-export type CreateTodoData = {
-  name: string;
-  description: string;
-  userId: number;
-  completedFl: boolean;
-  dueDate?: Date;
-};
+export type CreateProjectData = Pick<Project, 'name' | 'description' | 'userId'>;
+export type CreateUserData = Pick<User, 'email' | 'firstName' | 'lastName' | 'password'>;
+export type CreateTodoData = Pick<Todo, 'name' | 'description' | 'userId' | 'completedFl' | 'dueDate'>;
