@@ -38,7 +38,7 @@
     "bunyan": "^1.8.15",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^14.1.0",
+    "dotenv": "^14.3.2",
     "envalid": "^7.2.2",
     "express": "^4.17.1",
     "express-validator": "^6.13.0",
