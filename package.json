@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@mechanicalhuman/bunyan-pretty": "^3.0.3",
-    "@prisma/client": "^3.11.0",
+    "@prisma/client": "^3.11.1",
     "bcrypt": "^5.0.1",
     "bunyan": "^1.8.15",
     "cookie-parser": "^1.4.6",
